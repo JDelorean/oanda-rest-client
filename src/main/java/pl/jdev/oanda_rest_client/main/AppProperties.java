@@ -34,7 +34,7 @@ public class AppProperties {
 		logger.info("Entity Content Type [" + contentType + "].");
 		token = prop.getProperty("oanda.token");
 		logger.info("Oanda Token [" + token + "].");
-		url = prop.getProperty("oanda.url");
+		url = prop.getProperty("oanda.url.practice");
 		logger.info("Oanda base URL [" + url + "].");
 		dateTimeFormat = prop.getProperty("oanda.dateTimeFormat");
 		logger.info("Date/Time format [" + dateTimeFormat + "].");

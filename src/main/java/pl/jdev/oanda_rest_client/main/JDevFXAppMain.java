@@ -39,35 +39,42 @@ public class JDevFXAppMain {
 		// }
 
 		AccountRequest accReq = new AccountRequest();
+		
 		try {
-			System.out.println(accReq.getAccountsForToken());
-			for (Header el : accReq.getAccountsForToken().getAllHeaders()) {
-				System.out.println(el.toString());
-			}
-			System.out.println("\n");
-			System.out.println(accReq.getAccount());
-			for (Header el : accReq.getAccount().getAllHeaders()) {
-				System.out.println(el.toString());
-			}
-			System.out.println("\n");
-			System.out.println(accReq.getAccountSummary());
-			for (Header el : accReq.getAccountSummary().getAllHeaders()) {
-				System.out.println(el.toString());
-			}
-			System.out.println("\n");
-			System.out.println(accReq.getAccountInstruments());
-			for (Header el : accReq.getAccountInstruments().getAllHeaders()) {
-				System.out.println(el.toString());
-			}
-			System.out.println("\n");
-			System.out.println(accReq.getAccountChanges());
-			for (Header el : accReq.getAccountChanges().getAllHeaders()) {
-				System.out.println(el.toString());
-			}
+			accReq.getAccountsForToken();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+//		try {
+//			System.out.println(accReq.getAccountsForToken());
+//			for (Header el : accReq.getAccountsForToken().getAllHeaders()) {
+//				System.out.println(el.toString());
+//			}
+//			System.out.println("\n");
+//			System.out.println(accReq.getAccount());
+//			for (Header el : accReq.getAccount().getAllHeaders()) {
+//				System.out.println(el.toString());
+//			}
+//			System.out.println("\n");
+//			System.out.println(accReq.getAccountSummary());
+//			for (Header el : accReq.getAccountSummary().getAllHeaders()) {
+//				System.out.println(el.toString());
+//			}
+//			System.out.println("\n");
+//			System.out.println(accReq.getAccountInstruments());
+//			for (Header el : accReq.getAccountInstruments().getAllHeaders()) {
+//				System.out.println(el.toString());
+//			}
+//			System.out.println("\n");
+//			System.out.println(accReq.getAccountChanges());
+//			for (Header el : accReq.getAccountChanges().getAllHeaders()) {
+//				System.out.println(el.toString());
+//			}
+//		} catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 
 	}
 }
