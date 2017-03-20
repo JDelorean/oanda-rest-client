@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import org.apache.http.HttpRequest;
+import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,10 +13,12 @@ public class AccountRequest {
 	private final static Logger logger = LoggerFactory.getLogger(AccountRequest.class);
 
 	private RequestFactory requestFactory;
+	private RequestHandler requestHandler;
 
 	public AccountRequest() {
 		try {
 			this.requestFactory = RequestFactory.getInstance();
+			this.requestHandler = new RequestHandler();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -29,7 +32,17 @@ public class AccountRequest {
 	 */
 	public HttpRequest getAccountsForToken() throws URISyntaxException {
 		logger.info("Requesting all Accounts for Token.");
-		return requestFactory.newGETRequest("/accounts", null);
+		HttpRequest request = requestFactory.newGETRequest("/accounts", null);
+		try {
+			System.out.println(requestHandler.process(request).toString());
+		} catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/**

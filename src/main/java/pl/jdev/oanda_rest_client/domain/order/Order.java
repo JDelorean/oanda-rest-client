@@ -6,6 +6,7 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.jdev.oanda_rest_client.domain.Position;
 import pl.jdev.oanda_rest_client.domain.instrument.CurrencyPair;
 
 public class Order {
@@ -28,30 +29,6 @@ public class Order {
 	private int lotSize;
 
 	private Position position;
-
-	private enum Position {
-		LONG("L"), SHORT("S");
-
-		private final String posCode;
-
-		private Position(String posCode) {
-			this.posCode = posCode;
-		}
-
-		public String getPositionCode() {
-			return posCode;
-		}
-
-		public static Position setPosition(String posCode) {
-			switch (posCode) {
-			case "L":
-				return LONG;
-			case "S":
-				return SHORT;
-			}
-			throw new IllegalStateException("Invalid Position code: [" + posCode + "].");
-		}
-	}
 
 	private Status status;
 
