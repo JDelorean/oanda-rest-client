@@ -3,10 +3,11 @@ package pl.jdev.oanda_rest_client.domain.order;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.text.Position;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.jdev.oanda_rest_client.domain.Position;
 import pl.jdev.oanda_rest_client.domain.instrument.CurrencyPair;
 
 public class Order {

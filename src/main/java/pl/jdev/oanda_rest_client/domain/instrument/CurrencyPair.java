@@ -1,6 +1,8 @@
 package pl.jdev.oanda_rest_client.domain.instrument;
 
-public class CurrencyPair {
+import pl.jdev.oanda_rest_client.json.Mappable;
+
+public class CurrencyPair implements Mappable {
 
 	private Currency baseCurrency;
 	private Currency quoteCurrency;
