@@ -1,36 +1,22 @@
 package pl.jdev.oanda_rest_client.domain;
 
-public enum Position {
+import pl.jdev.oanda_rest_client.domain.instrument.Instrument;
+import pl.jdev.oanda_rest_client.json.JSONReference;
+import pl.jdev.oanda_rest_client.json.Mappable;
 
-	LONG("L"), SHORT("S");
+@JSONReference(value = "positions", isArrayElement = true)
+public class Position implements Mappable {
 
-	private final String posCode;
-	private long profitLoss;
+	@JSONReference("instrument")
+	private Instrument instrument;
 
-	private Position(String posCode) {
-		this.posCode = posCode;
-	}
+	@JSONReference("pl")
+	private Float profitLoss;
 
-	public String getPositionCode() {
-		return posCode;
-	}
+	@JSONReference("resettablePL")
+	private Float resettableProfitLoss;
 
-	public static Position setPosition(String posCode) {
-		switch (posCode) {
-		case "L":
-			return LONG;
-		case "S":
-			return SHORT;
-		}
-		throw new IllegalStateException("Invalid Position code: [" + posCode + "].");
-	}
+	@JSONReference("unrealizedProfitLoss")
+	private Float unrealizedProfitLoss;
 
-	public long getProfitLoss() {
-		return profitLoss;
-	}
-
-	public void setProfitLoss(long profitLoss) {
-		this.profitLoss = profitLoss;
-	}
-	
 }

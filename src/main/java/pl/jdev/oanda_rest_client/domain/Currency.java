@@ -1,8 +1,7 @@
-package pl.jdev.oanda_rest_client.domain.instrument;
+package pl.jdev.oanda_rest_client.domain;
 
 public class Currency {
 
-	private InstrumentType INSTRUMENT = InstrumentType.CURRENCY;
 	private CurrencyEnum currencyEnum;
 
 	enum CurrencyEnum {
@@ -11,10 +10,6 @@ public class Currency {
 
 	public Currency(String currencyCode) {
 		currencyEnum = CurrencyEnum.valueOf(currencyCode.toUpperCase());
-	}
-
-	public InstrumentType getInstrumentType() {
-		return INSTRUMENT;
 	}
 
 	public CurrencyEnum getCurrencyEnum() {
