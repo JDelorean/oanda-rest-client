@@ -61,8 +61,7 @@ public class Order {
 
 	public Order(String currencyPair, String positionCode) {
 		this.createTimestamp = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SS.nnnnnnnnnZ").format(new Date());
-		this.id = "O" + currencyPair + Position.setPosition(positionCode).toString() + createTimestamp;
-		// this.currencyPair = currencyPair;
+		this.id = "O" + currencyPair + +createTimestamp;
 		this.status = Status.setStatus("P");
 		logger.debug("Created new order [" + id + "].");
 	}
