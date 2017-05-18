@@ -5,7 +5,7 @@ public class Currency {
 	private CurrencyEnum currencyEnum;
 
 	enum CurrencyEnum {
-		EUR, USD, GBP, CHF;
+		EUR, USD, GBP, CHF, CAD;
 	}
 
 	public Currency(String currencyCode) {

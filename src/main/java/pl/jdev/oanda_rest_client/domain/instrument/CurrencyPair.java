@@ -1,22 +1,31 @@
 package pl.jdev.oanda_rest_client.domain.instrument;
 
 import pl.jdev.oanda_rest_client.domain.Currency;
-import pl.jdev.oanda_rest_client.json.JSONReference;
+import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
-@JSONReference(value = "instruments", isArrayElement = true)
+@JSONObjectReference("instrument")
+@JSONArrayReference(value = "instruments", classReference = CurrencyPair.class)
 public class CurrencyPair extends Instrument {
 
-	@JSONReference("type")
-	private InstrumentType INSTRUMENT_TYPE = InstrumentType.CURRENCY;
 	private Currency baseCurrency;
 	private Currency quoteCurrency;
-	@JSONReference("name")
+	@JSONObjectReference("name")
 	private String pair;
 
 	public CurrencyPair() {
+		super(InstrumentType.CURRENCY);
+	}
+
+	public CurrencyPair(String pair) {
+		super(InstrumentType.CURRENCY);
+		this.pair = pair;
+		this.baseCurrency = new Currency(pair.substring(0, 3));
+		this.quoteCurrency = new Currency(pair.substring(4));
 	}
 
 	public CurrencyPair(String baseCode, String quoteCode) {
+		super(InstrumentType.CURRENCY);
 		this.baseCurrency = new Currency(baseCode);
 		this.quoteCurrency = new Currency(quoteCode);
 		this.pair = baseCurrency.toString().concat("_").concat(quoteCurrency.toString());
@@ -28,10 +37,6 @@ public class CurrencyPair extends Instrument {
 
 	public Currency getQuoteCurrency() {
 		return quoteCurrency;
-	}
-
-	public InstrumentType getInstrumentType() {
-		return INSTRUMENT_TYPE;
 	}
 
 	public String getPair() {

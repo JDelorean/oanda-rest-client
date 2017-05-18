@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.rest;
+package pl.jdev.oanda_rest_client.rest.request;
 
 import java.io.IOException;
 

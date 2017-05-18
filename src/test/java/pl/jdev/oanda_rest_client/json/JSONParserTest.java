@@ -8,16 +8,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pl.jdev.oanda_rest_client.domain.account.Account;
-import pl.jdev.oanda_rest_client.domain.account.AccountList;
 import pl.jdev.oanda_rest_client.domain.instrument.CurrencyPair;
+import pl.jdev.oanda_rest_client.domain.order.Order;
 
 public class JSONParserTest {
 
-	@Ignore
 	@Test
 	public void shouldParseAccountsMsg() {
 		// given
@@ -40,7 +38,7 @@ public class JSONParserTest {
 		JSONParser jsonParser = new JSONParser();
 
 		// when
-		Map<String, Object> accountsAttributes = jsonParser.parse(jsonMsg.toString(), AccountList.class);
+		Map<String, Object> accountsAttributes = jsonParser.parse(jsonMsg.toString(), Account.class);
 
 		// then
 	}
@@ -73,7 +71,6 @@ public class JSONParserTest {
 
 	}
 
-	@Ignore
 	@Test
 	public void shouldParseAccountsAccountIdInstrumentsMsg() {
 		// given
@@ -100,6 +97,33 @@ public class JSONParserTest {
 
 		// then
 
+	}
+
+	@Test
+	public void shouldParseAccountsAccountIdOrdersMsg() {
+		// given
+		File jsonFile = new File("src/test/resources/v3_accounts_accountID_orders.example");
+		FileInputStream input = null;
+		StringBuilder jsonMsg = new StringBuilder();
+		int ch;
+		try {
+			input = new FileInputStream(jsonFile);
+			while ((ch = input.read()) != -1) {
+				jsonMsg.append((char) ch);
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fail();
+		} catch (IOException e) {
+			e.printStackTrace();
+			fail();
+		}
+		JSONParser jsonParser = new JSONParser();
+
+		// when
+		Map<String, Object> orderAttributes = jsonParser.parse(jsonMsg.toString(), Order.class);
+
+		// then
 	}
 
 }

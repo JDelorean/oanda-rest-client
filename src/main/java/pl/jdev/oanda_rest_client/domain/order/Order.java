@@ -3,110 +3,133 @@ package pl.jdev.oanda_rest_client.domain.order;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.text.Position;
+import pl.jdev.oanda_rest_client.domain.instrument.Instrument;
+import pl.jdev.oanda_rest_client.json.Mappable;
+import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+@JSONObjectReference("order")
+@JSONArrayReference(value = "orders", classReference = Order.class)
+public class Order implements Mappable {
 
-import pl.jdev.oanda_rest_client.domain.instrument.CurrencyPair;
-
-public class Order {
-
-	private final static Logger logger = LoggerFactory.getLogger(Order.class);
-
+	@JSONObjectReference("id")
 	private final String id;
+
+	@JSONObjectReference("createTime")
 	private final String createTimestamp;
 
-	private long openPrice;
+	@JSONObjectReference("price")
+	private Float openPrice;
 	private String openTimestamp;
 
-	private long closePrice;
+	private Float closePrice;
 	private String closeTimestamp;
 
-	// private final long slippage;
+	@JSONObjectReference("instrument")
+	private Instrument instrument;
 
-	private CurrencyPair currencyPair;
+	@JSONObjectReference("units")
+	private Integer units;
 
-	private int lotSize;
+	@JSONObjectReference("side")
+	private Side side;
 
-	private Position position;
+	@JSONObjectReference("type")
+	private Type type;
 
+	@JSONObjectReference("state")
 	private Status status;
 
-	private enum Status {
-		PENDING("P"), OPEN("O"), CLOSED("C");
-
-		private final String statusCode;
-
-		private Status(String statusCode) {
-			this.statusCode = statusCode;
-		}
-
-		public String getStatusCode() {
-			return statusCode;
-		}
-
-		public static Status setStatus(String statusCode) {
-			switch (statusCode) {
-			case "P":
-				return PENDING;
-			case "O":
-				return OPEN;
-			case "C":
-				return CLOSED;
-			}
-			throw new IllegalStateException("Invalid Position code: [" + statusCode + "].");
-		}
-	}
-
-	public Order(String currencyPair, String positionCode) {
+	public Order(Instrument instrument, Side side) {
 		this.createTimestamp = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SS.nnnnnnnnnZ").format(new Date());
-		this.id = "O" + currencyPair + +createTimestamp;
-		this.status = Status.setStatus("P");
-		logger.debug("Created new order [" + id + "].");
+		this.status = Status.NEW;
+		this.id = status + createTimestamp;
+		this.instrument = instrument;
+		this.side = side;
 	}
 
-	public void open() {
-		logger.debug("Opening order [" + id + "]...");
-		// this.openPrice =
-		logger.debug("Order [" + id + "] opened successfully.");
-	}
-
-	public long getOpenPrice() {
+	public float getOpenPrice() {
 		return openPrice;
 	}
 
-	public long getClosePrice() {
+	public float getClosePrice() {
 		return closePrice;
 	}
 
-	public void close() {
-		logger.debug("Closing order [" + id + "]...");
-		// this.closePrice =
-		logger.debug("Order [" + id + "] closed successfully.");
-	}
-
-	private long calculateSlippage() {
-		logger.debug("Calculating slippage for order [" + id + "]...");
-		// long result =
-		logger.debug("Order [" + id + "] slippage is [" + null + "].");
-		return 1;
-	}
-
-	public long getSlippage() {
-		return 1;
-	}
-
 	public void setLotSize(int size) {
-		lotSize = size;
+		units = size;
 	}
 
 	public int getLotSize() {
-		return lotSize;
+		return units;
 	}
 
 	public Status getStatus() {
 		return status;
+	}
+
+	public String getOpenTimestamp() {
+		return openTimestamp;
+	}
+
+	public void setOpenTimestamp(String openTimestamp) {
+		this.openTimestamp = openTimestamp;
+	}
+
+	public String getCloseTimestamp() {
+		return closeTimestamp;
+	}
+
+	public void setCloseTimestamp(String closeTimestamp) {
+		this.closeTimestamp = closeTimestamp;
+	}
+
+	public int getUnits() {
+		return units;
+	}
+
+	public void setUnits(int units) {
+		this.units = units;
+	}
+
+	public Side getSide() {
+		return side;
+	}
+
+	public void setSide(Side side) {
+		this.side = side;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public String getCreateTimestamp() {
+		return createTimestamp;
+	}
+
+	public Instrument getInstrument() {
+		return instrument;
+	}
+
+	public void setOpenPrice(float openPrice) {
+		this.openPrice = openPrice;
+	}
+
+	public void setClosePrice(float closePrice) {
+		this.closePrice = closePrice;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 }
