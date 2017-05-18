@@ -4,7 +4,7 @@ import java.net.URISyntaxException;
 
 import org.apache.http.Header;
 
-import pl.jdev.oanda_rest_client.rest.AccountRequest;
+import pl.jdev.oanda_rest_client.rest.request.impl.AccountRequest;
 
 public class JDevFXAppMain {
 

@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.rest;
+package pl.jdev.oanda_rest_client.rest.request.impl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -8,21 +8,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AccountRequest {
+public class AccountRequest extends RequestImpl {
 
 	private final static Logger logger = LoggerFactory.getLogger(AccountRequest.class);
-
-	private RequestFactory requestFactory;
-	private RequestHandler requestHandler;
-
-	public AccountRequest() {
-		try {
-			this.requestFactory = RequestFactory.getInstance();
-			this.requestHandler = new RequestHandler();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Get a list of all Accounts authorized for the provided token.
@@ -32,9 +20,9 @@ public class AccountRequest {
 	 */
 	public HttpRequest getAccountsForToken() throws URISyntaxException {
 		logger.info("Requesting all Accounts for Token.");
-		HttpRequest request = requestFactory.newGETRequest("/accounts", null);
+		HttpRequest request = super.getRequestFactory().newGETRequest("/accounts", null);
 		try {
-			System.out.println(requestHandler.process(request).toString());
+			System.out.println(super.getRequestHandler().process(request).toString());
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,7 +43,7 @@ public class AccountRequest {
 	 */
 	public HttpRequest getAccount() throws URISyntaxException {
 		logger.info("Requesting Account details.");
-		return requestFactory.newGETRequest("/accounts/${account}", null);
+		return super.getRequestFactory().newGETRequest("/accounts/${account}", null);
 	}
 
 	/**
@@ -66,7 +54,7 @@ public class AccountRequest {
 	 */
 	public HttpRequest getAccountSummary() throws URISyntaxException {
 		logger.info("Requesting Account summary.");
-		return requestFactory.newGETRequest("/accounts/${account}/summary", null);
+		return super.getRequestFactory().newGETRequest("/accounts/${account}/summary", null);
 	}
 
 	/**
@@ -80,7 +68,7 @@ public class AccountRequest {
 	 */
 	public HttpRequest getAccountInstruments() throws URISyntaxException {
 		logger.info("Requesting Account's tradeable instruments.");
-		return requestFactory.newGETRequest("/accounts/${account}/instruments", null);
+		return super.getRequestFactory().newGETRequest("/accounts/${account}/instruments", null);
 	}
 
 	/**
@@ -91,7 +79,7 @@ public class AccountRequest {
 	 */
 	public HttpRequest setAccountConfiguration() throws URISyntaxException {
 		// logger.info("Requesting Account's tradeable instruments.");
-		return requestFactory.newGETRequest("/accounts/${account}/configuration", null);
+		return super.getRequestFactory().newGETRequest("/accounts/${account}/configuration", null);
 	}
 
 	/**
@@ -103,7 +91,7 @@ public class AccountRequest {
 	 */
 	public HttpRequest getAccountChanges() throws URISyntaxException {
 		logger.info("Requesting Account's state and changes.");
-		return requestFactory.newGETRequest("/accounts/${account}/changes", null);
+		return super.getRequestFactory().newGETRequest("/accounts/${account}/changes", null);
 	}
 
 }

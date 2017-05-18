@@ -4,39 +4,43 @@ import java.util.ArrayList;
 
 import pl.jdev.oanda_rest_client.domain.Currency;
 import pl.jdev.oanda_rest_client.domain.Position;
-import pl.jdev.oanda_rest_client.json.JSONReference;
 import pl.jdev.oanda_rest_client.json.Mappable;
+import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
-@JSONReference(value = "account")
+@JSONObjectReference("account")
+@JSONArrayReference(value = "accounts", classReference = Account.class)
 public class Account implements Mappable {
 
-	@JSONReference("id")
+	@JSONObjectReference("id")
 	private String id;
 
-	@JSONReference("NAV")
+	@JSONObjectReference("NAV")
 	private Float nav;
 
-	@JSONReference("alias")
+	@JSONObjectReference("alias")
 	private String alias;
 
-	@JSONReference("currency")
+	@JSONObjectReference("currency")
 	private Currency currency;
 
 	private Boolean hedging;
 
-	@JSONReference("marginAvailable")
+	@JSONObjectReference("marginAvailable")
 	private Float availMargin;
 
-	@JSONReference("marginRate")
+	@JSONObjectReference("marginRate")
 	private Float marginRate;
 
-	@JSONReference("marginUsed")
+	@JSONObjectReference("marginUsed")
 	private Float usedMargin;
 	private Integer openPositionCount;
 	private Integer openTradeCount;
 	private Integer pendingOrderCount;
 	private Float profitLoss;
 
+	@JSONObjectReference("position")
+	@JSONArrayReference(value = "positions", classReference = Position.class)
 	private ArrayList<Position> positions;
 
 	public Account() {

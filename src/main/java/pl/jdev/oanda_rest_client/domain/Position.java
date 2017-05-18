@@ -1,22 +1,54 @@
 package pl.jdev.oanda_rest_client.domain;
 
 import pl.jdev.oanda_rest_client.domain.instrument.Instrument;
-import pl.jdev.oanda_rest_client.json.JSONReference;
 import pl.jdev.oanda_rest_client.json.Mappable;
+import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
-@JSONReference(value = "positions", isArrayElement = true)
+@JSONObjectReference("position")
 public class Position implements Mappable {
 
-	@JSONReference("instrument")
-	private Instrument instrument;
+	@JSONObjectReference("instrument")
+	private final Instrument instrument;
 
-	@JSONReference("pl")
+	@JSONObjectReference("pl")
 	private Float profitLoss;
 
-	@JSONReference("resettablePL")
+	@JSONObjectReference("resettablePL")
 	private Float resettableProfitLoss;
 
-	@JSONReference("unrealizedProfitLoss")
+	@JSONObjectReference("unrealizedProfitLoss")
 	private Float unrealizedProfitLoss;
+
+	public Position(Instrument instrument) {
+		this.instrument = instrument;
+	}
+
+	public Instrument getInstrument() {
+		return instrument;
+	}
+
+	public Float getProfitLoss() {
+		return profitLoss;
+	}
+
+	public void setProfitLoss(Float profitLoss) {
+		this.profitLoss = profitLoss;
+	}
+
+	public Float getResettableProfitLoss() {
+		return resettableProfitLoss;
+	}
+
+	public void setResettableProfitLoss(Float resettableProfitLoss) {
+		this.resettableProfitLoss = resettableProfitLoss;
+	}
+
+	public Float getUnrealizedProfitLoss() {
+		return unrealizedProfitLoss;
+	}
+
+	public void setUnrealizedProfitLoss(Float unrealizedProfitLoss) {
+		this.unrealizedProfitLoss = unrealizedProfitLoss;
+	}
 
 }
