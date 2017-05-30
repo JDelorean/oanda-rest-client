@@ -14,11 +14,11 @@ public class AppDateTime {
 
 	public AppDateTime(Date date) throws IOException {
 		this.date = date;
-		dateTimeFormat = AppProperties.getInstance().getDateTimeFormat();
+		dateTimeFormat = AppProperties.getInstance().get("oanda.dateTimeFormat");
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return new SimpleDateFormat(dateTimeFormat).format(date);
 	}
 

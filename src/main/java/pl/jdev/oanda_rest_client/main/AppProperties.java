@@ -4,68 +4,56 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AppProperties {
 
-	private final static Logger logger = LoggerFactory.getLogger(AppProperties.class);
+	private final static Logger LOGGER = LogManager.getLogger(AppProperties.class);
 
 	private static AppProperties instance = null;
 
-	private Properties prop = new Properties();
-	private String propFileName = "fxapp.properties";
+	private Properties properties = new Properties();
+	private final String OANDA_PROP = "oanda_rest_client.properties";
+	private final String HIBERNATE_PROP = "hibernate.properties";
+	private final String KAFKA_PROP = "kafka.properties";
+	private final String EMAIL_PROP = "email.properties";
 	private InputStream inputStream;
 
-	// properties
-	private String account;
-	private String contentType;
-	private String token;
-	private String url;
-	private String dateTimeFormat;
+	protected AppProperties() {
+		LOGGER.debug("Instantiating...");
 
-	protected AppProperties() throws IOException {
-		logger.debug("Instantiating...");
-		inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
-		prop.load(inputStream);
-		account = prop.getProperty("oanda.accountId");
-		logger.info("Oanda Account [" + account + "].");
-		contentType = prop.getProperty("oanda.contentType");
-		logger.info("Entity Content Type [" + contentType + "].");
-		token = prop.getProperty("oanda.token");
-		logger.info("Oanda Token [" + token + "].");
-		url = prop.getProperty("oanda.url.practice");
-		logger.info("Oanda base URL [" + url + "].");
-		dateTimeFormat = prop.getProperty("oanda.dateTimeFormat");
-		logger.info("Date/Time format [" + dateTimeFormat + "].");
-		logger.debug("Instantiated successfully.");
+		try {
+			inputStream = getClass().getClassLoader().getResourceAsStream(OANDA_PROP);
+			properties.load(inputStream);
+			inputStream = getClass().getClassLoader().getResourceAsStream(HIBERNATE_PROP);
+			properties.load(inputStream);
+			inputStream = getClass().getClassLoader().getResourceAsStream(KAFKA_PROP);
+			properties.load(inputStream);
+			inputStream = getClass().getClassLoader().getResourceAsStream(EMAIL_PROP);
+			properties.load(inputStream);
+		} catch (IOException e) {
+			LOGGER.warn("Unable to read properties: {}", e.getMessage());
+		} finally {
+			LOGGER.debug("Loaded properties: \n{}", properties);
+		}
+
+		LOGGER.debug("Instantiated successfully.");
 	}
 
-	public static AppProperties getInstance() throws IOException {
+	public static AppProperties getInstance() {
 		if (instance == null) {
 			instance = new AppProperties();
 		}
 		return instance;
 	}
 
-	public String getAccount() {
-		return account;
+	public String get(String propertName) {
+		return properties.getProperty(propertName);
 	}
 
-	public String getContentType() {
-		return contentType;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public String getDateTimeFormat() {
-		return dateTimeFormat;
+	public Properties getAll() {
+		return properties;
 	}
 
 }
