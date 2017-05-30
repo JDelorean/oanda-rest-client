@@ -3,10 +3,10 @@ package pl.jdev.oanda_rest_client.domain.order;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import pl.jdev.oanda_rest_client.comm.rest.json.Mappable;
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONObjectReference;
 import pl.jdev.oanda_rest_client.domain.instrument.Instrument;
-import pl.jdev.oanda_rest_client.json.Mappable;
-import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
-import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
 @JSONObjectReference("order")
 @JSONArrayReference(value = "orders", classReference = Order.class)
@@ -38,12 +38,12 @@ public class Order implements Mappable {
 	private Type type;
 
 	@JSONObjectReference("state")
-	private Status status;
+	private OrderStatus orderStatus;
 
 	public Order(Instrument instrument, Side side) {
 		this.createTimestamp = new SimpleDateFormat("YYYY-MM-DDTHH:MM:SS.nnnnnnnnnZ").format(new Date());
-		this.status = Status.NEW;
-		this.id = status + createTimestamp;
+		this.orderStatus = OrderStatus.NEW;
+		this.id = orderStatus + createTimestamp;
 		this.instrument = instrument;
 		this.side = side;
 	}
@@ -64,8 +64,8 @@ public class Order implements Mappable {
 		return units;
 	}
 
-	public Status getStatus() {
-		return status;
+	public OrderStatus getStatus() {
+		return orderStatus;
 	}
 
 	public String getOpenTimestamp() {
@@ -128,8 +128,8 @@ public class Order implements Mappable {
 		this.closePrice = closePrice;
 	}
 
-	public void setStatus(Status status) {
-		this.status = status;
+	public void setStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 }

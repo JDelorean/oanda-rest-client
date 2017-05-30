@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.json;
+package pl.jdev.oanda_rest_client.comm.rest.json;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -6,47 +6,47 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONObjectReference;
 import pl.jdev.oanda_rest_client.domain.Currency;
 import pl.jdev.oanda_rest_client.domain.instrument.CurrencyPair;
 import pl.jdev.oanda_rest_client.domain.instrument.InstrumentType;
+import pl.jdev.oanda_rest_client.domain.order.OrderStatus;
 import pl.jdev.oanda_rest_client.domain.order.Side;
-import pl.jdev.oanda_rest_client.domain.order.Status;
 import pl.jdev.oanda_rest_client.domain.order.Type;
-import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
-import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
+import pl.jdev.oanda_rest_client.domain.trade.TradeStatus;
 
 public class JSONParser {
 
-	private final static Logger logger = LoggerFactory.getLogger(JSONParser.class);
+	private final static Logger LOGGER = LogManager.getLogger(JSONParser.class);
 
 	Map<String, Object> jsonObjectElements;
 	Map<String, Object> parsedElements;
 
 	public Map<String, Object> parse(String jsonMsg, Class<? extends Mappable> mappableClass) {
 
-		logger.debug(String.format("Parsing JSON:\n%s", jsonMsg));
-		logger.debug(String.format("Mapping to [%s].", mappableClass));
+		LOGGER.debug("Parsing JSON:\n{}", jsonMsg);
+		LOGGER.debug("Mapping to {}.", mappableClass);
 
 		JSONObject root = new JSONObject(jsonMsg);
 		JSONObject jsonObject = null;
 		JSONArray jsonArray = null;
 		String jsonObjectRef = null;
 
+		// Determine if JSON message should be parsed as an array or an object.
 		if (mappableClass.isAnnotationPresent(JSONArrayReference.class)
 				&& root.has(mappableClass.getAnnotation(JSONArrayReference.class).value())) {
 			jsonObjectRef = mappableClass.getAnnotation(JSONArrayReference.class).value();
 			jsonArray = root.getJSONArray(jsonObjectRef);
-			// System.out.println("array: " + jsonArray.toString());
+
 			int jsonArrayLenght = jsonArray.length();
 			for (int i = 0; i < jsonArrayLenght; i++) {
-				logger.debug(String.format("Parsing array element [%s] of [%s].", i + 1, jsonArrayLenght));
-				// System.out.println(jsonArray.getJSONObject(i).toString());
-				// System.out.println(mappableClass.getAnnotation(JSONArrayReference.class).classReference());
+				LOGGER.debug("Parsing array element {} of {}.", i + 1, jsonArrayLenght);
 				parse(jsonArray.getJSONObject(i).toString(), mappableClass.getAnnotation(JSONArrayReference.class).classReference());
 			}
 		} else {
@@ -54,27 +54,24 @@ public class JSONParser {
 					&& root.has(mappableClass.getAnnotation(JSONObjectReference.class).value())) {
 				jsonObjectRef = mappableClass.getAnnotation(JSONObjectReference.class).value();
 				jsonObject = root.getJSONObject(jsonObjectRef);
-				// System.out.println("object: " + jsonObjectRef);
-				// System.out.println("jsonObject Map: " + jsonObject.toMap());
 				jsonObjectElements = jsonObject.toMap();
 			} else {
 				jsonObject = root;
-				// System.out.println("no array & no object: " + jsonObjectRef);
-				// System.out.println("jsonObject Map: " + jsonObject.toMap());
 				jsonObjectElements = jsonObject.toMap();
 			}
 
 			parsedElements = new HashMap<String, Object>();
 
 			List<Field> mappableFieldsList = Arrays.asList(mappableClass.getDeclaredFields());
-			System.out.println(mappableFieldsList);
 
+			// Log all mappable fields.
 			String mappableFields = "";
 			for (Field field : mappableFieldsList) {
 				mappableFields += "\n" + field.getName();
 			}
-			logger.debug(String.format("Mappable fields:%s", mappableFields));
+			LOGGER.debug("Mappable fields:{}", mappableFields);
 
+			// Process all mappable fields.
 			for (Field field : mappableFieldsList) {
 				boolean isAnnotated = false;
 				isAnnotated = isAnnotated(field);
@@ -84,11 +81,10 @@ public class JSONParser {
 			}
 
 			if (parsedElements.size() > 0) {
-				logger.debug(String.format("Parsed parameters [%s].", parsedElements));
+				LOGGER.debug("Parsed parameters {}.", parsedElements);
 			} else {
-				logger.warn(String.format("No parameters parsed."));
+				LOGGER.warn("No parameters parsed.");
 			}
-
 		}
 
 		return parsedElements;
@@ -99,7 +95,7 @@ public class JSONParser {
 		if (field.getAnnotation(JSONArrayReference.class) == null) {
 			return false;
 		} else {
-			// logger.debug(String.format("[%s] is an array element.",
+			// logger.debug("{} is an array element.",
 			// fieldName));
 			return true;
 		}
@@ -110,7 +106,7 @@ public class JSONParser {
 		if (field.getAnnotation(JSONObjectReference.class) == null) {
 			return false;
 		} else {
-			// logger.debug(String.format("[%s] is an object.", fieldName));
+			// logger.debug("{} is an object.", fieldName));
 			return true;
 		}
 	}
@@ -122,21 +118,21 @@ public class JSONParser {
 		String fieldName = field.getName();
 		String fieldJSONRef = null;
 
-		logger.debug(String.format("Evaluating field [%s]...", fieldName));
+		LOGGER.debug("Evaluating field {}...", fieldName);
 		if (isObject(field)) {
 			fieldJSONRef = field.getAnnotation(JSONObjectReference.class).value();
 		} else if (isArrayElement(field)) {
 			fieldJSONRef = field.getAnnotation(JSONArrayReference.class).value();
 		} else {
-			logger.debug(String.format("... omitted - no annotation present."));
+			LOGGER.debug("... omitted - no annotation present.");
 			return false;
 		}
 
 		if (!fieldJSONRef.equals("")) {
-			logger.debug(String.format("... parsable - processing."));
+			LOGGER.debug("... parsable - processing.");
 			return true;
 		} else {
-			logger.warn(String.format("... omitted - annotation is empty."));
+			LOGGER.warn("... omitted - annotation is empty.");
 			return false;
 		}
 	}
@@ -161,13 +157,15 @@ public class JSONParser {
 			String value = (String) jsonObjectElements.get(fieldJSONRef);
 			Class<?> fieldType = field.getType();
 			if (fieldType.isPrimitive()) {
-				logger.warn(String.format("Field [%s] omitted - unhandled primitive type.", fieldName));
+				// Primitive types are not handled.
+				LOGGER.warn("Field {} omitted - unhandled primitive type.", fieldName);
 				return;
 			} else if (fieldType.isAssignableFrom(Mappable.class)) {
-				logger.debug(String.format("Field [%s] type implements 'Mappable' interface.", fieldName));
+				LOGGER.debug("Field {} type implements 'Mappable' interface.", fieldName);
 				// not implemented
 			} else {
-				logger.debug(String.format("Assiging value [%s] to field [%s]...", value, fieldName));
+				LOGGER.debug("Assiging value {} to field {}...", value, fieldName);
+
 				switch (fieldType.getSimpleName()) {
 				case "String":
 					jsonElementValue = value;
@@ -193,27 +191,30 @@ public class JSONParser {
 				case "Type":
 					jsonElementValue = Type.valueOf(value);
 					break;
-				case "Status":
-					jsonElementValue = Status.valueOf(value);
+				case "OrderStatus":
+					jsonElementValue = OrderStatus.valueOf(value);
 					break;
 				case "Side":
 					jsonElementValue = Side.valueOf(value);
 					break;
+				case "TradeStatus":
+					jsonElementValue = TradeStatus.valueOf(value);
+					break;
 				default:
 					jsonElementValue = null;
-					logger.warn(String.format("[%s] type is undefined in JSONParser.", fieldType.getName()));
+					LOGGER.warn("{} type is undefined in JSONParser.", fieldType.getName());
 					break;
 				}
 			}
-			logger.debug(String.format("Field [%s] = type [%s] value [%s].", fieldName, jsonElementValue.getClass().getSimpleName(),
-					jsonElementValue));
+			LOGGER.debug("Field {} = type {} value {}.", fieldName, jsonElementValue.getClass().getSimpleName(),
+					jsonElementValue.toString());
 			parsedElements.put(fieldJSONRef, jsonElementValue);
 		}
 	}
 
 	public int extractLastTransactionId(String msg) {
 		int lastTransactionId = new JSONObject(msg).getInt("lastTransactionID");
-		logger.debug(String.format("Last transaction ID [%s].", lastTransactionId));
+		LOGGER.debug("Last transaction ID {}.", lastTransactionId);
 		return lastTransactionId;
 	}
 

@@ -2,36 +2,54 @@ package pl.jdev.oanda_rest_client.domain.account;
 
 import java.util.ArrayList;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import pl.jdev.oanda_rest_client.comm.rest.json.Mappable;
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONObjectReference;
 import pl.jdev.oanda_rest_client.domain.Currency;
 import pl.jdev.oanda_rest_client.domain.Position;
-import pl.jdev.oanda_rest_client.json.Mappable;
-import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
-import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
+@Entity
+@Table(name = "ACCT")
 @JSONObjectReference("account")
 @JSONArrayReference(value = "accounts", classReference = Account.class)
 public class Account implements Mappable {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ACCT_ID")
 	@JSONObjectReference("id")
 	private String id;
 
+	@Column(name = "NAV")
 	@JSONObjectReference("NAV")
 	private Float nav;
 
+	@Column(name = "ALIAS")
 	@JSONObjectReference("alias")
 	private String alias;
 
+	@Column(name = "CURR")
 	@JSONObjectReference("currency")
 	private Currency currency;
 
 	private Boolean hedging;
 
+	@Column(name = "AV_MRGN")
 	@JSONObjectReference("marginAvailable")
 	private Float availMargin;
 
+	@Column(name = "MRGN_RT")
 	@JSONObjectReference("marginRate")
 	private Float marginRate;
 
+	@Column(name = "MRGN_USED")
 	@JSONObjectReference("marginUsed")
 	private Float usedMargin;
 	private Integer openPositionCount;

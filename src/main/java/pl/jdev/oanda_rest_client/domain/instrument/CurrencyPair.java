@@ -1,8 +1,8 @@
 package pl.jdev.oanda_rest_client.domain.instrument;
 
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONArrayReference;
+import pl.jdev.oanda_rest_client.comm.rest.json.annotation.JSONObjectReference;
 import pl.jdev.oanda_rest_client.domain.Currency;
-import pl.jdev.oanda_rest_client.json.annotation.JSONArrayReference;
-import pl.jdev.oanda_rest_client.json.annotation.JSONObjectReference;
 
 @JSONObjectReference("instrument")
 @JSONArrayReference(value = "instruments", classReference = CurrencyPair.class)
@@ -41,6 +41,11 @@ public class CurrencyPair extends Instrument {
 
 	public String getPair() {
 		return pair;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s_%s", baseCurrency, quoteCurrency);
 	}
 
 }
