@@ -1,29 +1,27 @@
 package pl.jdev.oanda_rest_client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.java.Log;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @SpringBootApplication
-@EnableScheduling
-@EnableJpaAuditing
+@EnableAutoConfiguration
+@EnableMongoRepositories
+@Log
 public class OandaRestClient {
 
-	final static Logger LOGGER = LoggerFactory.getLogger(OandaRestClient.class);
+    public static void main(String[] args) {
+        SpringApplication.run(OandaRestClient.class, args);
+        log.info("Initiating oanda_service-rest-client...");
+    }
 
-	public static void main(String[] args) {
-		LOGGER.info("Initiating oanda-rest-client...");
-		SpringApplication.run(OandaRestClient.class, args);
-	}
-
-	@RequestMapping("/")
-	@ResponseBody
-	String home() {
-		return "oanda-rest-client";
-	}
+    @RequestMapping("/")
+    @ResponseBody
+    String home() {
+        return "oanda_service-rest-client";
+    }
 }

@@ -1,10 +1,13 @@
 package pl.jdev.oanda_rest_client.repo;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.UUID;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import pl.jdev.oanda_rest_client.domain.order.Order;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends MongoRepository<Order[], ObjectId> {
 }

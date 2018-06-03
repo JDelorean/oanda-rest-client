@@ -1,24 +1,21 @@
 package pl.jdev.oanda_rest_client.domain;
 
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@Data
 public class Currency {
 
-	private CurrencyEnum currencyEnum;
+    @Autowired
+    private final CurrencyEnum currencyEnum;
 
-	enum CurrencyEnum {
-		EUR, USD, GBP, CHF, CAD;
-	}
+    public Currency(String currencyCode) {
+        currencyEnum = CurrencyEnum.valueOf(currencyCode.toUpperCase());
+    }
 
-	public Currency(String currencyCode) {
-		currencyEnum = CurrencyEnum.valueOf(currencyCode.toUpperCase());
-	}
-
-	public CurrencyEnum getCurrencyEnum() {
-		return currencyEnum;
-	}
-
-	@Override
-	public String toString() {
-		return currencyEnum.name();
-	}
+    @Override
+    public String toString() {
+        return currencyEnum.name();
+    }
 
 }

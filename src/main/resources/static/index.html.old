@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Oanda Rest Client</title>
+<link rel="icon" type="image/png" sizes="32x32"
+	href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96"
+	href="/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16"
+	href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+</head>
+<body>
+	<p>Account Endpoints:</p>
+	<p>
+		<a href="/api/accounts">All accounts</a>
+	</p>
+	<p>
+		<a href="/api/accounts">All accounts</a>
+	</p>
+	<p>Service Health:</p>
+	<p>
+		<a href="/health">Network Check</a>
+	</p>
+</body>
+</html>

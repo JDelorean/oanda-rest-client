@@ -1,18 +1,22 @@
 package pl.jdev.oanda_rest_client.domain.trade;
 
-import java.util.Date;
-import java.util.List;
-
+import lombok.Data;
+import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 import pl.jdev.oanda_rest_client.domain.ClientExtensions;
 import pl.jdev.oanda_rest_client.domain.instrument.Instrument;
 
-public class Trade {
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+@Data
+public class Trade extends AbstractEntity implements Serializable {
 
     enum TradeState {
         OPEN, CLOSED, CLOSE_WHEN_TRADEABLE;
     }
 
-    private String id;
+    private String tradeId;
     private Instrument instrument;
     private String price;
     private Date openTime;
@@ -29,4 +33,5 @@ public class Trade {
     // private Order takeProfitOrder;
     // private Order stopLossOrder;
     // private Order trailingStopLossOrder;
+
 }
