@@ -1,13 +1,13 @@
 {
-  "account": {
+  "object": {
     "NAV": "43650.78835", 
     "alias": "My New Account #2", 
     "balance": "43650.78835", 
     "createdByUserID": <USERID>, 
-    "createdTime": "2015-08-12T18:21:00.697504698Z", 
+    "_documentCreatedTime": "2015-08-12T18:21:00.697504698Z",
     "currency": "CHF", 
     "hedgingEnabled": false, 
-    "id": "<ACCOUNT>", 
+    "accountId": "<ACCOUNT>",
     "lastTransactionID": "6356", 
     "marginAvailable": "43650.78835", 
     "marginCloseoutMarginUsed": "0.00000", 
