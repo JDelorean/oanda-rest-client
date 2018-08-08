@@ -1,36 +1,21 @@
 package pl.jdev.oanda_rest_client.domain.order;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import pl.jdev.oanda_rest_client.domain.AbstractEntity;
+import pl.jdev.oanda_rest_client.domain.order.types.market_order.MarketOrderRequest;
 
-import pl.jdev.oanda_rest_client.domain.ClientExtensions;
-import pl.jdev.oanda_rest_client.domain.instrument.Instrument;
-import pl.jdev.oanda_rest_client.domain.order.Order.OrderPositionFill;
-import pl.jdev.oanda_rest_client.domain.order.Order.OrderType;
-import pl.jdev.oanda_rest_client.domain.order.Order.TimeInForce;
-import pl.jdev.oanda_rest_client.rest.validation.SupportedOrderType;
-import pl.jdev.oanda_rest_client.rest.validation.SupportedTimeInForce;
+import java.io.Serializable;
 
-public class OrderRequest {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type",
+        visible = true,
+        defaultImpl = MarketOrderRequest.class)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = MarketOrderRequest.class, name = "MARKET")
+//        @JsonSubTypes.Type(value = Dog.class, name = "dog") //TODO: complete the list
+})
+public abstract class OrderRequest extends AbstractEntity implements Serializable {
 
-	@SupportedOrderType
-	private OrderType type;
-	@NotNull
-	private Instrument instrument;
-	@NotNull
-	@Digits(fraction = 6, integer = 2)
-	private long units;
-	@SupportedTimeInForce
-	private TimeInForce timeInForce;
-	private String priceBound;
-	private OrderPositionFill positionFill;
-	private ClientExtensions clientExtensions;
-	@Null
-	private FillingOrderDetails takeProfitOnFill;
-	@Null
-	private FillingOrderDetails stopLossOnFill;
-	@Null
-	private FillingOrderDetails trailingStopLossOnFill;
-	private ClientExtensions tradeClientExtensions;
 }

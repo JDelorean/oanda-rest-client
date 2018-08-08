@@ -9,7 +9,6 @@ import java.util.Arrays;
 public class TransactionTypeValidator implements ConstraintValidator<SupportedTransactionType, TransactionType> {
     @Override
     public void initialize(SupportedTransactionType constraintAnnotation) {
-
     }
 
     @Override

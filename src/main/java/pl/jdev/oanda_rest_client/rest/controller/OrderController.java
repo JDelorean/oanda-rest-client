@@ -1,46 +1,48 @@
 package pl.jdev.oanda_rest_client.rest.controller;
 
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import lombok.extern.slf4j.Slf4j;
-import pl.jdev.oanda_rest_client.repo.AccountRepository;
+import org.springframework.web.bind.annotation.*;
+import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
 import pl.jdev.oanda_rest_client.repo.OrderRepository;
+import pl.jdev.oanda_rest_client.service.oanda_service.order.OandaOrderService;
+
+import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/account/{accountUUID}/orders")
-@Slf4j
+@RequestMapping("/api/accounts/{accountId}/orders")
+@Log
 public class OrderController {
 
-	@Autowired
-	OrderRepository orderRepository;
-	@Autowired
-	AccountRepository accountRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    OandaOrderService oandaOrderService;
 
-	// BiFunction<UUID, UUID, Boolean> isForAccount = (orderUUID, accountUUID) ->
-	// {return accountRepository.findOne(accountUUID).getOr};
+    @PostMapping
+    @ResponseBody
+    public void createOrder(@Valid @PathVariable(name = "accountId") final String accountId,
+                            @Valid @RequestBody final OrderRequest orderRequest) {
+        oandaOrderService.postNewOrder(accountId, orderRequest);
+    }
 
-	// @GetMapping
-	// public ResponseEntity<Collection<Order>> getAllOrders(
-	// @Valid @PathVariable(value = "accountUUID") final UUID accountUUID) {
-	//// List<Order> orders = accountRepository.exists(accountUUID) ?
-	// orderRepository.findAll().stream()
-	//// .filter(order ->
-	// order.isForAccount(accountUUID)).collect(Collectors.toList()) : null;
-	//// return ResponseEntity.ok(orderRepository.findAll());
-	// }
-	//
-	// @GetMapping("/{orderUUID}")
-	// public ResponseEntity<?> getOrderById(@Valid @PathVariable(value =
-	// "accountUUID") final UUID accountUUID, @Valid @PathVariable(value =
-	// "orderUUID") final UUID orderUUID) {
-	// Order order = accountRepository.exists(accountUUID) ?
-	// orderRepository.findOne(orderUUID) : null;
-	// return order == null ? ResponseEntity.notFound().build() :
-	// ResponseEntity.ok(order);
-	// }
-	//
-	// @PostMapping
-	// public Order createOrder()
+    @GetMapping
+    @ResponseBody
+    public Map<String, Object> getAllOrders(@Valid @PathVariable(name = "accountId") final String accountId) {
+        return Map.of("orders", oandaOrderService.getAllOrders(accountId));
+    }
+
+    @GetMapping(value = "/pending")
+    @ResponseBody
+    public Map<String, Object> getAllPendingOrders(@Valid @PathVariable(name = "accountId") final String accountId) {
+        return Map.of("pendingOrders", oandaOrderService.getPendingOrders(accountId));
+    }
+
+    @GetMapping(value = "/{orderSpecifier}")
+    @ResponseBody
+    public Map<String, Object> getOrder(@Valid @PathVariable(name = "accountId") final String accountId,
+                                        @Valid @PathVariable(name = "orderSpecifier") final String orderSpecifier) {
+        return Map.of("order", oandaOrderService.getOrder(accountId, orderSpecifier));
+    }
 }

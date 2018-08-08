@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.service;
+package pl.jdev.oanda_rest_client.service.oanda_service;
 
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 

@@ -17,10 +17,10 @@
 <body>
 	<p>Account Endpoints:</p>
 	<p>
-		<a href="/api/accounts">All accounts</a>
+		<a href="/api/accounts">All objectList</a>
 	</p>
 	<p>
-		<a href="/api/accounts">All accounts</a>
+		<a href="/api/objectList">All objectList</a>
 	</p>
 	<p>Service Health:</p>
 	<p>

@@ -5,7 +5,8 @@ import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public interface EntityDTOConverter<E extends AbstractEntity, D extends AbstractDto> {
     E createFrom(D dto);
@@ -17,12 +18,12 @@ public interface EntityDTOConverter<E extends AbstractEntity, D extends Abstract
     default List<D> createFromEntities(final Collection<E> entities) {
         return entities.stream()
                 .map(this::createFrom)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     default List<E> createFromDtos(final Collection<D> dtos) {
         return dtos.stream()
                 .map(this::createFrom)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

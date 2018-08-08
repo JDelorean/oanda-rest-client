@@ -24,7 +24,7 @@ public class TradeController {
         return tradeRepository.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{accountId}")
     public ResponseEntity<Trade> getTradeById(@PathVariable(value = "id") final ObjectId tradeId) {
         Trade trade = tradeRepository.findByTradeId(tradeId);
         if (trade == null) {

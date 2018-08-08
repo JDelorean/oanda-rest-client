@@ -6,39 +6,39 @@ import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.nio.charset.Charset;
 
-import static java.util.stream.Collectors.joining;
+import static java.lang.String.format;
 
 @Component
-@Log
+@Log(topic = "REST")
 public class RestLoggingInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
-        log.info(String.format("\n%s %s\nHeaders:\n%s\nBody:\n%s", request.getMethod(), request.getURI(), request.getHeaders().toSingleValueMap(), Arrays.toString(body)));
+        logRequest(request, body);
         ClientHttpResponse response = execution.execute(request, body);
-        log.info(String.format("\n%s %s\nStatus: %s %s\n%s", request.getMethod(), request.getURI(), response.getStatusCode(), response.getStatusText(), new BufferedReader(new InputStreamReader(response.getBody())).lines()
-                .collect(joining("\n"))));
+        logResponse(response);
         return response;
     }
 
-//    @Override
-//    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-//        log.info(String.join("\n", request.getMethod(), request.getRequestURI(), request.getHeaders().toSingleValueMap(), Arrays.toString(body)));
-//        return false;
-//    }
-//
-//    @Override
-//    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-//
-//    }
-//
-//    @Override
-//    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-//
-//    }
+    private synchronized void logRequest(HttpRequest request, byte[] body) {
+        log.info("======================REQUEST BEGIN======================");
+        log.info(format("URI         : %s", request.getURI()));
+        log.info(format("Method      : %s", request.getMethod()));
+        log.info(format("Headers     : %s", request.getHeaders().toSingleValueMap()));
+        log.info(format("Request Body: %s", new String(body)));
+        log.info("======================REQUEST END========================");
+    }
+
+    private synchronized void logResponse(ClientHttpResponse response) throws IOException {
+        log.info("======================RESPONSE BEGIN=====================");
+        log.info(format("Status Code  : %s", response.getStatusCode()));
+        log.info(format("Status Text  : %s", response.getStatusText()));
+        log.info(format("Headers      : %s", response.getHeaders().toSingleValueMap()));
+        log.info(format("Response Body: %s", StreamUtils.copyToString(response.getBody(), Charset.defaultCharset())));
+        log.info("======================RESPONSE END=======================");
+    }
 }

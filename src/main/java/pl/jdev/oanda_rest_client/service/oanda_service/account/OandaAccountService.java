@@ -1,94 +1,57 @@
 package pl.jdev.oanda_rest_client.service.oanda_service.account;
 
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
+import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.account.Account;
-import pl.jdev.oanda_rest_client.domain.transaction.ClientConfigureTransaction;
-import pl.jdev.oanda_rest_client.service.IOandaService;
-import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.OandaRequestHeaderEnrichmentInterceptor;
+import pl.jdev.oanda_rest_client.repo.AccountDAL;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountListWrapper;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountWrapper;
+import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.RestLoggingInterceptor;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
+import static org.springframework.http.HttpEntity.EMPTY;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.web.util.UriComponentsBuilder.fromPath;
+
 @Component
-@Slf4j
-public class OandaAccountService implements IOandaService<Account> {
-
-    private RestTemplate restTemplate;
+@Log
+public class OandaAccountService extends AbstractOandaService<Account> {
     @Autowired
-    private OandaRequestHeaderEnrichmentInterceptor oandaRequestHeaderEnrichmentInterceptor;
+    private AccountDAL repository;
+
     @Autowired
-    private RestLoggingInterceptor restLoggingInterceptor;
-    @Autowired
-    private OandaAccountUrl oandaAccountUrl;
-
-    public OandaAccountService(RestTemplateBuilder restTemplateBuilder,
-                               OandaRequestHeaderEnrichmentInterceptor oandaRequestHeaderEnrichmentInterceptor,
-                               RestLoggingInterceptor restLoggingInterceptor) {
-        this.oandaRequestHeaderEnrichmentInterceptor = oandaRequestHeaderEnrichmentInterceptor;
-        this.restLoggingInterceptor = restLoggingInterceptor;
-        this.restTemplate = restTemplateBuilder.additionalInterceptors(this.oandaRequestHeaderEnrichmentInterceptor, this.restLoggingInterceptor)
-                .build();
+    public OandaAccountService(OandaAuthConfig oandaAuthConfig, Urls urls, RestLoggingInterceptor restLoggingInterceptor, MappingJackson2HttpMessageConverter messageConverter, RestTemplateBuilder restTemplateBuilder) {
+        super(oandaAuthConfig, urls, restLoggingInterceptor, messageConverter, restTemplateBuilder);
     }
 
-    @SneakyThrows
-    public Collection<Account> getAllAccounts() {
-        Account[] accounts;
-        accounts = restTemplate.getForObject(oandaAccountUrl.getAll(), Account[].class);
-        return List.of(accounts);
+    public List<Account> getAllAccounts() {
+        this.restTemplate
+                .exchange(urls.ACCOUNT_LIST_URL,
+                        GET,
+                        new HttpEntity<>(EMPTY, this.headers),
+                        JsonAccountListWrapper.class)
+                .getBody()
+                .getAccounts()
+                .forEach(account -> this.getAccount(account.getAccountId()));
+        return repository.getAll();
     }
 
-    //    @SneakyThrows
-//    @Async
-//    public CompletableFuture<Account> getAccount(String accountId) {
-//        return CompletableFuture.completedFuture(restTemplate.getForObject(oandaAccountUrl.getSingle(), Account.class, accountId));
-//    }
-    @SneakyThrows
-    public Account getAccount(String accountId) {
-        return restTemplate.getForObject(oandaAccountUrl.getSingle(), Account.class, accountId);
+    public Account getAccount(String id) {
+        Account account = this.restTemplate
+                .exchange(fromPath(urls.SINGLE_ACCOUNT_URL).build(id).getPath(),
+                        GET,
+                        new HttpEntity<>(EMPTY, this.headers),
+                        JsonAccountWrapper.class)
+                .getBody()
+                .getAccount();
+        return repository.upsert(id, account);
     }
-
-    @SneakyThrows
-    public Account getAccountSummary(String accountId) {
-        return restTemplate.getForObject(oandaAccountUrl.getSummary(), Account.class, accountId);
-    }
-
-    @SneakyThrows
-    public Account getAccountInstruments(String accountId, String instruments) {
-        UriComponentsBuilder componentBuilder = UriComponentsBuilder.fromUriString(oandaAccountUrl.getInstruments());
-        if (instruments != null) {
-            String csvInstruments = String.join(",", Arrays.asList(instruments));
-            componentBuilder.queryParam("instruments", csvInstruments);
-        }
-        return restTemplate.getForObject(componentBuilder.buildAndExpand(accountId).encode().toUri(), Account.class);
-    }
-
-    // public void setAccountAlias(String accountId, String alias) {
-    // // TODO impl
-    // }
-    //
-    // public void setAccountMarginRate(String accountId, long marginRate) {
-    // // TODO impl
-    // }
-
-    public ClientConfigureTransaction patchAccountConfig(String accountId, String body) {
-        return null;
-    }
-
-    @SneakyThrows
-    public Account getAccountChanges(String accountId, String transactionId) {
-        UriComponentsBuilder componentBuilder = UriComponentsBuilder.fromUriString(oandaAccountUrl.getChanges());
-        if (transactionId != null) {
-            componentBuilder.queryParam("sinceTransactionID", transactionId);
-        }
-        return restTemplate.getForObject(componentBuilder.buildAndExpand(accountId).encode().toUri(), Account.class);
-    }
-
 }
