@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.account.Account;
-import pl.jdev.oanda_rest_client.repo.AccountDAL;
+import pl.jdev.oanda_rest_client.repo.AccountDAO;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
@@ -25,7 +25,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaAccountService extends AbstractOandaService<Account> {
     @Autowired
-    private AccountDAL repository;
+    private AccountDAO repository;
 
     @Autowired
     public OandaAccountService(OandaAuthConfig oandaAuthConfig, Urls urls, RestLoggingInterceptor restLoggingInterceptor, MappingJackson2HttpMessageConverter messageConverter, RestTemplateBuilder restTemplateBuilder) {

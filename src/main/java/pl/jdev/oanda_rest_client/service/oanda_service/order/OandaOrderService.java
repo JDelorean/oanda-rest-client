@@ -10,7 +10,7 @@ import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
-import pl.jdev.oanda_rest_client.repo.OrderDAL;
+import pl.jdev.oanda_rest_client.repo.OrderDAO;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.RestLoggingInterceptor;
 
@@ -24,7 +24,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaOrderService extends AbstractOandaService<Order> {
     @Autowired
-    private OrderDAL repository;
+    private OrderDAO repository;
 
     @Autowired
     public OandaOrderService(OandaAuthConfig oandaAuthConfig, Urls urls, RestLoggingInterceptor restLoggingInterceptor, MappingJackson2HttpMessageConverter messageConverter, RestTemplateBuilder restTemplateBuilder) {
