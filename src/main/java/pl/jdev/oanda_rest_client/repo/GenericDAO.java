@@ -5,7 +5,7 @@ import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
 import java.util.List;
 
-public interface GenericDAL<E extends AbstractEntity> {
+public interface GenericDAO<E extends AbstractEntity> {
     List<E> getAll();
 
     E getByDocumentId(ObjectId documentId);
