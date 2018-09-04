@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @Log(topic = "DB - Order")
-public class OrderDAL extends AbstractDAL<Order> {
+public class OrderDAO extends AbstractDAO<Order> {
     @Override
     public List<Order> getAll() {
         log.info("Getting all orders for...");

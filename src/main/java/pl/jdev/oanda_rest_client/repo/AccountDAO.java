@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @Log(topic = "DB - Account")
-public class AccountDAL extends AbstractDAL<Account> {
+public class AccountDAO extends AbstractDAO<Account> {
     @Override
     public List<Account> getAll() {
         log.info("Getting all accounts...");
