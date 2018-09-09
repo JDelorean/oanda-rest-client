@@ -1,13 +1,20 @@
 package pl.jdev.oanda_rest_client.config;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Data
+import static java.lang.String.join;
+
 @Configuration
-@ConfigurationProperties(prefix = "orc.request.auth")
 public class OandaAuthConfig {
+    @Value("${orc.request.auth.prefix}")
     private String prefix;
-    protected String token;
+    @Value("${orc.request.auth.token}")
+    private String token;
+
+    @Bean
+    String auth() {
+        return join(" ", prefix, token);
+    }
 }

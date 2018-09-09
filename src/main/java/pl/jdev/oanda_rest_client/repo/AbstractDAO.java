@@ -6,5 +6,5 @@ import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
 abstract class AbstractDAO<E extends AbstractEntity> implements GenericDAO<E> {
     @Autowired
-    MongoTemplate template;
+    protected MongoTemplate template;
 }

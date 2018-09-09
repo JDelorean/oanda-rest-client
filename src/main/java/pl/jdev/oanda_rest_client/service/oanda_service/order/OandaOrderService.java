@@ -6,15 +6,20 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
 import pl.jdev.oanda_rest_client.repo.OrderDAO;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonObjectListWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.RestLoggingInterceptor;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.*;
@@ -27,8 +32,10 @@ public class OandaOrderService extends AbstractOandaService<Order> {
     private OrderDAO repository;
 
     @Autowired
-    public OandaOrderService(OandaAuthConfig oandaAuthConfig, Urls urls, RestLoggingInterceptor restLoggingInterceptor, MappingJackson2HttpMessageConverter messageConverter, RestTemplateBuilder restTemplateBuilder) {
-        super(oandaAuthConfig, urls, restLoggingInterceptor, messageConverter, restTemplateBuilder);
+    public OandaOrderService(MultiValueMap<String, String> headers,
+                             RestTemplate restTemplate,
+                             Urls urls) {
+        super(headers, restTemplate, urls);
     }
 
     public Order postNewOrder(String accountId, OrderRequest orderRequest) {
@@ -42,15 +49,25 @@ public class OandaOrderService extends AbstractOandaService<Order> {
                 .getBody();
     }
 
-    public Order[] getAllOrders(String accountId) {
-        return this.restTemplate
+    public Object[] getAllOrders(String accountId) {
+        List<Object> objects = this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
                                 .build(accountId)
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        Order[].class)
-                .getBody();
+                        JsonObjectListWrapper.class)
+                .getBody()
+                .getObjectList();
+
+        if (objects == null || objects.size() == 0) {
+            return new Object[]{};
+        } else {
+            return Stream.of(objects)
+                    .map(Order.class::cast)
+                    .toArray();
+        }
+
     }
 
     public Order[] getPendingOrders(String accountId) {

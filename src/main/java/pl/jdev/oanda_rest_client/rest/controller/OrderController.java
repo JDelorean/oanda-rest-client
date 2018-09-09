@@ -4,7 +4,6 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
-import pl.jdev.oanda_rest_client.repo.OrderRepository;
 import pl.jdev.oanda_rest_client.service.oanda_service.order.OandaOrderService;
 
 import javax.validation.Valid;
@@ -14,9 +13,6 @@ import java.util.Map;
 @RequestMapping("/api/accounts/{accountId}/orders")
 @Log
 public class OrderController {
-
-    @Autowired
-    OrderRepository orderRepository;
     @Autowired
     OandaOrderService oandaOrderService;
 

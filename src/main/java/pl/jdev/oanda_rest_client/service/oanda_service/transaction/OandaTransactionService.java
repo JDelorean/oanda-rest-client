@@ -2,16 +2,14 @@ package pl.jdev.oanda_rest_client.service.oanda_service.transaction;
 
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
-import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.transaction.Transaction;
 import pl.jdev.oanda_rest_client.domain.transaction.TransactionType;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
-import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.RestLoggingInterceptor;
 
 import java.util.Date;
 
@@ -23,8 +21,10 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaTransactionService extends AbstractOandaService<Transaction> {
     @Autowired
-    public OandaTransactionService(OandaAuthConfig oandaAuthConfig, Urls urls, RestLoggingInterceptor restLoggingInterceptor, MappingJackson2HttpMessageConverter messageConverter, RestTemplateBuilder restTemplateBuilder) {
-        super(oandaAuthConfig, urls, restLoggingInterceptor, messageConverter, restTemplateBuilder);
+    public OandaTransactionService(MultiValueMap<String, String> headers,
+                                   RestTemplate restTemplate,
+                                   Urls urls) {
+        super(headers, restTemplate, urls);
     }
 
     public Transaction[] getTransactionList(String accountId, Date fromDate, Date toDate, int pageSize, TransactionType[] transactionTypes) {

@@ -9,9 +9,6 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:url.properties")
 @Getter
 public class Urls {
-    @Value("${oanda.url.base.practice}")
-    public String PRACTICE;
-
     @Value("${oanda.url.account.all}")
     public String ACCOUNT_LIST_URL;
     @Value("${oanda.url.account.single}")

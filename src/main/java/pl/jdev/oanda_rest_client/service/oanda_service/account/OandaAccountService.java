@@ -2,18 +2,16 @@ package pl.jdev.oanda_rest_client.service.oanda_service.account;
 
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
-import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.account.Account;
 import pl.jdev.oanda_rest_client.repo.AccountDAO;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
-import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.RestLoggingInterceptor;
 
 import java.util.List;
 
@@ -28,15 +26,17 @@ public class OandaAccountService extends AbstractOandaService<Account> {
     private AccountDAO repository;
 
     @Autowired
-    public OandaAccountService(OandaAuthConfig oandaAuthConfig, Urls urls, RestLoggingInterceptor restLoggingInterceptor, MappingJackson2HttpMessageConverter messageConverter, RestTemplateBuilder restTemplateBuilder) {
-        super(oandaAuthConfig, urls, restLoggingInterceptor, messageConverter, restTemplateBuilder);
+    public OandaAccountService(MultiValueMap<String, String> headers,
+                               RestTemplate restTemplate,
+                               Urls urls) {
+        super(headers, restTemplate, urls);
     }
 
     public List<Account> getAllAccounts() {
         this.restTemplate
                 .exchange(urls.ACCOUNT_LIST_URL,
                         GET,
-                        new HttpEntity<>(EMPTY, this.headers),
+                        new HttpEntity<>(EMPTY, headers),
                         JsonAccountListWrapper.class)
                 .getBody()
                 .getAccounts()
@@ -48,7 +48,7 @@ public class OandaAccountService extends AbstractOandaService<Account> {
         Account account = this.restTemplate
                 .exchange(fromPath(urls.SINGLE_ACCOUNT_URL).build(id).getPath(),
                         GET,
-                        new HttpEntity<>(EMPTY, this.headers),
+                        new HttpEntity<>(EMPTY, headers),
                         JsonAccountWrapper.class)
                 .getBody()
                 .getAccount();

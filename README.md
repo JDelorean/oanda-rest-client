@@ -1,6 +1,6 @@
-# Project CashGrab
+# Project Opes
 
-The idea behind this project is to create a modular Forex bot trading network with ability to service multiple brokers simultanously. 
+The idea behind project 'Opes' is to create a modular Forex (Foreign Exchange) bot trading network with ability to service multiple brokers simultaneously.
 This is PRIMARILY an educational endeavour and should not be considered a working solution for automated Forex trading.
 
 The base broker is [OANDA](http://developer.oanda.com/rest-live-v20/introduction/).
