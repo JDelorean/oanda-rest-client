@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.oanda_rest_client.domain.account.Account;
 import pl.jdev.oanda_rest_client.rest.exception.AccountNotFoundException;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonObjectWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.account.OandaAccountService;
 
 import javax.validation.Valid;
@@ -29,11 +30,21 @@ public class AccountController extends AbstractRestController<Account> {
     @GetMapping(value = "/{accountId}")
     @ResponseBody
     @SneakyThrows
-    public Map<String, Object> getAccountFromOanda(@Valid @PathVariable(required = true) final String accountId) {
+    public JsonObjectWrapper<Account> getAccount(@Valid @PathVariable(required = true) final String accountId) {
         Account account = this.oandaAccountService.getAccount(accountId);
-        if (account == null) {
-            throw new AccountNotFoundException(accountId);
-        }
-        return Map.of("account", account);
+        if (account == null) throw new AccountNotFoundException();
+        return new JsonObjectWrapper<>(account);
+    }
+
+    @PutMapping(value = "/{accountId}")
+    @ResponseBody
+    public JsonObjectWrapper<Account> syncAccount(@Valid @PathVariable(required = true) final String accountId) {
+        return new JsonObjectWrapper<>(null);
+    }
+
+    @DeleteMapping(value = "/{accountId}")
+    @ResponseBody
+    public JsonObjectWrapper<Account> unsyncAccount(@Valid @PathVariable(required = true) final String accountId) {
+        return new JsonObjectWrapper<>(null);
     }
 }

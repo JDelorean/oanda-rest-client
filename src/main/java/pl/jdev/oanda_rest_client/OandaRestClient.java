@@ -18,12 +18,11 @@ public class OandaRestClient {
 
     public static void main(String[] args) {
         SpringApplication.run(OandaRestClient.class, args);
-        log.info("Initiating oanda_service-rest-client...");
     }
 
     @RequestMapping("/")
     @ResponseBody
     String home() {
-        return "oanda_service-rest-client";
+        return "Welcome to 'Opes'!";
     }
 }

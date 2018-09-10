@@ -23,33 +23,38 @@ public class AccountDAO extends AbstractDAO<Account> {
         return accountList;
     }
 
+    public List<Account> getSyncedAccounts() {
+        return null;
+    }
+
     @Override
     public Account getByDocumentId(ObjectId documentId) {
         return template.findById(documentId, Account.class);
     }
 
-    public Account getByAccountId(String accountId) {
+    @Override
+    public Account getById(String accountId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("accountId").is(accountId));
         return template.findOne(query, Account.class);
     }
 
-    public Account upsert(String targetAccountId, Account accountChanges) {
-        Account targetAccount = getByAccountId(targetAccountId);
+    public Account upsert(String targetId, Account overrides) {
+        Account targetAccount = getById(targetId);
         if (targetAccount == null) {
-            log.info(String.format("No entry with id: %s. Inserting into DB...", targetAccountId));
-            template.save(accountChanges);
+            log.info(String.format("No account entry with id: %s. Inserting into DB...", targetId));
+            template.save(overrides);
         } else {
-            log.info(String.format("Upserting account %s with %s...", targetAccountId, accountChanges));
+            log.info(String.format("Upserting account %s with %s...", targetId, overrides));
             Query query = new Query();
-            query.addCriteria(Criteria.where("accountId").is(targetAccountId));
+            query.addCriteria(Criteria.where("accountId").is(targetId));
             Update update = new Update();
             Field[] fields = targetAccount.getClass().getDeclaredFields();
             Arrays.stream(fields)
                     .forEach(field -> {
                         try {
                             field.setAccessible(true);
-                            Object newValue = field.get(accountChanges);
+                            Object newValue = field.get(overrides);
                             //TODO: should filter and log only changed field values, not all.
                             log.info(String.format("Updating field '%s' to: %s", field.getName(), newValue));
                             update.set(field.getName(), newValue);
@@ -61,9 +66,9 @@ public class AccountDAO extends AbstractDAO<Account> {
                     });
             template.upsert(query, update, Account.class);
         }
-        Account account = getByAccountId(targetAccountId);
+        Account account = getById(targetId);
         log.info(String.format("Successfully created/updated account %s", account));
-        return getByAccountId(targetAccountId);
+        return getById(targetId);
     }
 }
 

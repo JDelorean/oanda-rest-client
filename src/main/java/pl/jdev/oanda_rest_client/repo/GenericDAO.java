@@ -9,4 +9,8 @@ public interface GenericDAO<E extends AbstractEntity> {
     List<E> getAll();
 
     E getByDocumentId(ObjectId documentId);
+
+    E getById(String id);
+
+    E upsert(String targetId, E overrides);
 }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:url.properties")
+@PropertySource("classpath:oanda.urls")
 @Getter
 public class Urls {
     @Value("${oanda.url.account.all}")

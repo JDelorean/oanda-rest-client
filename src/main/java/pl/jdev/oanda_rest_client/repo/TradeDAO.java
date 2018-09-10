@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import pl.jdev.oanda_rest_client.domain.order.Order;
+import pl.jdev.oanda_rest_client.domain.trade.Trade;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -16,39 +17,39 @@ import static java.lang.String.format;
 
 @Repository
 @Log(topic = "DB - Order")
-public class OrderDAO extends AbstractDAO<Order> {
+public class TradeDAO extends AbstractDAO<Trade> {
     @Override
-    public List<Order> getAll() {
-        log.info("Getting all orders...");
-        List<Order> orders = template.findAll(Order.class);
-        log.info(format("Returning orders %s", orders));
-        return orders;
+    public List<Trade> getAll() {
+        log.info("Getting all trades...");
+        List<Trade> trades = template.findAll(Trade.class);
+        log.info(format("Returning orders %s", trades));
+        return trades;
     }
 
     @Override
-    public Order getByDocumentId(ObjectId documentId) {
-        return template.findById(documentId, Order.class);
+    public Trade getByDocumentId(ObjectId documentId) {
+        return template.findById(documentId, Trade.class);
     }
 
     @Override
-    public Order getById(String id) {
+    public Trade getById(String id) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("orderId").is(id));
-        return template.findOne(query, Order.class);
+        query.addCriteria(Criteria.where("tradeId").is(id));
+        return template.findOne(query, Trade.class);
     }
 
     @Override
-    public Order upsert(String targetId, Order overrides) {
-        Order targetOrder = getById(targetId);
-        if (targetOrder == null) {
-            log.info(format("No order entry with id: %s. Inserting into DB...", targetId));
+    public Trade upsert(String targetId, Trade overrides) {
+        Trade target = getById(targetId);
+        if (target == null) {
+            log.info(format("No trade entry with id: %s. Inserting into DB...", targetId));
             template.save(overrides);
         } else {
-            log.info(format("Upserting order %s with %s...", targetId, overrides));
+            log.info(format("Upserting trade %s with %s...", targetId, overrides));
             Query query = new Query();
-            query.addCriteria(Criteria.where("orderId").is(targetId));
+            query.addCriteria(Criteria.where("tradeId").is(targetId));
             Update update = new Update();
-            Field[] fields = targetOrder.getClass().getDeclaredFields();
+            Field[] fields = target.getClass().getDeclaredFields();
             Arrays.stream(fields)
                     .forEach(field -> {
                         try {
@@ -65,8 +66,8 @@ public class OrderDAO extends AbstractDAO<Order> {
                     });
             template.upsert(query, update, Order.class);
         }
-        Order order = getById(targetId);
-        log.info(format("Successfully created/updated order %s", order));
-        return order;
+        Trade trade = getById(targetId);
+        log.info(format("Successfully created/updated trade %s", trade));
+        return trade;
     }
 }
