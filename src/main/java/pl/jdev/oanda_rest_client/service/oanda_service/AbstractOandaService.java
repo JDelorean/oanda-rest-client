@@ -8,6 +8,9 @@ import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 @Component
 @DependsOn("AbstractDAO")
 public abstract class AbstractOandaService<T extends AbstractEntity> {
@@ -22,5 +25,16 @@ public abstract class AbstractOandaService<T extends AbstractEntity> {
         this.headers = headers;
         this.restTemplate = restTemplate;
         this.urls = urls;
+    }
+
+    //TODO: implement and replace boilerplate. Possibly with Optional?
+    private Object[] objectListToArray(List<Object> objects) {
+        if (objects == null || objects.size() == 0) {
+            return new Object[]{};
+        } else {
+            return Stream.of(objects)
+                    .map(Object.class::cast)
+                    .toArray();
+        }
     }
 }

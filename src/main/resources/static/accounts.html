@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<title>Opes</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+<body>
+<div class="w3-container">
+    <div class="w3-bar w3-theme">
+        <button class="w3-bar-item w3-button testbtn w3-padding-16" onclick="openTrades(event,'All')">All</button>
+        <button class="w3-bar-item w3-button testbtn w3-padding-16" onclick="openTrades(event,'Synced')">Synced</button>
+        <button class="w3-bar-item w3-button testbtn w3-padding-16" onclick="openTrades(event,'Unsynced')">Unsynced
+        </button>
+    </div>
+
+    <div id="Synced" class="w3-container tradeStatus w3-animate-opacity">
+        <div class="w3-container">
+            <hr>
+            <div class="w3-responsive w3-card-4">
+                <table class="w3-table w3-striped w3-bordered">
+                    <thead>
+                    <tr class="w3-theme">
+                        <th>ID</th>
+                        <th>Balance</th>
+                        <th>Create Time</th>
+                        <th>Open Price</th>
+                        <th>Close Price</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Jill</td>
+                        <td>Jill</td>
+                        <td>Jill</td>
+                        <td>Smith</td>
+                        <td>50</td>
+                    </tr>
+                    <tr class="w3-white">
+                        <td>Eve</td>
+                        <td>Eve</td>
+                        <td>Eve</td>
+                        <td>Jackson</td>
+                        <td>94</td>
+                    </tr>
+                    <tr>
+                        <td>Adam</td>
+                        <td>Adam</td>
+                        <td>Adam</td>
+                        <td>Johnson</td>
+                        <td>67</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="Unsynced" class="w3-container tradeStatus w3-animate-opacity">
+        <div class="w3-container">
+            <hr>
+            <div class="w3-responsive w3-card-4">
+                <table class="w3-table w3-striped w3-bordered">
+                    <thead>
+                    <tr class="w3-theme">
+                        <th>ID</th>
+                        <th>Instrument</th>
+                        <th>Create Time</th>
+                        <th>Open Price</th>
+                        <th>Close Price</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Jill</td>
+                        <td>Jill</td>
+                        <td>Jill</td>
+                        <td>Smith</td>
+                        <td>50</td>
+                    </tr>
+                    <tr class="w3-white">
+                        <td>Eve</td>
+                        <td>Eve</td>
+                        <td>Eve</td>
+                        <td>Jackson</td>
+                        <td>94</td>
+                    </tr>
+                    <tr>
+                        <td>Adam</td>
+                        <td>Adam</td>
+                        <td>Adam</td>
+                        <td>Johnson</td>
+                        <td>67</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="All" class="w3-container tradeStatus w3-animate-opacity">
+        <div class="w3-container">
+            <hr>
+            <div class="w3-responsive w3-card-4">
+                <table class="w3-table w3-striped w3-bordered">
+                    <thead>
+                    <tr class="w3-theme">
+                        <th>ID</th>
+                        <th>Instrument</th>
+                        <th>Create Time</th>
+                        <th>Open Price</th>
+                        <th>Close Price</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Jill</td>
+                        <td>Jill</td>
+                        <td>Jill</td>
+                        <td>Smith</td>
+                        <td>50</td>
+                    </tr>
+                    <tr class="w3-white">
+                        <td>Eve</td>
+                        <td>Eve</td>
+                        <td>Eve</td>
+                        <td>Jackson</td>
+                        <td>94</td>
+                    </tr>
+                    <tr>
+                        <td>Adam</td>
+                        <td>Adam</td>
+                        <td>Adam</td>
+                        <td>Johnson</td>
+                        <td>67</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="w3-center w3-bottom">
+    <div class="w3-center w3-padding-32">
+        <div class="w3-bar">
+            <a href="#" class="w3-bar-item w3-button w3-hover-theme">«</a>
+            <a href="#" class="w3-bar-item w3-button w3-theme w3-hover-theme">1</a>
+            <a href="#" class="w3-bar-item w3-button w3-hover-theme">2</a>
+            <a href="#" class="w3-bar-item w3-button w3-hover-theme">3</a>
+            <a href="#" class="w3-bar-item w3-button w3-hover-theme">4</a>
+            <a href="#" class="w3-bar-item w3-button w3-hover-theme">5</a>
+            <a href="#" class="w3-bar-item w3-button w3-hover-theme">»</a>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+function openTrades(evt, tradeStatus) {
+var i;
+var x = document.getElementsByClassName("tradeStatus");
+for (i = 0; i < x.length; i++) {
+x[i].style.display = "none";
+}
+var activebtn = document.getElementsByClassName("testbtn");
+for (i = 0; i < x.length; i++) {
+activebtn[i].className = activebtn[i].className.replace(" w3-dark-grey", "");
+}
+document.getElementById(tradeStatus).style.display = "block";
+evt.currentTarget.className += " w3-dark-grey";
+}
+
+window.onload = openTrades(event,'Open')

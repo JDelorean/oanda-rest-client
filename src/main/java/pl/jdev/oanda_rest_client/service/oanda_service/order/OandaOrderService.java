@@ -2,20 +2,16 @@ package pl.jdev.oanda_rest_client.service.oanda_service.order;
 
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import pl.jdev.oanda_rest_client.config.OandaAuthConfig;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
 import pl.jdev.oanda_rest_client.repo.OrderDAO;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonObjectListWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
-import pl.jdev.oanda_rest_client.service.oanda_service.interceptor.RestLoggingInterceptor;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +34,7 @@ public class OandaOrderService extends AbstractOandaService<Order> {
         super(headers, restTemplate, urls);
     }
 
-    public Order postNewOrder(String accountId, OrderRequest orderRequest) {
+    public Order postOrder(String accountId, OrderRequest orderRequest) {
         return this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
                                 .build(accountId)
@@ -49,6 +45,11 @@ public class OandaOrderService extends AbstractOandaService<Order> {
                 .getBody();
     }
 
+    /**
+     * Returns all orders for the provided accountId.
+     *
+     * @return all orders for provided accountId
+     */
     public Object[] getAllOrders(String accountId) {
         List<Object> objects = this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
@@ -67,9 +68,13 @@ public class OandaOrderService extends AbstractOandaService<Order> {
                     .map(Order.class::cast)
                     .toArray();
         }
-
     }
 
+    /**
+     * Returns all pending orders for the provided accountId.
+     *
+     * @return all pending orders for provided accountId
+     */
     public Order[] getPendingOrders(String accountId) {
         return this.restTemplate
                 .exchange(fromPath(urls.PENDING_ORDER_LIST_URL)

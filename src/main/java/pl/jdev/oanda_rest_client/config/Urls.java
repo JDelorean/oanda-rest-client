@@ -57,4 +57,16 @@ public class Urls {
     @Value("${oanda.url.account.order.single_client_extensions}")
     public String ORDER_CLIENT_EXT_URL;
 
+    @Value("${oanda.url.account.trade.list}")
+    public String TRADE_LIST_URL;
+    @Value("${oanda.url.account.trade.open}")
+    public String OPEN_TRADE_LIST_URL;
+    @Value("${oanda.url.account.trade.single}")
+    public String SINGLE_TRADE_URL;
+    @Value("${oanda.url.account.trade.single_close}")
+    public String CLOSE_TRADE_URL;
+    @Value("${oanda.url.account.trade.single_client_extensions}")
+    public String TRADE_CLIENT_EXT_URL;
+    @Value("${oanda.url.account.trade.single_dependent_orders}")
+    public String TRADE_DEP_ORDERS_URL;
 }

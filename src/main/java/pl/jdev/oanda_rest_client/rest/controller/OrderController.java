@@ -20,7 +20,7 @@ public class OrderController {
     @ResponseBody
     public void createOrder(@Valid @PathVariable(name = "accountId") final String accountId,
                             @Valid @RequestBody final OrderRequest orderRequest) {
-        oandaOrderService.postNewOrder(accountId, orderRequest);
+        oandaOrderService.postOrder(accountId, orderRequest);
     }
 
     @GetMapping

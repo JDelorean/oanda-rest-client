@@ -32,6 +32,11 @@ public class OandaAccountService extends AbstractOandaService<Account> {
         super(headers, restTemplate, urls);
     }
 
+    /**
+     * Returns all accounts and their details.
+     *
+     * @return all accounts with details
+     */
     public List<Account> getAllAccounts() {
         this.restTemplate
                 .exchange(urls.ACCOUNT_LIST_URL,
@@ -44,14 +49,19 @@ public class OandaAccountService extends AbstractOandaService<Account> {
         return repository.getAll();
     }
 
-    public Account getAccount(String id) {
+    /**
+     * Returns accounts and its details for the provided accountId.
+     *
+     * @return accounts with details for provided id
+     */
+    public Account getAccount(String accountId) {
         Account account = this.restTemplate
-                .exchange(fromPath(urls.SINGLE_ACCOUNT_URL).build(id).getPath(),
+                .exchange(fromPath(urls.SINGLE_ACCOUNT_URL).build(accountId).getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, headers),
                         JsonAccountWrapper.class)
                 .getBody()
                 .getAccount();
-        return repository.upsert(id, account);
+        return repository.upsert(accountId, account);
     }
 }

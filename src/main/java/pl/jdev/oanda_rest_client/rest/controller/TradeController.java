@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/api/trades")
 public class TradeController {
 
-
     @GetMapping
     public List<Trade> getAllTrades() {
         return null;

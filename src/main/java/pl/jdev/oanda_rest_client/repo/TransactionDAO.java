@@ -30,7 +30,7 @@ public class TransactionDAO extends AbstractDAO<Transaction> {
     @Override
     public Transaction getById(String id) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("orderId").is(id));
+        query.addCriteria(Criteria.where("transactionId").is(id));
         return template.findOne(query, Transaction.class);
     }
 
