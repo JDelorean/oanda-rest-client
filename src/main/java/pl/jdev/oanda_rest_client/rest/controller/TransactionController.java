@@ -34,21 +34,21 @@ public class TransactionController {
                                                   @RequestParam(value = "to", required = false) final String to,
                                                   @Min(1) @Max(1000) @RequestParam(value = "pageSize", required = false) final String pageSize,
                                                   @SupportedTransactionType @RequestParam(value = "transactionTypes", required = false) final TransactionType[] transactionTypes) {
-        return Map.of("transactions", oandaTransactionService.getTransactionList(accountId, Date.valueOf(from), Date.valueOf(to), Integer.valueOf(pageSize), transactionTypes));
+        return Map.of("transactions", oandaTransactionService.getTransactionList(accountId, from, to, pageSize, transactionTypes));
     }
 
     @GetMapping("/idrange")
     @ResponseBody
-    public Map<String, Object> getTransactionIdrange(@Valid @PathVariable(name = "accountId") final String accountId,
-                                                     @Min(1) @RequestParam(value = "from", required = false) final Integer from,
-                                                     @RequestParam(value = "to", required = false) final Integer to) {
+    public Map<String, Object> getTransactionListIdRange(@Valid @PathVariable(name = "accountId") final String accountId,
+                                                         @Min(1) @RequestParam(value = "from", required = false) final Integer from,
+                                                         @RequestParam(value = "to", required = false) final Integer to) {
         return Map.of("transactions", oandaTransactionService.getTransactionIdRange(accountId, from, to));
     }
 
     @GetMapping("/sinceid")
     @ResponseBody
-    public Map<String, Object> getTransactionIdrange(@Valid @PathVariable(name = "accountId") final String accountId,
-                                                     @Min(1) @RequestParam(value = "id", required = false) final Integer id) {
+    public Map<String, Object> getTransactionListSinceId(@Valid @PathVariable(name = "accountId") final String accountId,
+                                                         @Min(1) @RequestParam(value = "id", required = false) final Integer id) {
         return Map.of("transactions", oandaTransactionService.getTransactionSinceId(accountId, id));
     }
 }
