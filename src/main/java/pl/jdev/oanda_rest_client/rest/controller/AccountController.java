@@ -6,45 +6,48 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.oanda_rest_client.domain.account.Account;
 import pl.jdev.oanda_rest_client.rest.exception.AccountNotFoundException;
-import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonObjectWrapper;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountListWrapper;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.account.OandaAccountService;
 
 import javax.validation.Valid;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accounts")
 @Log
-public class AccountController extends AbstractRestController<Account> {
+public class AccountController extends AbstractEntityController<Account> {
 
     @Autowired
     OandaAccountService oandaAccountService;
 
     @GetMapping
     @ResponseBody
-    public Map<String, Object> getAllAccounts() {
-        return Map.of("accounts", oandaAccountService.getAllAccounts());
+    public JsonAccountListWrapper getAllAccounts() {
+        return JsonAccountListWrapper.payloadOf(oandaAccountService.getAllAccounts());
     }
 
     //TODO: remove sneakyhrows
     @GetMapping(value = "/{accountId}")
     @ResponseBody
     @SneakyThrows
-    public JsonObjectWrapper<Account> getAccount(@Valid @PathVariable(required = true) final String accountId) {
+    public JsonAccountWrapper getAccount(@Valid @PathVariable(required = true) final String accountId) {
         Account account = this.oandaAccountService.getAccount(accountId);
         if (account == null) throw new AccountNotFoundException();
-        return new JsonObjectWrapper<>(account);
+        return JsonAccountWrapper.payloadOf(account);
     }
 
     @PutMapping(value = "/{accountId}")
     @ResponseBody
-    public JsonObjectWrapper<Account> syncAccount(@Valid @PathVariable(required = true) final String accountId) {
-        return new JsonObjectWrapper<>(null);
+    public JsonAccountWrapper syncAccount(@Valid @PathVariable(required = true) final String accountId) {
+//        return JsonAccountWrapper.payloadOf();
+        return null;
     }
+
 
     @DeleteMapping(value = "/{accountId}")
     @ResponseBody
-    public JsonObjectWrapper<Account> unsyncAccount(@Valid @PathVariable(required = true) final String accountId) {
-        return new JsonObjectWrapper<>(null);
+    public JsonAccountWrapper unsyncAccount(@Valid @PathVariable(required = true) final String accountId) {
+//        return JsonAccountWrapper.payloadOf(null);
+        return null;
     }
 }

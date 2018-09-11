@@ -10,13 +10,13 @@ import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
 import pl.jdev.oanda_rest_client.repo.OrderDAO;
-import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonObjectListWrapper;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonOrderListWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.*;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
@@ -46,44 +46,43 @@ public class OandaOrderService extends AbstractOandaService<Order> {
     }
 
     /**
-     * Returns all orders for the provided accountId.
+     * Returns list of all orders for the provided accountId.
      *
-     * @return all orders for provided accountId
+     * @return list of orders for provided accountId
      */
-    public Object[] getAllOrders(String accountId) {
-        List<Object> objects = this.restTemplate
+    public List<Order> getAllOrders(String accountId) {
+        return this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
                                 .build(accountId)
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        JsonObjectListWrapper.class)
+                        JsonOrderListWrapper.class)
                 .getBody()
-                .getObjectList();
-
-        if (objects == null || objects.size() == 0) {
-            return new Object[]{};
-        } else {
-            return Stream.of(objects)
-                    .map(Order.class::cast)
-                    .toArray();
-        }
+                .getOrders()
+                .stream()
+                .map(order -> repository.upsert(order.getOrderId(), order))
+                .collect(toList());
     }
 
     /**
-     * Returns all pending orders for the provided accountId.
+     * Returns list of all pending orders for the provided accountId.
      *
-     * @return all pending orders for provided accountId
+     * @return list of pending orders for provided accountId
      */
-    public Order[] getPendingOrders(String accountId) {
+    public List<Order> getPendingOrders(String accountId) {
         return this.restTemplate
-                .exchange(fromPath(urls.PENDING_ORDER_LIST_URL)
+                .exchange(fromPath(urls.ORDER_LIST_URL)
                                 .build(accountId)
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        Order[].class)
-                .getBody();
+                        JsonOrderListWrapper.class)
+                .getBody()
+                .getOrders()
+                .stream()
+                .map(order -> repository.upsert(order.getOrderId(), order))
+                .collect(toList());
     }
 
     public Order getOrder(String accountId, String orderId) {
