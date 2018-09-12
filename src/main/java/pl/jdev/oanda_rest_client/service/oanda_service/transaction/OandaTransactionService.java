@@ -9,7 +9,12 @@ import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.transaction.Transaction;
 import pl.jdev.oanda_rest_client.domain.transaction.TransactionType;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionListWrapper;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionRerouteWrapper;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
+
+import java.util.List;
 
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
@@ -25,8 +30,8 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
         super(headers, restTemplate, urls);
     }
 
-    public Transaction[] getTransactionList(String accountId, String fromDate, String toDate, String pageSize, TransactionType[] transactionTypes) {
-        return this.restTemplate
+    public List<Transaction> getTransactionList(String accountId, String fromDate, String toDate, String pageSize, TransactionType[] transactionTypes) {
+        String rerouteUrl = this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_LIST_URL)
                                 .queryParam("from", fromDate)
                                 .queryParam("to", toDate)
@@ -36,8 +41,18 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        Transaction[].class)
-                .getBody();
+                        JsonTransactionRerouteWrapper.class)
+                .getBody()
+                .getPages()
+                .get(0);
+        //TODO: ^^ will only fetch the first page. Need to provide a solution for multiple pages.
+        return this.restTemplate
+                .exchange(rerouteUrl,
+                        GET,
+                        new HttpEntity<>(EMPTY, this.headers),
+                        JsonTransactionListWrapper.class)
+                .getBody()
+                .getTransactions();
     }
 
     public Transaction getTransaction(String accountId, String transactionId) {
@@ -47,11 +62,12 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        Transaction.class)
-                .getBody();
+                        JsonTransactionWrapper.class)
+                .getBody()
+                .getTransaction();
     }
 
-    public Transaction[] getTransactionIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
+    public List<Transaction> getTransactionIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_ID_RANGE_URL)
                                 .queryParam("from", fromTransaction)
@@ -60,11 +76,12 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        Transaction[].class)
-                .getBody();
+                        JsonTransactionListWrapper.class)
+                .getBody()
+                .getTransactions();
     }
 
-    public Transaction[] getTransactionSinceId(String accountId, Integer sinceTransaction) {
+    public List<Transaction> getTransactionSinceId(String accountId, Integer sinceTransaction) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_SINCE_ID_URL)
                                 .queryParam("id", sinceTransaction)
@@ -72,8 +89,8 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
-                        Transaction[].class)
-                .getBody();
+                        JsonTransactionListWrapper.class)
+                .getBody().getTransactions();
     }
 
     public Transaction subscribeToStream(String accountId) {
