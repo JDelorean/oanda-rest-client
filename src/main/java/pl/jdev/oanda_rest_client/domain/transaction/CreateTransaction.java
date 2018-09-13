@@ -1,10 +1,14 @@
 package pl.jdev.oanda_rest_client.domain.transaction;
 
 
+import lombok.Builder;
+import lombok.Data;
 import pl.jdev.oanda_rest_client.domain.Currency;
 
-public class CreateTransaction extends Transaction {
-    private Integer dividionID;
+@Data
+@Builder
+public class CreateTransaction {
+    private Integer divisionID;
     private Integer siteID;
     private Integer accountUserID;
     private Integer accountNumber;

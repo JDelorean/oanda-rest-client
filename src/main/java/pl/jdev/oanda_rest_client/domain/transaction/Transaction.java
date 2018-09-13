@@ -1,14 +1,17 @@
 package pl.jdev.oanda_rest_client.domain.transaction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.Data;
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
-import java.io.Serializable;
-import java.util.Date;
-
-public class Transaction extends AbstractEntity implements Serializable {
+@Data
+@Builder
+public class Transaction extends AbstractEntity {
+    @JsonProperty("id")
     private String transactionId;
-    private Date time;
-    private Integer userID;
+    private String time;
+    private int userID;
     private String accountID;
     private String batchID;
     private String requestID;
