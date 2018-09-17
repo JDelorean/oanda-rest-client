@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
-import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonOrderListWrapper;
 import pl.jdev.oanda_rest_client.repo.dal.OrderDAL;
+import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonOrderListWrapper;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.List;
@@ -37,8 +37,8 @@ public class OandaOrderService extends AbstractOandaService<Order> {
     public Order postOrder(String accountId, OrderRequest orderRequest) {
         return this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         POST,
                         new HttpEntity<>(Map.of("order", orderRequest), this.headers),
                         Order.class)
@@ -53,8 +53,8 @@ public class OandaOrderService extends AbstractOandaService<Order> {
     public List<Order> getAllOrders(String accountId) {
         return this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonOrderListWrapper.class)
@@ -73,8 +73,8 @@ public class OandaOrderService extends AbstractOandaService<Order> {
     public List<Order> getPendingOrders(String accountId) {
         return this.restTemplate
                 .exchange(fromPath(urls.ORDER_LIST_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonOrderListWrapper.class)
@@ -88,8 +88,8 @@ public class OandaOrderService extends AbstractOandaService<Order> {
     public Order getOrder(String accountId, String orderId) {
         return this.restTemplate
                 .exchange(fromPath(urls.SINGLE_ORDER_URL)
-                                .build(accountId, orderId)
-                                .getPath(),
+                                .buildAndExpand(accountId, orderId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         Order.class)
@@ -98,7 +98,9 @@ public class OandaOrderService extends AbstractOandaService<Order> {
 
     public Order replaceOrder(String accountId, String existingOrderSpecifier, OrderRequest replacingOrder) {
         return this.restTemplate
-                .exchange("boop",
+                .exchange(fromPath(null)
+                                .buildAndExpand(accountId, existingOrderSpecifier)
+                                .toString(),
                         PUT,
                         new HttpEntity<>(EMPTY, this.headers),
                         Order.class)
@@ -107,7 +109,9 @@ public class OandaOrderService extends AbstractOandaService<Order> {
 
     public Order cancelOrder(String accountId, String orderSpecifier) {
         return this.restTemplate
-                .exchange("boop",
+                .exchange(fromPath(urls.CANCEL_ORDER_URL)
+                                .buildAndExpand(accountId, orderSpecifier)
+                                .toString(),
                         PUT,
                         new HttpEntity<>(EMPTY, this.headers),
                         Order.class)
@@ -116,7 +120,9 @@ public class OandaOrderService extends AbstractOandaService<Order> {
 
     public Order updateOrderClientExtensions(String accountId, String orderSpecifier) {
         return this.restTemplate
-                .exchange("boop",
+                .exchange(fromPath(urls.ORDER_CLIENT_EXT_URL)
+                                .buildAndExpand(accountId, orderSpecifier)
+                                .toString(),
                         PUT,
                         new HttpEntity<>(EMPTY, this.headers),
                         Order.class)

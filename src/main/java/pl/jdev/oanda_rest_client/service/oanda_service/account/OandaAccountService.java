@@ -57,8 +57,8 @@ public class OandaAccountService extends AbstractOandaService<Account> {
     public Account getAccount(String accountId) {
         Account account = this.restTemplate
                 .exchange(fromPath(urls.SINGLE_ACCOUNT_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, headers),
                         JsonAccountWrapper.class)

@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.service.oanda_service.interceptor;
+package pl.jdev.oanda_rest_client.rest.interceptor;
 
 import lombok.extern.java.Log;
 import org.springframework.http.HttpRequest;

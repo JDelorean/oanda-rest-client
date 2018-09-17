@@ -43,7 +43,7 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                                 .queryParam("pageSize", pageSize)
                                 .queryParam("type", transactionTypes)
                                 .buildAndExpand(accountId)
-                                .getPath(),
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionRerouteWrapper.class)
@@ -81,7 +81,8 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                 .exchange(fromPath(urls.TRANSACTION_ID_RANGE_URL)
                                 .queryParam("from", fromTransaction)
                                 .queryParam("to", toTransaction)
-                                .build(accountId),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionListWrapper.class)
@@ -93,8 +94,8 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_SINCE_ID_URL)
                                 .queryParam("id", sinceTransaction)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionListWrapper.class)
@@ -104,8 +105,8 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
     public Transaction subscribeToStream(String accountId) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_STREAM_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         Transaction.class)

@@ -38,8 +38,8 @@ public class OandaTradeService extends AbstractOandaService<Trade> {
     public List<Trade> getAllTrades(String accountId) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRADE_LIST_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTradeListWrapper.class)
@@ -53,8 +53,8 @@ public class OandaTradeService extends AbstractOandaService<Trade> {
     public List<Trade> getOpenTrades(String accountId) {
         return this.restTemplate
                 .exchange(fromPath(urls.OPEN_TRADE_LIST_URL)
-                                .build(accountId)
-                                .getPath(),
+                                .buildAndExpand(accountId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTradeListWrapper.class)
@@ -68,8 +68,8 @@ public class OandaTradeService extends AbstractOandaService<Trade> {
     public Trade getTrade(String accountId, String tradeId) {
         return Stream.of(this.restTemplate
                 .exchange(fromPath(urls.SINGLE_TRADE_URL)
-                                .build(accountId, tradeId)
-                                .getPath(),
+                                .buildAndExpand(accountId, tradeId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTradeWrapper.class)
@@ -83,8 +83,8 @@ public class OandaTradeService extends AbstractOandaService<Trade> {
     public Object closeTrade(String accountId, String tradeId) {
         return this.restTemplate
                 .exchange(fromPath(urls.CLOSE_TRADE_URL)
-                                .build(accountId, tradeId)
-                                .getPath(),
+                                .buildAndExpand(accountId, tradeId)
+                                .toString(),
                         PUT,
                         new HttpEntity<>(EMPTY, this.headers),
                         Trade.class)
