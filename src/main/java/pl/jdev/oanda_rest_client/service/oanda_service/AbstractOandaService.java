@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Component
-@DependsOn("AbstractDAO")
+@DependsOn("DAO")
 public abstract class AbstractOandaService<T extends AbstractEntity> {
     protected MultiValueMap<String, String> headers;
     protected RestTemplate restTemplate;

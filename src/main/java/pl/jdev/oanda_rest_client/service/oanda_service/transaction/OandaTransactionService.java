@@ -12,9 +12,10 @@ import pl.jdev.oanda_rest_client.domain.transaction.TransactionType;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionRerouteWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionWrapper;
+import pl.jdev.oanda_rest_client.service.data_access_layer.TransactionDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
@@ -24,13 +25,16 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaTransactionService extends AbstractOandaService<Transaction> {
     @Autowired
+    private TransactionDAL database;
+
+    @Autowired
     public OandaTransactionService(MultiValueMap<String, String> headers,
                                    RestTemplate restTemplate,
                                    Urls urls) {
         super(headers, restTemplate, urls);
     }
 
-    public List<Transaction> getTransactionList(String accountId, String fromDate, String toDate, String pageSize, TransactionType[] transactionTypes) {
+    public Collection<Transaction> getTransactionList(String accountId, String fromDate, String toDate, String pageSize, TransactionType[] transactionTypes) {
         String rerouteUrl = this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_LIST_URL)
                                 .queryParam("from", fromDate)
@@ -56,7 +60,10 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
     }
 
     public Transaction getTransaction(String accountId, String transactionId) {
-        return this.restTemplate
+        if (database.containsObjectId(transactionId)) {
+            return database.get(transactionId);
+        }
+        Transaction transaction = this.restTemplate
                 .exchange(fromPath(urls.SINGLE_TRANSACTION_URL)
                                 .build(accountId, transactionId)
                                 .getPath(),
@@ -65,9 +72,10 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                         JsonTransactionWrapper.class)
                 .getBody()
                 .getTransaction();
+        return database.upsert(transactionId, transaction);
     }
 
-    public List<Transaction> getTransactionIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
+    public Collection<Transaction> getTransactionIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_ID_RANGE_URL)
                                 .queryParam("from", fromTransaction)
@@ -81,7 +89,7 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                 .getTransactions();
     }
 
-    public List<Transaction> getTransactionSinceId(String accountId, Integer sinceTransaction) {
+    public Collection<Transaction> getTransactionSinceId(String accountId, Integer sinceTransaction) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_SINCE_ID_URL)
                                 .queryParam("id", sinceTransaction)

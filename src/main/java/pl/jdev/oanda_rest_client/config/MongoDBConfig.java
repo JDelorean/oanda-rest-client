@@ -1,5 +1,6 @@
 package pl.jdev.oanda_rest_client.config;
 
+import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -12,13 +13,22 @@ import pl.jdev.oanda_rest_client.domain.transaction.Transaction;
 
 @Configuration
 @PropertySource("classpath:mongodb.properties")
-public class MongoTemplateConfig {
+public class MongoDBConfig {
+    @Bean
+    public MongoClient mongoClient(@Value("${mongodb.url}") String mongoUrl) {
+        return new MongoClient(mongoUrl);
+    }
+
     @Bean
     @Autowired
-    public MongoTemplate mongoTemplate(MongoTemplate mongoTemplate,
-                                       @Value("transaction.ttl") int transactionTTL) {
+    public MongoTemplate mongoTemplate(@Value("${mongodb.name}") String dbName,
+                                       @Value("${transaction.ttl}") String transactionTTL,
+                                       MongoClient mongoClient) {
+        MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, dbName);
         mongoTemplate.indexOps(Transaction.class)
-                .ensureIndex(new Index().on("_documentModifiedTime", Sort.Direction.ASC).expire(transactionTTL));
+                .ensureIndex(new Index()
+                        .on("_documentCreatedTime", Sort.Direction.ASC)
+                        .expire(Integer.valueOf(transactionTTL)));
         return mongoTemplate;
     }
 }

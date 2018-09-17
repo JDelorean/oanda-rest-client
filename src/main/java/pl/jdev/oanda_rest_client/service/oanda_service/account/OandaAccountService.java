@@ -8,12 +8,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.account.Account;
-import pl.jdev.oanda_rest_client.repo.AccountDAO;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountWrapper;
+import pl.jdev.oanda_rest_client.service.data_access_layer.AccountDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
@@ -23,7 +23,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaAccountService extends AbstractOandaService<Account> {
     @Autowired
-    private AccountDAO repository;
+    private AccountDAL repository;
 
     @Autowired
     public OandaAccountService(MultiValueMap<String, String> headers,
@@ -37,7 +37,7 @@ public class OandaAccountService extends AbstractOandaService<Account> {
      *
      * @return all accounts with details
      */
-    public List<Account> getAllAccounts() {
+    public Collection<Account> getAllAccounts() {
         this.restTemplate
                 .exchange(urls.ACCOUNT_LIST_URL,
                         GET,

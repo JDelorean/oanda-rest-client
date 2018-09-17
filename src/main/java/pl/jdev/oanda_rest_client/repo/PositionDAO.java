@@ -7,24 +7,24 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 import pl.jdev.oanda_rest_client.domain.position.Position;
 
-import java.util.List;
+import java.util.Collection;
 
 import static java.lang.String.format;
 
 @Repository
 @Log(topic = "DB - Position")
-public class PositionDAO extends AbstractDAO<Position> {
+public class PositionDAO extends DAO<Position> {
     @Override
-    public List<Position> getAll() {
+    public Collection<Position> getAll() {
         log.info("Getting all positions...");
-        List<Position> positions = template.findAll(Position.class);
+        Collection<Position> positions = mongoTemplate.findAll(Position.class);
         log.info(format("Returning positions %s", positions));
         return positions;
     }
 
     @Override
     public Position getByDocumentId(ObjectId documentId) {
-        return template.findById(documentId, Position.class);
+        return mongoTemplate.findById(documentId, Position.class);
     }
 
     //TODO: is this really necessary?
@@ -32,11 +32,20 @@ public class PositionDAO extends AbstractDAO<Position> {
     public Position getById(String id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("positionId").is(id));
-        return template.findOne(query, Position.class);
+        return mongoTemplate.findOne(query, Position.class);
     }
 
     @Override
-    public Position upsert(String targetId, Position overrides) {
-        return null;
+    public void insert(Position object) {
+
+    }
+
+    @Override
+    public void upsert(String targetId, Position overrides) {
+    }
+
+    @Override
+    public boolean containsObjectIds(Collection<String> id) {
+        return false;
     }
 }

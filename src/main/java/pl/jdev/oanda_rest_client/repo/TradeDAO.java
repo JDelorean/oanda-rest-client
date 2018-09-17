@@ -11,39 +11,44 @@ import pl.jdev.oanda_rest_client.domain.trade.Trade;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 import static java.lang.String.format;
 
 @Repository
-@Log(topic = "DB - Order")
-public class TradeDAO extends AbstractDAO<Trade> {
+@Log(topic = "DB - Trade")
+public class TradeDAO extends DAO<Trade> {
     @Override
-    public List<Trade> getAll() {
+    public Collection<Trade> getAll() {
         log.info("Getting all trades...");
-        List<Trade> trades = template.findAll(Trade.class);
+        Collection<Trade> trades = mongoTemplate.findAll(Trade.class);
         log.info(format("Returning orders %s", trades));
         return trades;
     }
 
     @Override
     public Trade getByDocumentId(ObjectId documentId) {
-        return template.findById(documentId, Trade.class);
+        return mongoTemplate.findById(documentId, Trade.class);
     }
 
     @Override
     public Trade getById(String id) {
         Query query = new Query();
         query.addCriteria(Criteria.where("tradeId").is(id));
-        return template.findOne(query, Trade.class);
+        return mongoTemplate.findOne(query, Trade.class);
     }
 
     @Override
-    public Trade upsert(String targetId, Trade overrides) {
+    public void insert(Trade object) {
+
+    }
+
+    @Override
+    public void upsert(String targetId, Trade overrides) {
         Trade target = getById(targetId);
         if (target == null) {
             log.info(format("No trade entry with id: %s. Inserting into DB...", targetId));
-            template.save(overrides);
+            mongoTemplate.save(overrides);
         } else {
             log.info(format("Upserting trade %s with %s...", targetId, overrides));
             Query query = new Query();
@@ -64,10 +69,14 @@ public class TradeDAO extends AbstractDAO<Trade> {
                             field.setAccessible(false);
                         }
                     });
-            template.upsert(query, update, Order.class);
+            mongoTemplate.upsert(query, update, Order.class);
         }
         Trade trade = getById(targetId);
         log.info(format("Successfully created/updated trade %s", trade));
-        return trade;
+    }
+
+    @Override
+    public boolean containsObjectIds(Collection<String> id) {
+        return false;
     }
 }

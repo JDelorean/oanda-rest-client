@@ -10,15 +10,16 @@ import pl.jdev.oanda_rest_client.domain.account.Account;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 @Log(topic = "DB - Account")
-public class AccountDAO extends AbstractDAO<Account> {
+public class AccountDAO extends DAO<Account> {
     @Override
-    public List<Account> getAll() {
+    public Collection<Account> getAll() {
         log.info("Getting all accounts...");
-        List<Account> accountList = template.findAll(Account.class);
+        Collection<Account> accountList = mongoTemplate.findAll(Account.class);
         log.info(String.format("Returning accounts %s", accountList));
         return accountList;
     }
@@ -29,21 +30,26 @@ public class AccountDAO extends AbstractDAO<Account> {
 
     @Override
     public Account getByDocumentId(ObjectId documentId) {
-        return template.findById(documentId, Account.class);
+        return mongoTemplate.findById(documentId, Account.class);
     }
 
     @Override
     public Account getById(String accountId) {
         Query query = new Query();
         query.addCriteria(Criteria.where("accountId").is(accountId));
-        return template.findOne(query, Account.class);
+        return mongoTemplate.findOne(query, Account.class);
     }
 
-    public Account upsert(String targetId, Account overrides) {
+    @Override
+    public void insert(Account object) {
+
+    }
+
+    public void upsert(String targetId, Account overrides) {
         Account targetAccount = getById(targetId);
         if (targetAccount == null) {
             log.info(String.format("No account entry with id: %s. Inserting into DB...", targetId));
-            template.save(overrides);
+            mongoTemplate.save(overrides);
         } else {
             log.info(String.format("Upserting account %s with %s...", targetId, overrides));
             Query query = new Query();
@@ -64,11 +70,15 @@ public class AccountDAO extends AbstractDAO<Account> {
                             field.setAccessible(false);
                         }
                     });
-            template.upsert(query, update, Account.class);
+            mongoTemplate.upsert(query, update, Account.class);
         }
         Account account = getById(targetId);
         log.info(String.format("Successfully created/updated account %s", account));
-        return getById(targetId);
+    }
+
+    @Override
+    public boolean containsObjectIds(Collection<String> id) {
+        return false;
     }
 }
 

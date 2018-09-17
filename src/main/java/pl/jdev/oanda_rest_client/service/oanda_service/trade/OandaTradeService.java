@@ -9,9 +9,9 @@ import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.ClientExtensions;
 import pl.jdev.oanda_rest_client.domain.trade.Trade;
-import pl.jdev.oanda_rest_client.repo.TradeDAO;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTradeListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTradeWrapper;
+import pl.jdev.oanda_rest_client.service.data_access_layer.TradeDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.List;
@@ -28,7 +28,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaTradeService extends AbstractOandaService<Trade> {
     @Autowired
-    private TradeDAO repository;
+    private TradeDAL repository;
 
     @Autowired
     public OandaTradeService(MultiValueMap<String, String> headers, RestTemplate restTemplate, Urls urls) {

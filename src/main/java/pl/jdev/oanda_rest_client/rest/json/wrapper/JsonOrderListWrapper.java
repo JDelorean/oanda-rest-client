@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 
-import java.util.List;
+import java.util.Collection;
 
 @Data
 @AllArgsConstructor(staticName = "payloadOf", onConstructor = @__({@JsonCreator}))
 public class JsonOrderListWrapper {
-    private List<Order> orders;
+    private Collection<Order> orders;
 }

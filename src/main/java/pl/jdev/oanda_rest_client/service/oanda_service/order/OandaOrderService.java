@@ -9,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
-import pl.jdev.oanda_rest_client.repo.OrderDAO;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonOrderListWrapper;
+import pl.jdev.oanda_rest_client.service.data_access_layer.OrderDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaOrderService extends AbstractOandaService<Order> {
     @Autowired
-    private OrderDAO repository;
+    private OrderDAL repository;
 
     @Autowired
     public OandaOrderService(MultiValueMap<String, String> headers,
@@ -61,7 +61,7 @@ public class OandaOrderService extends AbstractOandaService<Order> {
                 .getBody()
                 .getOrders()
                 .stream()
-                .map(order -> repository.upsert(order.getOrderId(), order))
+//                .map(order -> repository.upsert(order.getOrderId(), order))
                 .collect(toList());
     }
 
