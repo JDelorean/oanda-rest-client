@@ -1,10 +1,10 @@
 #Base
-oanda.url.scheme=https
-oanda.url.host.live=api-fxtrade.oanda.com
-oanda.url.host.practice=api-fxpractice.oanda.com
-oanda.url.api_version=v3
-oanda.url.base.live=${oanda.url.scheme}://${oanda.url.host.live}/${oanda.url.api_version}
-oanda.url.base.practice=https://api-fxpractice.oanda.com/v3
+#oanda.url.scheme=https
+#oanda.url.host.live=api-fxtrade.oanda.com
+#oanda.url.host.practice=api-fxpractice.oanda.com
+#oanda.url.api_version=v3
+#oanda.url.base.live=${oanda.url.scheme}://${oanda.url.host.live}/${oanda.url.api_version}
+#oanda.url.base.practice=https://api-fxpractice.oanda.com/v3
 #Account endpoints
 oanda.url.account.all=/accounts
 oanda.url.account.single=${oanda.url.account.all}/{accountId}

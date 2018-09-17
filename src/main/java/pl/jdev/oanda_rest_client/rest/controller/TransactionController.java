@@ -23,7 +23,7 @@ public class TransactionController {
     @GetMapping(value = "/{transactionId}")
     @ResponseBody
     public JsonTransactionWrapper getTransaction(@Valid @PathVariable(name = "accountId") final String accountId,
-                                                 @Valid @PathVariable(required = true) String transactionId) {
+                                                 @Valid @PathVariable final String transactionId) {
         return JsonTransactionWrapper.payloadOf(oandaTransactionService.getTransaction(accountId, transactionId));
     }
 

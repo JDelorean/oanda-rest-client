@@ -45,6 +45,10 @@ public class Urls {
     //Instrument
 
     //Pricing
+    @Value("${oanda.url.pricing.list}")
+    public String PRICING_URL;
+    @Value("${oanda.url.pricing.stream}")
+    public String PRICING_STREAM_URL;
 
     @Value("${oanda.url.account.order.list}")
     public String ORDER_LIST_URL;

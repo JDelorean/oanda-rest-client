@@ -44,22 +44,22 @@ public class TradeDAO extends DAO<Trade> {
     }
 
     @Override
-    public void upsert(String targetId, Trade overrides) {
-        Trade target = getById(targetId);
+    public void upsert(String objectId, Trade upsertObject) {
+        Trade target = getById(objectId);
         if (target == null) {
-            log.info(format("No trade entry with id: %s. Inserting into DB...", targetId));
-            mongoTemplate.save(overrides);
+            log.info(format("No trade entry with id: %s. Inserting into DB...", objectId));
+            mongoTemplate.save(upsertObject);
         } else {
-            log.info(format("Upserting trade %s with %s...", targetId, overrides));
+            log.info(format("Upserting trade %s with %s...", objectId, upsertObject));
             Query query = new Query();
-            query.addCriteria(Criteria.where("tradeId").is(targetId));
+            query.addCriteria(Criteria.where("tradeId").is(objectId));
             Update update = new Update();
             Field[] fields = target.getClass().getDeclaredFields();
             Arrays.stream(fields)
                     .forEach(field -> {
                         try {
                             field.setAccessible(true);
-                            Object newValue = field.get(overrides);
+                            Object newValue = field.get(upsertObject);
                             //TODO: should filter and log only changed field values, not all.
                             log.info(format("Updating field '%s' to: %s", field.getName(), newValue));
                             update.set(field.getName(), newValue);
@@ -71,7 +71,7 @@ public class TradeDAO extends DAO<Trade> {
                     });
             mongoTemplate.upsert(query, update, Order.class);
         }
-        Trade trade = getById(targetId);
+        Trade trade = getById(objectId);
         log.info(format("Successfully created/updated trade %s", trade));
     }
 

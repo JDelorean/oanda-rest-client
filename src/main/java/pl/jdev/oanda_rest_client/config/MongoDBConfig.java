@@ -9,6 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
+import pl.jdev.oanda_rest_client.domain.pricing.Price;
 import pl.jdev.oanda_rest_client.domain.transaction.Transaction;
 
 @Configuration
@@ -22,13 +23,24 @@ public class MongoDBConfig {
     @Bean
     @Autowired
     public MongoTemplate mongoTemplate(@Value("${mongodb.name}") String dbName,
-                                       @Value("${transaction.ttl.sec}") String transactionTTL,
+                                       @Value("${transaction.ttl.enabled}") boolean isTransactionTtlEnabled,
+                                       @Value("${transaction.ttl.sec}") String transactionTtlSec,
+                                       @Value("${pricing.ttl.enabled}") boolean isPricingTtlEnabled,
+                                       @Value("${pricing.ttl.sec}") String pricingTtlSec,
                                        MongoClient mongoClient) {
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, dbName);
-        mongoTemplate.indexOps(Transaction.class)
-                .ensureIndex(new Index()
-                        .on("_modifiedDate", Sort.Direction.ASC)
-                        .expire(Integer.valueOf(transactionTTL)));
+        if (isTransactionTtlEnabled) {
+            mongoTemplate.indexOps(Transaction.class)
+                    .ensureIndex(new Index()
+                            .on("_modifiedDate", Sort.Direction.ASC)
+                            .expire(Integer.valueOf(transactionTtlSec)));
+        }
+        if (isPricingTtlEnabled) {
+            mongoTemplate.indexOps(Price.class)
+                    .ensureIndex(new Index()
+                            .on("_modifiedDate", Sort.Direction.ASC)
+                            .expire(Integer.valueOf(pricingTtlSec)));
+        }
         return mongoTemplate;
     }
 }

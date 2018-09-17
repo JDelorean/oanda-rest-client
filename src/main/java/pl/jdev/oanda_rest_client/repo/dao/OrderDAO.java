@@ -43,22 +43,22 @@ public class OrderDAO extends DAO<Order> {
     }
 
     @Override
-    public void upsert(String targetId, Order overrides) {
-        Order targetOrder = getById(targetId);
+    public void upsert(String objectId, Order upsertObject) {
+        Order targetOrder = getById(objectId);
         if (targetOrder == null) {
-            log.info(format("No order entry with id: %s. Inserting into DB...", targetId));
-            mongoTemplate.save(overrides);
+            log.info(format("No order entry with id: %s. Inserting into DB...", objectId));
+            mongoTemplate.save(upsertObject);
         } else {
-            log.info(format("Upserting order %s with %s...", targetId, overrides));
+            log.info(format("Upserting order %s with %s...", objectId, upsertObject));
             Query query = new Query();
-            query.addCriteria(Criteria.where("orderId").is(targetId));
+            query.addCriteria(Criteria.where("orderId").is(objectId));
             Update update = new Update();
             Field[] fields = targetOrder.getClass().getDeclaredFields();
             Arrays.stream(fields)
                     .forEach(field -> {
                         try {
                             field.setAccessible(true);
-                            Object newValue = field.get(overrides);
+                            Object newValue = field.get(upsertObject);
                             //TODO: should filter and log only changed field values, not all.
                             log.info(format("Updating field '%s' to: %s", field.getName(), newValue));
                             update.set(field.getName(), newValue);
@@ -70,7 +70,7 @@ public class OrderDAO extends DAO<Order> {
                     });
             mongoTemplate.upsert(query, update, Order.class);
         }
-        Order order = getById(targetId);
+        Order order = getById(objectId);
         log.info(format("Successfully created/updated order %s", order));
     }
 

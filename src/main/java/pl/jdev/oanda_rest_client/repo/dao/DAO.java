@@ -19,7 +19,7 @@ public abstract class DAO<E extends AbstractEntity> {
 
     public abstract void insert(E object);
 
-    public abstract void upsert(String targetId, E overrides);
+    public abstract void upsert(String objectId, E upsertObject);
 
     public abstract boolean containsObjectIds(Collection<String> ids);
 }

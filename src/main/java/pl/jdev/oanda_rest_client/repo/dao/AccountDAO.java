@@ -45,22 +45,22 @@ public class AccountDAO extends DAO<Account> {
 
     }
 
-    public void upsert(String targetId, Account overrides) {
-        Account targetAccount = getById(targetId);
+    public void upsert(String objectId, Account upsertObject) {
+        Account targetAccount = getById(objectId);
         if (targetAccount == null) {
-            log.info(String.format("No account entry with id: %s. Inserting into DB...", targetId));
-            mongoTemplate.save(overrides);
+            log.info(String.format("No account entry with id: %s. Inserting into DB...", objectId));
+            mongoTemplate.save(upsertObject);
         } else {
-            log.info(String.format("Upserting account %s with %s...", targetId, overrides));
+            log.info(String.format("Upserting account %s with %s...", objectId, upsertObject));
             Query query = new Query();
-            query.addCriteria(Criteria.where("accountId").is(targetId));
+            query.addCriteria(Criteria.where("accountId").is(objectId));
             Update update = new Update();
             Field[] fields = targetAccount.getClass().getDeclaredFields();
             Arrays.stream(fields)
                     .forEach(field -> {
                         try {
                             field.setAccessible(true);
-                            Object newValue = field.get(overrides);
+                            Object newValue = field.get(upsertObject);
                             //TODO: should filter and log only changed field values, not all.
                             log.info(String.format("Updating field '%s' to: %s", field.getName(), newValue));
                             update.set(field.getName(), newValue);
@@ -72,7 +72,7 @@ public class AccountDAO extends DAO<Account> {
                     });
             mongoTemplate.upsert(query, update, Account.class);
         }
-        Account account = getById(targetId);
+        Account account = getById(objectId);
         log.info(String.format("Successfully created/updated account %s", account));
     }
 

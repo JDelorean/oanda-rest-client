@@ -22,7 +22,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Service
-@Log
+@Log(topic = "CORE - Transaction")
 public class OandaTransactionService extends AbstractOandaService<Transaction> {
     @Autowired
     private TransactionDAL repository;
@@ -67,7 +67,8 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
         }
         Transaction transaction = this.restTemplate
                 .exchange(fromPath(urls.SINGLE_TRANSACTION_URL)
-                                .build(accountId, transactionId),
+                                .buildAndExpand(accountId, transactionId)
+                                .toString(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionWrapper.class)
@@ -77,7 +78,7 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
     }
 
     public Collection<Transaction> getTransactionsIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
-        return this.restTemplate
+        Collection<Transaction> transactions = this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_ID_RANGE_URL)
                                 .queryParam("from", fromTransaction)
                                 .queryParam("to", toTransaction)
@@ -88,10 +89,11 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                         JsonTransactionListWrapper.class)
                 .getBody()
                 .getTransactions();
+        return repository.upsertMulti(transactions);
     }
 
     public Collection<Transaction> getTransactionsSinceId(String accountId, Integer sinceTransaction) {
-        return this.restTemplate
+        Collection<Transaction> transactions = this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_SINCE_ID_URL)
                                 .queryParam("id", sinceTransaction)
                                 .buildAndExpand(accountId)
@@ -100,6 +102,7 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionListWrapper.class)
                 .getBody().getTransactions();
+        return repository.upsertMulti(transactions);
     }
 
     public Transaction subscribeToStream(String accountId) {

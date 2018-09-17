@@ -22,7 +22,7 @@ import static org.springframework.http.HttpMethod.*;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
-@Log
+@Log(topic = "CORE - Order")
 public class OandaOrderService extends AbstractOandaService<Order> {
     @Autowired
     private OrderDAL repository;

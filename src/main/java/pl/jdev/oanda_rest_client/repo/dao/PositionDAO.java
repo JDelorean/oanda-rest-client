@@ -41,7 +41,7 @@ public class PositionDAO extends DAO<Position> {
     }
 
     @Override
-    public void upsert(String targetId, Position overrides) {
+    public void upsert(String objectId, Position upsertObject) {
     }
 
     @Override

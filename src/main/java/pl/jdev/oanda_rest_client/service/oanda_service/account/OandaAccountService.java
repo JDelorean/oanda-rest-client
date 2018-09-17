@@ -20,7 +20,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
-@Log
+@Log(topic = "CORE - Account")
 public class OandaAccountService extends AbstractOandaService<Account> {
     @Autowired
     private AccountDAL repository;

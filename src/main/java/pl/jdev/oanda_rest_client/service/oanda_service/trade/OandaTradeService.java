@@ -25,7 +25,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 
 @Component
-@Log
+@Log(topic = "CORE - Trade")
 public class OandaTradeService extends AbstractOandaService<Trade> {
     @Autowired
     private TradeDAL repository;
