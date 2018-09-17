@@ -24,10 +24,10 @@ public abstract class AbstractEntity implements Persistable<ObjectId> {
     ObjectId _id;
     @JsonIgnore
     @CreatedDate
-    Date _documentCreatedTime;
+    Date _createdDate;
     @JsonIgnore
     @LastModifiedDate
-    Date _documentModifiedTime;
+    Date _modifiedDate;
     @JsonIgnore
     @Transient
     private boolean _persisted;

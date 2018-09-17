@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.service.data_access_layer;
+package pl.jdev.oanda_rest_client.repo.dal;
 
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,7 @@ import java.util.Collection;
 @Log(topic = "DB - Account")
 public class AccountDAL extends DAL<Account> {
     @Override
-    public Account get(String id) {
+    public Account get(String extObjectId) {
         return null;
     }
 
@@ -20,22 +20,22 @@ public class AccountDAL extends DAL<Account> {
     }
 
     @Override
-    public Account upsert(String objectId, Account upsertObject) {
+    public Account upsert(String extObjectId, Account upsertObject) {
         return null;
     }
 
     @Override
-    public boolean remove(String ObjectId) {
+    public boolean remove(String extObjectId) {
         return false;
     }
 
     @Override
-    public boolean containsObjectId(String objectId) {
+    public boolean containsObjectId(String extObjectId) {
         return false;
     }
 
     @Override
-    public boolean containsObjectIds(Collection<String> objectIds) {
+    public boolean containsObjectIds(Collection<String> extObjectIds) {
         return false;
     }
 }

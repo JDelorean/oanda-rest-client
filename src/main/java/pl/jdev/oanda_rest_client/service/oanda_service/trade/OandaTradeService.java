@@ -11,7 +11,7 @@ import pl.jdev.oanda_rest_client.domain.ClientExtensions;
 import pl.jdev.oanda_rest_client.domain.trade.Trade;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTradeListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTradeWrapper;
-import pl.jdev.oanda_rest_client.service.data_access_layer.TradeDAL;
+import pl.jdev.oanda_rest_client.repo.dal.TradeDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.List;

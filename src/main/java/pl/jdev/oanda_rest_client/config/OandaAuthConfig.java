@@ -8,9 +8,9 @@ import static java.lang.String.join;
 
 @Configuration
 public class OandaAuthConfig {
-    @Value("${orc.request.auth.prefix}")
+    @Value("${opes.request.auth.prefix}")
     private String prefix;
-    @Value("${orc.request.auth.token}")
+    @Value("${opes.request.auth.token}")
     private String token;
 
     @Bean

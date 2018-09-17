@@ -9,10 +9,10 @@ import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.transaction.Transaction;
 import pl.jdev.oanda_rest_client.domain.transaction.TransactionType;
+import pl.jdev.oanda_rest_client.repo.dal.TransactionDAL;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionRerouteWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonTransactionWrapper;
-import pl.jdev.oanda_rest_client.service.data_access_layer.TransactionDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.Collection;
@@ -25,7 +25,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 @Log
 public class OandaTransactionService extends AbstractOandaService<Transaction> {
     @Autowired
-    private TransactionDAL database;
+    private TransactionDAL repository;
 
     @Autowired
     public OandaTransactionService(MultiValueMap<String, String> headers,
@@ -35,13 +35,14 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
     }
 
     public Collection<Transaction> getTransactionList(String accountId, String fromDate, String toDate, String pageSize, TransactionType[] transactionTypes) {
+        log.info(this.restTemplate.toString());
         String rerouteUrl = this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_LIST_URL)
                                 .queryParam("from", fromDate)
                                 .queryParam("to", toDate)
                                 .queryParam("pageSize", pageSize)
                                 .queryParam("type", transactionTypes)
-                                .build(accountId)
+                                .buildAndExpand(accountId)
                                 .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
@@ -50,38 +51,37 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                 .getPages()
                 .get(0);
         //TODO: ^^ will only fetch the first page. Need to provide a solution for multiple pages.
-        return this.restTemplate
+        Collection<Transaction> transactions = this.restTemplate
                 .exchange(rerouteUrl,
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionListWrapper.class)
                 .getBody()
                 .getTransactions();
+        return repository.upsertMulti(transactions);
     }
 
     public Transaction getTransaction(String accountId, String transactionId) {
-        if (database.containsObjectId(transactionId)) {
-            return database.get(transactionId);
+        if (repository.containsObjectId(transactionId)) {
+            return repository.get(transactionId);
         }
         Transaction transaction = this.restTemplate
                 .exchange(fromPath(urls.SINGLE_TRANSACTION_URL)
-                                .build(accountId, transactionId)
-                                .getPath(),
+                                .build(accountId, transactionId),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionWrapper.class)
                 .getBody()
                 .getTransaction();
-        return database.upsert(transactionId, transaction);
+        return repository.upsert(transactionId, transaction);
     }
 
-    public Collection<Transaction> getTransactionIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
+    public Collection<Transaction> getTransactionsIdRange(String accountId, Integer fromTransaction, Integer toTransaction) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_ID_RANGE_URL)
                                 .queryParam("from", fromTransaction)
                                 .queryParam("to", toTransaction)
-                                .build(accountId)
-                                .getPath(),
+                                .build(accountId),
                         GET,
                         new HttpEntity<>(EMPTY, this.headers),
                         JsonTransactionListWrapper.class)
@@ -89,7 +89,7 @@ public class OandaTransactionService extends AbstractOandaService<Transaction> {
                 .getTransactions();
     }
 
-    public Collection<Transaction> getTransactionSinceId(String accountId, Integer sinceTransaction) {
+    public Collection<Transaction> getTransactionsSinceId(String accountId, Integer sinceTransaction) {
         return this.restTemplate
                 .exchange(fromPath(urls.TRANSACTION_SINCE_ID_URL)
                                 .queryParam("id", sinceTransaction)

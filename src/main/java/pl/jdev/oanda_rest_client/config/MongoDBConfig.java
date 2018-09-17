@@ -22,12 +22,12 @@ public class MongoDBConfig {
     @Bean
     @Autowired
     public MongoTemplate mongoTemplate(@Value("${mongodb.name}") String dbName,
-                                       @Value("${transaction.ttl}") String transactionTTL,
+                                       @Value("${transaction.ttl.sec}") String transactionTTL,
                                        MongoClient mongoClient) {
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, dbName);
         mongoTemplate.indexOps(Transaction.class)
                 .ensureIndex(new Index()
-                        .on("_documentCreatedTime", Sort.Direction.ASC)
+                        .on("_modifiedDate", Sort.Direction.ASC)
                         .expire(Integer.valueOf(transactionTTL)));
         return mongoTemplate;
     }

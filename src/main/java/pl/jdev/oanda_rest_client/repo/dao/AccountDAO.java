@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.repo;
+package pl.jdev.oanda_rest_client.repo.dao;
 
 import lombok.extern.java.Log;
 import org.bson.types.ObjectId;

@@ -43,7 +43,7 @@ public class RestConfig {
                 .additionalInterceptors(restInterceptors)
                 .messageConverters(messageConverter)
                 .build();
-        rt.setRequestFactory((ClientHttpRequestFactory) ctx.getBean("requestFactory"));
+        rt.setRequestFactory(requestFactory());
         return rt;
     }
 

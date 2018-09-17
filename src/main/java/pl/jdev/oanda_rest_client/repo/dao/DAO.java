@@ -1,4 +1,4 @@
-package pl.jdev.oanda_rest_client.repo;
+package pl.jdev.oanda_rest_client.repo.dao;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

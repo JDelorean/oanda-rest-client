@@ -40,15 +40,15 @@ public class TransactionController {
     @GetMapping("/idrange")
     @ResponseBody
     public JsonTransactionListWrapper getTransactionListIdRange(@Valid @PathVariable(name = "accountId") final String accountId,
-                                                                @Min(1) @RequestParam(value = "from", required = false) final Integer from,
-                                                                @RequestParam(value = "to", required = false) final Integer to) {
-        return JsonTransactionListWrapper.payloadOf(oandaTransactionService.getTransactionIdRange(accountId, from, to));
+                                                                @Min(1) @RequestParam(value = "from") final Integer from,
+                                                                @RequestParam(value = "to") final Integer to) {
+        return JsonTransactionListWrapper.payloadOf(oandaTransactionService.getTransactionsIdRange(accountId, from, to));
     }
 
     @GetMapping("/sinceid")
     @ResponseBody
     public JsonTransactionListWrapper getTransactionListSinceId(@Valid @PathVariable(name = "accountId") final String accountId,
-                                                                @Min(1) @RequestParam(value = "id", required = false) final Integer id) {
-        return JsonTransactionListWrapper.payloadOf(oandaTransactionService.getTransactionSinceId(accountId, id));
+                                                                @Min(1) @RequestParam(value = "id") final Integer id) {
+        return JsonTransactionListWrapper.payloadOf(oandaTransactionService.getTransactionsSinceId(accountId, id));
     }
 }

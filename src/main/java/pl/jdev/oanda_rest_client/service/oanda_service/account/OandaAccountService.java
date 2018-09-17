@@ -8,9 +8,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.account.Account;
+import pl.jdev.oanda_rest_client.repo.dal.AccountDAL;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonAccountWrapper;
-import pl.jdev.oanda_rest_client.service.data_access_layer.AccountDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.Collection;
@@ -56,7 +56,9 @@ public class OandaAccountService extends AbstractOandaService<Account> {
      */
     public Account getAccount(String accountId) {
         Account account = this.restTemplate
-                .exchange(fromPath(urls.SINGLE_ACCOUNT_URL).build(accountId).getPath(),
+                .exchange(fromPath(urls.SINGLE_ACCOUNT_URL)
+                                .build(accountId)
+                                .getPath(),
                         GET,
                         new HttpEntity<>(EMPTY, headers),
                         JsonAccountWrapper.class)

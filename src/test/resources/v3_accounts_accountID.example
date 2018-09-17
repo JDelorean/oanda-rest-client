@@ -4,7 +4,7 @@
     "alias": "My New Account #2", 
     "balance": "43650.78835", 
     "createdByUserID": <USERID>, 
-    "_documentCreatedTime": "2015-08-12T18:21:00.697504698Z",
+    "_createdDate": "2015-08-12T18:21:00.697504698Z",
     "currency": "CHF", 
     "hedgingEnabled": false, 
     "accountId": "<ACCOUNT>",

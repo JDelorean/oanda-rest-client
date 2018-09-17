@@ -10,7 +10,7 @@ import pl.jdev.oanda_rest_client.config.Urls;
 import pl.jdev.oanda_rest_client.domain.order.Order;
 import pl.jdev.oanda_rest_client.domain.order.OrderRequest;
 import pl.jdev.oanda_rest_client.rest.json.wrapper.JsonOrderListWrapper;
-import pl.jdev.oanda_rest_client.service.data_access_layer.OrderDAL;
+import pl.jdev.oanda_rest_client.repo.dal.OrderDAL;
 import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.List;
