@@ -10,5 +10,6 @@ import java.util.Collection;
 @Data
 @AllArgsConstructor(staticName = "payloadOf", onConstructor = @__({@JsonCreator}))
 public class JsonPricingListWrapper {
+    private String time;
     private Collection<Price> prices;
 }

@@ -3,6 +3,7 @@ package pl.jdev.oanda_rest_client.domain.trade;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.annotation.TypeAlias;
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 import pl.jdev.oanda_rest_client.domain.ClientExtensions;
 
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 @Builder
+@TypeAlias("trade")
 public class Trade extends AbstractEntity implements Serializable {
 
     public enum TradeState {

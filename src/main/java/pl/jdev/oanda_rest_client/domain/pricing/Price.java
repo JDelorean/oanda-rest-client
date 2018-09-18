@@ -1,17 +1,15 @@
 package pl.jdev.oanda_rest_client.domain.pricing;
 
 import lombok.Data;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
 import java.util.Collection;
 
 @Data
+@TypeAlias("price")
 public class Price extends AbstractEntity {
-    @Deprecated
-    enum PriceStatus {
-        TRADEABLE, NON_TRADABLE, INVALID;
-    }
 
     private String price;
     @Indexed
