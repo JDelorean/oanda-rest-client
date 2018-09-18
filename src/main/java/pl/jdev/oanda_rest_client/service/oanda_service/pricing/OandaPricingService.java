@@ -2,7 +2,10 @@ package pl.jdev.oanda_rest_client.service.oanda_service.pricing;
 
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -14,15 +17,20 @@ import pl.jdev.oanda_rest_client.service.oanda_service.AbstractOandaService;
 
 import java.util.Collection;
 
+import static java.lang.String.format;
+import static java.lang.String.join;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
+@PropertySource("classpath:default.user.preferences")
 @Log(topic = "CORE - Pricing")
 public class OandaPricingService extends AbstractOandaService<Price> {
     @Autowired
     PricingDAL repository;
+    @Autowired
+    ApplicationContext ctx;
 
     @Autowired
     public OandaPricingService(MultiValueMap headers, RestTemplate restTemplate, Urls urls) {
@@ -36,7 +44,7 @@ public class OandaPricingService extends AbstractOandaService<Price> {
                                        boolean includeHomeConversions) {
         Collection<Price> prices = this.restTemplate
                 .exchange(fromPath(urls.PRICING_URL)
-                                .queryParam("instruments", String.join(",", instruments))
+                                .queryParam("instruments", join(",", instruments))
                                 .queryParam("since", since)
                                 .queryParam("includeUnitsAvailable", includeUnitsAvailable)
                                 .queryParam("includeHomeConversions", includeHomeConversions)
@@ -50,4 +58,22 @@ public class OandaPricingService extends AbstractOandaService<Price> {
         return repository.upsertMulti(prices);
     }
 
+    @Scheduled(cron = "${pricing.interval}")
+    private void fetchPricesAtInterval() {
+        String accountId = (String) ctx.getBean("accountId");
+        Collection<String> currencyPairs = (Collection<String>) ctx.getBean("currencyPairs");
+        log.info(format("Fetching prices for currency pairs %s...", join(", ", currencyPairs)));
+        Collection<Price> prices = this.restTemplate
+                .exchange(fromPath(urls.PRICING_URL)
+                                .queryParam("instruments", join(",", currencyPairs))
+                                .buildAndExpand(accountId)
+                                .toString(),
+                        GET,
+                        new HttpEntity<>(EMPTY, this.headers),
+                        JsonPricingListWrapper.class)
+                .getBody()
+                .getPrices();
+        log.info(format("Received prices %s", prices));
+        repository.upsertMulti(prices);
+    }
 }

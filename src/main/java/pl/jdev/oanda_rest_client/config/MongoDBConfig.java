@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.index.Index;
 import pl.jdev.oanda_rest_client.domain.pricing.Price;
 import pl.jdev.oanda_rest_client.domain.transaction.Transaction;
 
+import static java.lang.Integer.valueOf;
+
 @Configuration
 @PropertySource("classpath:mongodb.properties")
 public class MongoDBConfig {
@@ -29,17 +31,14 @@ public class MongoDBConfig {
                                        @Value("${pricing.ttl.sec}") String pricingTtlSec,
                                        MongoClient mongoClient) {
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, dbName);
+        Index ttlIndex = new Index().on("_modifiedDate", Sort.Direction.ASC);
         if (isTransactionTtlEnabled) {
             mongoTemplate.indexOps(Transaction.class)
-                    .ensureIndex(new Index()
-                            .on("_modifiedDate", Sort.Direction.ASC)
-                            .expire(Integer.valueOf(transactionTtlSec)));
+                    .ensureIndex(ttlIndex.expire(valueOf(transactionTtlSec)));
         }
         if (isPricingTtlEnabled) {
             mongoTemplate.indexOps(Price.class)
-                    .ensureIndex(new Index()
-                            .on("_modifiedDate", Sort.Direction.ASC)
-                            .expire(Integer.valueOf(pricingTtlSec)));
+                    .ensureIndex(ttlIndex.expire(valueOf(pricingTtlSec)));
         }
         return mongoTemplate;
     }
