@@ -25,19 +25,19 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Configuration
 public class RestConfig {
     @Autowired
-    private ApplicationContext ctx;
+    ApplicationContext ctx;
 
     @Bean
-    public ModelMapper modelMapper() {
+    ModelMapper modelMapper() {
         return new ModelMapper();
     }
 
     @Bean
     @DependsOn({"baseUrl", "requestFactory"})
     @Autowired
-    public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
-                                     List<ClientHttpRequestInterceptor> restInterceptors,
-                                     MappingJackson2HttpMessageConverter messageConverter) {
+    RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
+                              List<ClientHttpRequestInterceptor> restInterceptors,
+                              MappingJackson2HttpMessageConverter messageConverter) {
         RestTemplate rt = restTemplateBuilder
                 .rootUri((String) ctx.getBean("baseUrl"))
                 .additionalInterceptors(restInterceptors)
@@ -48,14 +48,14 @@ public class RestConfig {
     }
 
     @Bean
-    public ClientHttpRequestFactory requestFactory() {
+    ClientHttpRequestFactory requestFactory() {
         return new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory());
     }
 
     @Bean
     @DependsOn({"auth"})
-    public MultiValueMap<String, String> headers() {
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap();
+    MultiValueMap<String, String> headers() {
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
         headers.add(AUTHORIZATION, (String) ctx.getBean("auth"));
         headers.add(CONTENT_TYPE, APPLICATION_JSON.toString());
         return headers;

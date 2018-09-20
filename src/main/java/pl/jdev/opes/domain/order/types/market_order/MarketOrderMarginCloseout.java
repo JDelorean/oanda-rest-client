@@ -7,7 +7,7 @@ import lombok.Data;
 public class MarketOrderMarginCloseout {
 
     public enum MarketOrderMarginCloseoutReason {
-        MARGIN_CHECK_VIOLATION, REGULATORY_MARGIN_CALL_VIOLATION;
+        MARGIN_CHECK_VIOLATION, REGULATORY_MARGIN_CALL_VIOLATION
     }
 
     private MarketOrderMarginCloseoutReason reason;

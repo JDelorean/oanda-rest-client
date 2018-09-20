@@ -19,7 +19,7 @@ public class MarketOrderRequest extends OrderRequest {
     private String instrument;
     @NotNull
     @Digits(fraction = 6, integer = 6)
-    private long units;
+    private Long units;
     @SupportedTimeInForce
     private TimeInForce timeInForce;
     private String priceBound;

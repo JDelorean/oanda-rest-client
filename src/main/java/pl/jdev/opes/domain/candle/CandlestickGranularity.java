@@ -85,5 +85,5 @@ public enum CandlestickGranularity {
 	/**
 	 * 1 month candlesticks, aligned to first day of the month
 	 */
-	M;
+	M
 }

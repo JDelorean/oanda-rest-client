@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class MarketOrderDelayedTradeClose {
+class MarketOrderDelayedTradeClose {
     private String tradeID;
     private String clientTradeID;
     private String units;

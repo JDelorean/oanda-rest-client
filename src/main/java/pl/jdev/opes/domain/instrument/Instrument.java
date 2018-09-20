@@ -7,11 +7,11 @@ import pl.jdev.opes.domain.AbstractEntity;
 public class Instrument extends AbstractEntity {
 
     enum InstrumentType {
-        CURRENCY, CFD, METAL;
+        CURRENCY, CFD, METAL
     }
 
     @Data
-    class InstrumentCommission {
+    private class InstrumentCommission {
         private String instrument;
         private String commission;
         private String unitsTraded;

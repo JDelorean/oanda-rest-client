@@ -30,7 +30,7 @@ public class AccountController extends AbstractEntityController<Account> {
     @GetMapping(value = "/{accountId}")
     @ResponseBody
     @SneakyThrows
-    public JsonAccountWrapper getAccount(@Valid @PathVariable(required = true) final String accountId) {
+    public JsonAccountWrapper getAccount(@Valid @PathVariable final String accountId) {
         Account account = this.oandaAccountService.getAccount(accountId);
         if (account == null) throw new AccountNotFoundException();
         return JsonAccountWrapper.payloadOf(account);
@@ -38,7 +38,7 @@ public class AccountController extends AbstractEntityController<Account> {
 
     @PutMapping(value = "/{accountId}")
     @ResponseBody
-    public JsonAccountWrapper syncAccount(@Valid @PathVariable(required = true) final String accountId) {
+    public JsonAccountWrapper syncAccount(@Valid @PathVariable final String accountId) {
 //        return JsonAccountWrapper.payloadOf();
         return null;
     }
@@ -46,7 +46,7 @@ public class AccountController extends AbstractEntityController<Account> {
 
     @DeleteMapping(value = "/{accountId}")
     @ResponseBody
-    public JsonAccountWrapper unsyncAccount(@Valid @PathVariable(required = true) final String accountId) {
+    public JsonAccountWrapper unsyncAccount(@Valid @PathVariable final String accountId) {
 //        return JsonAccountWrapper.payloadOf(null);
         return null;
     }
