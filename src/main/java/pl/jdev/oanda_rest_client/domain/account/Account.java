@@ -7,14 +7,13 @@ import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.index.Indexed;
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 
-import java.io.Serializable;
 import java.util.Currency;
 import java.util.Date;
 
 @Data
 @Builder
 @TypeAlias("account")
-public class Account extends AbstractEntity implements Serializable {
+public class Account extends AbstractEntity {
     @Indexed
     @JsonProperty("id")
     private String accountId;

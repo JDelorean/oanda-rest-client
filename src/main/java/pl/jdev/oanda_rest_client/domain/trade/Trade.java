@@ -7,14 +7,13 @@ import org.springframework.data.annotation.TypeAlias;
 import pl.jdev.oanda_rest_client.domain.AbstractEntity;
 import pl.jdev.oanda_rest_client.domain.ClientExtensions;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Data
 @Builder
 @TypeAlias("trade")
-public class Trade extends AbstractEntity implements Serializable {
+public class Trade extends AbstractEntity {
 
     public enum TradeState {
         OPEN, CLOSED, CLOSE_WHEN_TRADEABLE;

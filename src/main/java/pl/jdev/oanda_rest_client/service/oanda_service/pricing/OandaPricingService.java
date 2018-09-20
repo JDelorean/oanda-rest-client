@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
+import org.springframework.integration.channel.PublishSubscribeChannel;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -21,6 +25,7 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static org.springframework.http.HttpEntity.EMPTY;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.messaging.support.MessageBuilder.withPayload;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
@@ -75,5 +80,7 @@ public class OandaPricingService extends AbstractOandaService<Price> {
                 .getPrices();
         log.info(format("Received prices %s", prices));
         repository.upsertMulti(prices);
+        Message<Collection<Price>> priceMsg = withPayload(prices).build();
+        ctx.getBean("pricingEventChannel", PublishSubscribeChannel.class).send(priceMsg);
     }
 }
