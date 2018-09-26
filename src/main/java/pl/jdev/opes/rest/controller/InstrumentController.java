@@ -15,12 +15,12 @@ public class InstrumentController {
     @Autowired
     OandaInstrumentService oandaInstrumentService;
 
-    @GetMapping(value = "/candles")
+    @GetMapping(value = "/candles", params = "count")
     @ResponseBody
-    public JsonCandlestickListWrapper getCandlestrickList(@PathVariable(name = "instrument") final String instrument,
-                                                          @RequestParam(value = "priceType") final CandlestickPriceType priceType,
-                                                          @RequestParam(value = "granularity") final CandlestickGranularity granularity,
-                                                          @RequestParam(value = "count") final Integer count) {
+    public JsonCandlestickListWrapper getCandlestricksWithCount(@PathVariable(name = "instrument") final String instrument,
+                                                                @RequestParam(value = "priceType") final CandlestickPriceType priceType,
+                                                                @RequestParam(value = "granularity") final CandlestickGranularity granularity,
+                                                                @RequestParam(value = "count") final Integer count) {
         return JsonCandlestickListWrapper.payloadOf(
                 oandaInstrumentService.getCandlestickList(instrument,
                         priceType,
@@ -29,13 +29,13 @@ public class InstrumentController {
         );
     }
 
-    @GetMapping(value = "/candles")
+    @GetMapping(value = "/candles", params = "period")
     @ResponseBody
-    public JsonCandlestickListWrapper getCandlestrickList(@PathVariable(name = "instrument") final String instrument,
-                                                          @RequestParam(value = "priceType") final CandlestickPriceType priceType,
-                                                          @RequestParam(value = "granularity") final CandlestickGranularity granularity,
-                                                          @RequestParam(value = "from") final String from,
-                                                          @RequestParam(value = "to") final String to) {
+    public JsonCandlestickListWrapper getCandlestricksWithPeriod(@PathVariable(name = "instrument") final String instrument,
+                                                                 @RequestParam(value = "priceType") final CandlestickPriceType priceType,
+                                                                 @RequestParam(value = "granularity") final CandlestickGranularity granularity,
+                                                                 @RequestParam(value = "from") final String from,
+                                                                 @RequestParam(value = "to") final String to) {
         return JsonCandlestickListWrapper.payloadOf(
                 oandaInstrumentService.getCandlestickList(instrument,
                         priceType,
