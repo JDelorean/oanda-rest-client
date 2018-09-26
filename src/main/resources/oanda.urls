@@ -24,9 +24,9 @@ oanda.url.transaction.id_range=${oanda.url.transaction.list}/idrange
 oanda.url.transaction.since_id=${oanda.url.transaction.list}/sinceid
 oanda.url.transaction.stream=${oanda.url.transaction.list}/stream
 #Instrument endpoints
-oanda.url.instrument.candles=/{instrument}/candles
-oanda.url.instrument.order_book=/{instrument}/orderBook
-oanda.url.instrument.position_book=/{instrument}/positionBook
+oanda.url.instrument.candles=/instruments/{instrument}/candles
+oanda.url.instrument.order_book=/instruments/{instrument}/orderBook
+oanda.url.instrument.position_book=/instruments/{instrument}/positionBook
 #Pricing endpoints
 oanda.url.pricing.list=${oanda.url.account.single}/pricing
 oanda.url.pricing.stream=${oanda.url.pricing.list}/stream

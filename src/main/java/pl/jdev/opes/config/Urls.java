@@ -7,7 +7,6 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:oanda.urls")
-@Getter
 public class Urls {
     @Value("${oanda.url.account.all}")
     public String ACCOUNT_LIST_URL;
@@ -43,6 +42,12 @@ public class Urls {
     public String TRANSACTION_STREAM_URL;
 
     //Instrument
+    @Value("${oanda.url.instrument.candles}")
+    public String CANDLES;
+    @Value("${oanda.url.instrument.order_book}")
+    public String ORDER_BOOK;
+    @Value("${oanda.url.instrument.position_book}")
+    public String POSITION_COOK;
 
     //Pricing
     @Value("${oanda.url.pricing.list}")

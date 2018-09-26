@@ -1,4 +1,4 @@
-package pl.jdev.opes.domain.candle;
+package pl.jdev.opes.domain.instrument;
 
 public enum CandlestickPriceType {
 

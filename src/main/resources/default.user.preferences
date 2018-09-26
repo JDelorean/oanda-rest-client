@@ -1,0 +1,6 @@
+brokers=oanda
+account.id=101-004-5464587-001
+pricing=time-based
+pricing.interval="* * * ? * *"
+currency.display=
+currency.pairs=EUR_USD,GBP_USD
