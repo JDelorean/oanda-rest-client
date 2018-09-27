@@ -61,7 +61,7 @@ public class OandaPricingService extends AbstractOandaService<Price> {
         return repository.upsertMulti(prices);
     }
 
-    @Scheduled(cron = "${pricing.interval}")
+    @Scheduled(cron = "#{${pricing.interval} ?: '0 0 0/1 * * ?'}")
     private void fetchPricesAtInterval() {
         String accountId = (String) ctx.getBean("accountId");
         Collection<String> currencyPairs = (Collection<String>) ctx.getBean("currencyPairs");

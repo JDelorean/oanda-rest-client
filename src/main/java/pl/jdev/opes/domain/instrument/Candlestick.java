@@ -9,15 +9,6 @@ import pl.jdev.opes.domain.AbstractEntity;
 @Builder
 @TypeAlias("candle")
 public class Candlestick extends AbstractEntity {
-
-    @Data
-    private class CandlestickData {
-        private Double o;
-        private Double h;
-        private Double l;
-        private Double c;
-    }
-
     private String time;
     private CandlestickData bid;
     private CandlestickData ask;

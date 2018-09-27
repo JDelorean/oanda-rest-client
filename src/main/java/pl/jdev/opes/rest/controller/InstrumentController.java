@@ -22,7 +22,8 @@ public class InstrumentController {
                                                                 @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                                 @RequestParam(value = "count") final Integer count) {
         return JsonCandlestickListWrapper.payloadOf(
-                oandaInstrumentService.getCandlestickList(instrument,
+                oandaInstrumentService.getCandlestickList(
+                        instrument,
                         priceType,
                         granularity,
                         count)
@@ -37,7 +38,8 @@ public class InstrumentController {
                                                                  @RequestParam(value = "from") final String from,
                                                                  @RequestParam(value = "to") final String to) {
         return JsonCandlestickListWrapper.payloadOf(
-                oandaInstrumentService.getCandlestickList(instrument,
+                oandaInstrumentService.getCandlestickList(
+                        instrument,
                         priceType,
                         granularity,
                         from,
