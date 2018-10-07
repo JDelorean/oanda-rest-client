@@ -1,13 +1,13 @@
 package pl.jdev.opes.repo.dal;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.order.Order;
 
 import java.util.Collection;
 
 @Component
-@Log(topic = "DB - Order")
+@Log4j2(topic = "DB - Order")
 public class OrderDAL extends DAL<Order> {
     @Override
     public Order get(String extObjectId) {

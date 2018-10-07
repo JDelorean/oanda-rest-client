@@ -1,13 +1,13 @@
 package pl.jdev.opes.repo.dal;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.account.Account;
 
 import java.util.Collection;
 
 @Component
-@Log(topic = "DB - Account")
+@Log4j2(topic = "DB - Account")
 public class AccountDAL extends DAL<Account> {
     @Override
     public Account get(String extObjectId) {

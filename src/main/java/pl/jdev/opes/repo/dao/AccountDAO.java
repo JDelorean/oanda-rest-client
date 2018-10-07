@@ -1,6 +1,6 @@
 package pl.jdev.opes.repo.dao;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-@Log(topic = "DB - Account")
+@Log4j2(topic = "DB - Account")
 public class AccountDAO extends DAO<Account> {
     @Override
     public Collection<Account> getAll() {

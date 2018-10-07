@@ -1,14 +1,14 @@
 package pl.jdev.opes.repo.dal;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.trade.Trade;
 
 import java.util.Collection;
 
 @Component
-@Log(topic = "DB - Trade")
-public class TradeDAL extends DAL<Trade>{
+@Log4j2(topic = "DB - Trade")
+public class TradeDAL extends DAL<Trade> {
     @Override
     public Trade get(String extObjectId) {
         return null;

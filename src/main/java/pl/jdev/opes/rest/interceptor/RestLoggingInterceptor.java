@@ -1,6 +1,6 @@
 package pl.jdev.opes.rest.interceptor;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
 import static java.lang.String.format;
 
 @Component
-@Log(topic = "REST")
+@Log4j2(topic = "REST")
 public class RestLoggingInterceptor implements ClientHttpRequestInterceptor {
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {

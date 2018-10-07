@@ -1,6 +1,7 @@
 package pl.jdev.opes.service.oanda_service.trade;
 
 import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
@@ -25,7 +26,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 
 @Component
-@Log(topic = "CORE - Trade")
+@Log4j2(topic = "CORE - Trade")
 public class OandaTradeService extends AbstractOandaService<Trade> {
     @Autowired
     private TradeDAL repository;

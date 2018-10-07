@@ -1,6 +1,6 @@
 package pl.jdev.opes.repo.dal;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.pricing.Price;
 
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-@Log(topic = "DB - Pricing")
+@Log4j2(topic = "DB - Pricing")
 public class PricingDAL extends DAL<Price> {
 
     @Override

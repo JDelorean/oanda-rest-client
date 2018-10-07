@@ -1,6 +1,6 @@
 package pl.jdev.opes.repo.dal;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.transaction.Transaction;
 
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 
 @Component
-@Log(topic = "DB - Transaction")
+@Log4j2(topic = "DB - Transaction")
 public class TransactionDAL extends DAL<Transaction> {
     @Override
     public Transaction get(String extObjectId) {

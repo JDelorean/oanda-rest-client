@@ -1,6 +1,6 @@
 package pl.jdev.opes.rest.controller;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.domain.transaction.TransactionType;
@@ -15,7 +15,7 @@ import javax.validation.constraints.Min;
 
 @RestController
 @RequestMapping("/api/accounts/{accountId}/transactions")
-@Log
+@Log4j2
 public class TransactionController {
     @Autowired
     OandaTransactionService oandaTransactionService;

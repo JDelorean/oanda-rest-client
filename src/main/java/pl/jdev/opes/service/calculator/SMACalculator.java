@@ -1,5 +1,6 @@
 package pl.jdev.opes.service.calculator;
 
+import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import java.text.ParseException;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -22,14 +22,14 @@ import static java.lang.String.format;
  * Simple Moving Average Calculator
  */
 @Component(value = "smaCalculator")
+@Log4j2
 public class SMACalculator {
 
-    Logger logger = LogManager.getLogger(SMACalculator.class);
     @Autowired
     DateFormat dateFormat;
 
     public double calculate(Collection<Candlestick> candles) throws CandlesValidationException {
-        logger.traceEntry(format("Calculating SMA from ", candles.toString()));
+        log.traceEntry(format("Calculating SMA from ", candles.toString()));
 //        log.info(String.format("Calculating SMA based on: %s", candles));
 //        try {
 //            this.validate(candles);
@@ -37,27 +37,26 @@ public class SMACalculator {
 //            log.warning(e.getMessage());
 //            throw e;
 //        }
-        Map<String, CandlestickData> rawCandles = strip(candles);
-        Map<String, CandlestickData> orderedCandles = new TreeMap<>(rawCandles);
+        Map<String, CandlestickData> candleMap = strip(candles);
 
-        double candleCloseSum = orderedCandles.keySet()
+        double candleCloseSum = candleMap.keySet()
                 .stream()
                 .sorted((strDate1, strDate2) -> {
                     int comp = 0;
                     try {
                         comp = dateFormat.parse(strDate1).compareTo(dateFormat.parse(strDate2));
                     } catch (ParseException e) {
-                        logger.error(e.getMessage());
+                        log.error(e.getMessage());
                     }
                     return comp;
                 })
-                .peek(date -> logger.trace(date))
-                .map(orderedCandles::get)
-                .peek(candle -> logger.trace(candle))
+                .peek(date -> log.trace(date))
+                .map(candleMap::get)
+                .peek(candle -> log.trace(candle))
                 .mapToDouble(CandlestickData::getC)
                 .sum();
-        double sma = candleCloseSum / orderedCandles.size();
-        logger.traceExit(format("SMA = %f", sma));
+        double sma = candleCloseSum / candleMap.size();
+        log.traceExit(format("SMA = %f", sma));
         return sma;
     }
 
@@ -80,7 +79,7 @@ public class SMACalculator {
     }
 
     private Map<String, CandlestickData> strip(Collection<Candlestick> candles) {
-        logger.traceEntry(format("Stripping candlesticks %s", candles));
+        log.traceEntry(format("Stripping candlesticks %s", candles));
         Map<String, CandlestickData> stripped = candles.stream()
                 .map(candlestick -> Map.entry(candlestick.getTime(),
                         Optional.ofNullable(candlestick.getAsk())
@@ -88,7 +87,7 @@ public class SMACalculator {
                                         .orElse(Optional.ofNullable(candlestick.getMid())
                                                 .get()))))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        logger.traceExit(format("Stripped to %s", stripped));
+        log.traceExit(format("Stripped to %s", stripped));
         return stripped;
     }
 }

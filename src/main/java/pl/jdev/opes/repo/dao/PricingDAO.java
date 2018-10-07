@@ -1,6 +1,6 @@
 package pl.jdev.opes.repo.dao;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 @Repository
-@Log(topic = "DB - Pricing")
+@Log4j2(topic = "DB - Pricing")
 public class PricingDAO extends DAO<Price> {
     @Override
     public Collection<Price> getAll() {

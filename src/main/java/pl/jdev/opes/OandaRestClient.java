@@ -1,6 +1,6 @@
 package pl.jdev.opes;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @EnableMongoRepositories
 @EnableMongoAuditing
 @EnableScheduling
-@Log
+@Log4j2
 public class OandaRestClient {
 
     public static void main(String[] args) {

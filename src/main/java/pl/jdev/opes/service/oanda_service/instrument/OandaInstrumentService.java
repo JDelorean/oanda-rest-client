@@ -1,7 +1,7 @@
 package pl.jdev.opes.service.oanda_service.instrument;
 
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpEntity;
@@ -25,7 +25,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Service
-@Log(topic = "CORE - Instrument")
+@Log4j2(topic = "CORE - Instrument")
 public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
     @Autowired
     private InstrumentDAL repository;

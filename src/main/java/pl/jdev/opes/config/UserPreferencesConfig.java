@@ -1,6 +1,6 @@
 package pl.jdev.opes.config;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +10,7 @@ import java.util.Collection;
 
 @Configuration
 @PropertySource("classpath:default.user.preferences")
-@Log
+@Log4j2
 public class UserPreferencesConfig {
 
     @Bean

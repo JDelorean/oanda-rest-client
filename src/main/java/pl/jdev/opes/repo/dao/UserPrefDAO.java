@@ -1,9 +1,9 @@
 package pl.jdev.opes.repo.dao;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@Log(topic = "DB - User Preferences")
+@Log4j2(topic = "DB - User Preferences")
 public class UserPrefDAO {
 }

@@ -2,7 +2,7 @@ package pl.jdev.opes.service;
 
 import lombok.Data;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Service
 @Data
-@Log
+@Log4j2
 public class NetworkCheckService {
 
     private RestTemplate restTemplate;

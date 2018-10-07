@@ -1,6 +1,6 @@
 package pl.jdev.opes.service.oanda_service.account;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
-@Log(topic = "CORE - Account")
+@Log4j2(topic = "CORE - Account")
 public class OandaAccountService extends AbstractOandaService<Account> {
     @Autowired
     private AccountDAL repository;

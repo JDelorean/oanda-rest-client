@@ -1,6 +1,6 @@
 package pl.jdev.opes.service.oanda_service.order;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ import static org.springframework.http.HttpMethod.*;
 import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
-@Log(topic = "CORE - Order")
+@Log4j2(topic = "CORE - Order")
 public class OandaOrderService extends AbstractOandaService<Order> {
     @Autowired
     private OrderDAL repository;

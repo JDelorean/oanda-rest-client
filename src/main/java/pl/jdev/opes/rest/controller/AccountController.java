@@ -1,7 +1,7 @@
 package pl.jdev.opes.rest.controller;
 
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.domain.account.Account;
@@ -14,7 +14,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/accounts")
-@Log
+@Log4j2
 public class AccountController extends AbstractEntityController<Account> {
 
     @Autowired

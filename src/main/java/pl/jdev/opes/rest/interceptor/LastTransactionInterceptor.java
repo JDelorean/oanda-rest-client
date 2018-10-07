@@ -1,6 +1,6 @@
 package pl.jdev.opes.rest.interceptor;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-@Log
+@Log4j2
 public class LastTransactionInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -22,7 +22,7 @@ public class LastTransactionInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         byte[] body = {};
         IOUtils.readFully(request.getInputStream(), body);
-        log.fine(body.toString());
+        log.trace(body.toString());
         return false;
     }
 

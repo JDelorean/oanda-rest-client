@@ -1,6 +1,6 @@
 package pl.jdev.opes.service.oanda_service.pricing;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.PropertySource;
@@ -28,7 +28,7 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 
 @Component
 @PropertySource("classpath:default.user.preferences")
-@Log(topic = "CORE - Pricing")
+@Log4j2(topic = "CORE - Pricing")
 public class OandaPricingService extends AbstractOandaService<Price> {
     @Autowired
     PricingDAL repository;

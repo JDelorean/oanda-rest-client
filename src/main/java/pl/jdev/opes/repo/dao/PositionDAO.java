@@ -1,6 +1,6 @@
 package pl.jdev.opes.repo.dao;
 
-import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -12,7 +12,7 @@ import java.util.Collection;
 import static java.lang.String.format;
 
 @Repository
-@Log(topic = "DB - Position")
+@Log4j2(topic = "DB - Position")
 public class PositionDAO extends DAO<Position> {
     @Override
     public Collection<Position> getAll() {
