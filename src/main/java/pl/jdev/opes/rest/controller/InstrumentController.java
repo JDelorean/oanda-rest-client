@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes.rest.json.wrapper.JsonCandlestickListWrapper;
+import pl.jdev.opes.rest.json.wrapper.JsonSMAListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonSMAWrapper;
 import pl.jdev.opes.service.oanda_service.instrument.OandaInstrumentService;
 
@@ -48,12 +49,22 @@ public class InstrumentController {
         );
     }
 
-    @GetMapping(value = "/sma")
+    @GetMapping(value = "/sma", params = "count")
     @ResponseBody
     public JsonSMAWrapper getSmaWithCount(@PathVariable(name = "instrument") final String instrument,
                                           @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                           @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                           @RequestParam(value = "count") final Integer count) {
-        return JsonSMAWrapper.payloadOf(oandaInstrumentService.getSmaList(instrument, priceType, granularity, count));
+        return JsonSMAWrapper.payloadOf(oandaInstrumentService.getSma(instrument, priceType, granularity, count));
+    }
+
+    @GetMapping(value = "/sma", params = {"numOfSMAs", "lenOfPeriods"})
+    @ResponseBody
+    public JsonSMAListWrapper getSmaListWithPeriods(@PathVariable(name = "instrument") final String instrument,
+                                                    @RequestParam(value = "priceType") final CandlestickPriceType priceType,
+                                                    @RequestParam(value = "granularity") final CandlestickGranularity granularity,
+                                                    @RequestParam(value = "numOfSMAs") final Integer numOfSMAs,
+                                                    @RequestParam(value = "lenOfPeriods") final Integer lenOfPeriods) {
+        return JsonSMAListWrapper.payloadOf(oandaInstrumentService.getSmaList(instrument, priceType, granularity, numOfSMAs, lenOfPeriods));
     }
 }

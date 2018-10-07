@@ -18,6 +18,7 @@ import pl.jdev.opes.service.calculator.SMACalculator;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
 
 import java.util.Collection;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpEntity.EMPTY;
@@ -66,26 +67,24 @@ public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
     }
 
     @SneakyThrows
-    public Double getSmaList(String instrument,
-                             CandlestickPriceType priceType,
-                             CandlestickGranularity granularity,
-                             int count) {
+    public Map<String, Double> getSma(String instrument,
+                                      CandlestickPriceType priceType,
+                                      CandlestickGranularity granularity,
+                                      int count) {
         Collection<Candlestick> candles = this.getCandlestickList(instrument, priceType, granularity, count);
-        Double sma = ctx.getBean("smaCalculator", SMACalculator.class).calculate(candles);
-        return sma;
+        return ctx.getBean("smaCalculator", SMACalculator.class).calculate(candles);
     }
 
-//    String instrument,
-//    CandlestickPriceType priceType,
-//    CandlestickGranularity granularity,
-//    int count,
-//    String from,
-//    String to,
-//    boolean smooth,
-//    boolean includeFirst,
-//    int dailyAlignment,
-//    String alignmentTimezone,
-//    DayOfWeek weeklyAlignment
+    @SneakyThrows
+    public Map<String, Double> getSmaList(String instrument,
+                                          CandlestickPriceType priceType,
+                                          CandlestickGranularity granularity,
+                                          int numOfSMAs,
+                                          int lenOfPeriods) {
+        int count = numOfSMAs + lenOfPeriods + 1;
+        Collection<Candlestick> candles = this.getCandlestickList(instrument, priceType, granularity, count);
+        return ctx.getBean("smaCalculator", SMACalculator.class).calculate(candles, numOfSMAs, lenOfPeriods);
+    }
 
     private Collection<Candlestick> getCandlestickList(String uri) {
         return requireNonNull(this.restTemplate

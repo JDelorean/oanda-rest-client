@@ -1,8 +1,8 @@
 package pl.jdev.opes.service.calculator;
 
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.commons.collections4.map.LinkedMap;
+import org.apache.commons.math3.util.Precision;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.instrument.Candlestick;
@@ -28,8 +28,16 @@ public class SMACalculator {
     @Autowired
     DateFormat dateFormat;
 
-    public double calculate(Collection<Candlestick> candles) throws CandlesValidationException {
-        log.traceEntry(format("Calculating SMA from ", candles.toString()));
+    /**
+     * Will calculate and return the SMA date and SMA value for the last period of the provided candlesticks using the formula:
+     * (closePriceOfCandle1 + closePriceOfCandle2 + ... + closePriceOfCandleN) / N
+     *
+     * @param candles Candlesticks to calculate the SMA based on.
+     * @return Map with single entry of (key) date the SMA has been calculated for and (value) SMA for the last period of the provided candlesticks based on their number.
+     * @throws CandlesValidationException
+     */
+    public Map<String, Double> calculate(Collection<Candlestick> candles) throws CandlesValidationException {
+        log.traceEntry(format("Calculating SMA from %s", candles.toString()));
 //        log.info(String.format("Calculating SMA based on: %s", candles));
 //        try {
 //            this.validate(candles);
@@ -38,28 +46,52 @@ public class SMACalculator {
 //            throw e;
 //        }
         Map<String, CandlestickData> candleMap = strip(candles);
-
-        double candleCloseSum = candleMap.keySet()
-                .stream()
-                .sorted((strDate1, strDate2) -> {
-                    int comp = 0;
-                    try {
-                        comp = dateFormat.parse(strDate1).compareTo(dateFormat.parse(strDate2));
-                    } catch (ParseException e) {
-                        log.error(e.getMessage());
-                    }
-                    return comp;
-                })
-                .peek(date -> log.trace(date))
-                .map(candleMap::get)
-                .peek(candle -> log.trace(candle))
-                .mapToDouble(CandlestickData::getC)
-                .sum();
-        double sma = candleCloseSum / candleMap.size();
-        log.traceExit(format("SMA = %f", sma));
-        return sma;
+        LinkedMap<String, CandlestickData> orderedCandles = this.orderByNatural(candleMap);
+        String latestPeriod = orderedCandles.lastKey();
+        double sma = this.performCalculation(orderedCandles);
+        log.traceExit(format("SMA for %s is %f", latestPeriod, sma));
+        return Map.of(latestPeriod, sma);
     }
 
+
+    /**
+     * Will calculate and return list of SMAs value for the specified amount of latest periods of the provided candlesticks using the formula:
+     * (closePriceOfCandle1 + closePriceOfCandle2 + ... + closePriceOfCandleN) / N
+     *
+     * @param candles
+     * @param numOfSMAs
+     * @param lenOfPeriods
+     * @return
+     */
+    public Map<String, Double> calculate(Collection<Candlestick> candles, int numOfSMAs, int lenOfPeriods) {
+        log.traceEntry(format("Calculating %d SMAs with lenght %d from %s", numOfSMAs, lenOfPeriods, candles.toString()));
+        Map<String, CandlestickData> candleMap = strip(candles);
+        LinkedMap<String, CandlestickData> orderedCandles = this.orderByNatural(candleMap);
+        Map<String, Double> smas = new LinkedMap<>();
+        int lastIndex = orderedCandles.size() - 1;
+        while (numOfSMAs != 0) {
+            log.trace(format("Processing candle: %s", orderedCandles.get(lastIndex)));
+            LinkedMap<String, CandlestickData> perSmaCandles = orderedCandles
+                    .keySet()
+                    .stream()
+                    .skip(lastIndex - lenOfPeriods + 1)
+                    .peek(log::trace)
+                    .collect(Collectors.toMap(k -> k,
+                            candleMap::get,
+                            (e1, e2) -> e1,
+                            LinkedMap::new));
+            Map.Entry<String, Double> processedEntry = Map.entry(orderedCandles.lastKey(), performCalculation(orderedCandles));
+            smas.put(processedEntry.getKey(), processedEntry.getValue());
+            log.trace(format("Processed entry: %s", processedEntry));
+            orderedCandles.remove(lastIndex);
+            numOfSMAs--;
+            lastIndex--;
+        }
+        smas.forEach((key, value) -> log.traceExit(format("SMA for %s is %f", key, value)));
+        return smas;
+    }
+
+    //TODO: make this work
     private void validate(Collection<Candlestick> candles) throws CandlesValidationException {
         Collection<Optional<CandlestickData>> asks = candles.stream()
                 .map(candlestick -> Optional.ofNullable(candlestick.getAsk()))
@@ -87,7 +119,44 @@ public class SMACalculator {
                                         .orElse(Optional.ofNullable(candlestick.getMid())
                                                 .get()))))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        log.traceExit(format("Stripped to %s", stripped));
+        log.traceExit(format("Stripped to: %s", stripped));
         return stripped;
+    }
+
+
+    private LinkedMap<String, CandlestickData> orderByNatural(Map<String, CandlestickData> candleMap) {
+        log.traceEntry(format("Ordering: %s", candleMap.toString()));
+        LinkedMap<String, CandlestickData> orderedCandles = candleMap.keySet()
+                .stream()
+                .sorted((strDate1, strDate2) -> {
+                    int comp = 0;
+                    try {
+                        comp = dateFormat.parse(strDate1).compareTo(dateFormat.parse(strDate2));
+                    } catch (ParseException e) {
+                        log.error(e.getMessage());
+                    }
+                    return comp;
+                })
+                .collect(Collectors.toMap(t -> t,
+                        candleMap::get,
+                        (e1, e2) -> e1,
+                        LinkedMap::new));
+        log.traceExit(format("Ordered: %s", orderedCandles));
+        return orderedCandles;
+    }
+
+    private double performCalculation(Map<String, CandlestickData> candleMap) {
+        log.traceEntry(format("Calculating SMA from %s", candleMap.toString()));
+        double candleCloseSum = candleMap.keySet()
+                .stream()
+                .peek(log::trace)
+                .map(candleMap::get)
+                .peek(log::trace)
+                .mapToDouble(CandlestickData::getC)
+                .sum();
+        int amtOfCandles = candleMap.size();
+        Double sma = candleCloseSum / amtOfCandles;
+        log.traceExit(format("SMA: %f", sma));
+        return Precision.round(sma, 6);
     }
 }
