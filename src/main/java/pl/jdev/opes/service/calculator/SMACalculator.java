@@ -1,38 +1,64 @@
-package pl.jdev.opes.service;
+package pl.jdev.opes.service.calculator;
 
-import lombok.extern.java.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.domain.instrument.Candlestick;
 import pl.jdev.opes.domain.instrument.CandlestickData;
 import pl.jdev.opes.rest.exception.CandlesValidationException;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 /**
  * Simple Moving Average Calculator
  */
-@Component
-@Log
+@Component(value = "smaCalculator")
 public class SMACalculator {
+
+    Logger logger = LogManager.getLogger(SMACalculator.class);
+    @Autowired
+    DateFormat dateFormat;
+
     public double calculate(Collection<Candlestick> candles) throws CandlesValidationException {
-        try {
-            this.validate(candles);
-        } catch (Exception e) {
-            log.warning(e.getMessage());
-            throw e;
-        }
+        logger.traceEntry(format("Calculating SMA from ", candles.toString()));
+//        log.info(String.format("Calculating SMA based on: %s", candles));
+//        try {
+//            this.validate(candles);
+//        } catch (Exception e) {
+//            log.warning(e.getMessage());
+//            throw e;
+//        }
         Map<String, CandlestickData> rawCandles = strip(candles);
-        Map<String, CandlestickData> orderedCandles = new LinkedHashMap<>(rawCandles);
+        Map<String, CandlestickData> orderedCandles = new TreeMap<>(rawCandles);
+
         double candleCloseSum = orderedCandles.keySet()
                 .stream()
+                .sorted((strDate1, strDate2) -> {
+                    int comp = 0;
+                    try {
+                        comp = dateFormat.parse(strDate1).compareTo(dateFormat.parse(strDate2));
+                    } catch (ParseException e) {
+                        logger.error(e.getMessage());
+                    }
+                    return comp;
+                })
+                .peek(date -> logger.trace(date))
                 .map(orderedCandles::get)
+                .peek(candle -> logger.trace(candle))
                 .mapToDouble(CandlestickData::getC)
                 .sum();
-        return candleCloseSum / orderedCandles.size();
+        double sma = candleCloseSum / orderedCandles.size();
+        logger.traceExit(format("SMA = %f", sma));
+        return sma;
     }
 
     private void validate(Collection<Candlestick> candles) throws CandlesValidationException {
@@ -49,17 +75,20 @@ public class SMACalculator {
         boolean validBids = bids.stream().allMatch(Optional::isPresent);
         boolean validMids = mids.stream().allMatch(Optional::isPresent);
         if (!(validAsks && validBids && validMids)) {
-            throw new CandlesValidationException(String.format("Candles validation failed: %s", candles));
+            throw new CandlesValidationException(format("Candles validation failed: %s", candles));
         }
     }
 
     private Map<String, CandlestickData> strip(Collection<Candlestick> candles) {
-        return candles.stream()
+        logger.traceEntry(format("Stripping candlesticks %s", candles));
+        Map<String, CandlestickData> stripped = candles.stream()
                 .map(candlestick -> Map.entry(candlestick.getTime(),
-                        Optional.of(candlestick.getAsk())
-                                .orElse(Optional.of(candlestick.getBid())
-                                        .orElse(Optional.of(candlestick.getMid())
+                        Optional.ofNullable(candlestick.getAsk())
+                                .orElse(Optional.ofNullable(candlestick.getBid())
+                                        .orElse(Optional.ofNullable(candlestick.getMid())
                                                 .get()))))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        logger.traceExit(format("Stripped to %s", stripped));
+        return stripped;
     }
 }

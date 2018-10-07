@@ -1,7 +1,9 @@
 package pl.jdev.opes.service.oanda_service.instrument;
 
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -12,6 +14,7 @@ import pl.jdev.opes.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes.repo.dal.InstrumentDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonCandlestickListWrapper;
+import pl.jdev.opes.service.calculator.SMACalculator;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
 
 import java.util.Collection;
@@ -26,6 +29,8 @@ import static org.springframework.web.util.UriComponentsBuilder.fromPath;
 public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
     @Autowired
     private InstrumentDAL repository;
+    @Autowired
+    ApplicationContext ctx;
 
     @Autowired
     public OandaInstrumentService(MultiValueMap<String, String> headers,
@@ -58,6 +63,16 @@ public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
                 .queryParam("to", to)
                 .buildAndExpand(instrument)
                 .toString());
+    }
+
+    @SneakyThrows
+    public Double getSmaList(String instrument,
+                             CandlestickPriceType priceType,
+                             CandlestickGranularity granularity,
+                             int count) {
+        Collection<Candlestick> candles = this.getCandlestickList(instrument, priceType, granularity, count);
+        Double sma = ctx.getBean("smaCalculator", SMACalculator.class).calculate(candles);
+        return sma;
     }
 
 //    String instrument,

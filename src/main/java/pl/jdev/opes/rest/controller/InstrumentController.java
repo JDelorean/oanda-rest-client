@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes.rest.json.wrapper.JsonCandlestickListWrapper;
+import pl.jdev.opes.rest.json.wrapper.JsonSMAWrapper;
 import pl.jdev.opes.service.oanda_service.instrument.OandaInstrumentService;
 
 @RestController
@@ -45,5 +46,14 @@ public class InstrumentController {
                         from,
                         to)
         );
+    }
+
+    @GetMapping(value = "/sma")
+    @ResponseBody
+    public JsonSMAWrapper getSmaWithCount(@PathVariable(name = "instrument") final String instrument,
+                                          @RequestParam(value = "priceType") final CandlestickPriceType priceType,
+                                          @RequestParam(value = "granularity") final CandlestickGranularity granularity,
+                                          @RequestParam(value = "count") final Integer count) {
+        return JsonSMAWrapper.payloadOf(oandaInstrumentService.getSmaList(instrument, priceType, granularity, count));
     }
 }

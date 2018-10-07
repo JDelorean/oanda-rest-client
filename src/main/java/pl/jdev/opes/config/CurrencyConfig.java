@@ -12,7 +12,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "orc.currency")
 @Data
 public class CurrencyConfig {
-    @Value("#{'${orc.currency.supported}'.split(',')}")
+    @Value("#{'${opes.currency.supported}'.split(',')}")
     private List<Currency> supportedCurrencies;
 //    @Value("default")
 //    private Currency defaultCurrency;
