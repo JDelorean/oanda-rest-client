@@ -53,18 +53,17 @@ public class SMACalculator {
         return Map.of(latestPeriod, sma);
     }
 
-
     /**
      * Will calculate and return list of SMAs value for the specified amount of latest periods of the provided candlesticks using the formula:
      * (closePriceOfCandle1 + closePriceOfCandle2 + ... + closePriceOfCandleN) / N
      *
      * @param candles
      * @param numOfSMAs
-     * @param lenOfPeriods
+     * @param numOfTimePeriods
      * @return
      */
-    public Map<String, Double> calculate(Collection<Candlestick> candles, int numOfSMAs, int lenOfPeriods) {
-        log.traceEntry(format("Calculating %d SMAs with lenght %d from %s", numOfSMAs, lenOfPeriods, candles.toString()));
+    public Map<String, Double> calculate(Collection<Candlestick> candles, int numOfSMAs, int numOfTimePeriods) {
+        log.traceEntry(format("Calculating %d SMAs with %d time periods from %s", numOfSMAs, numOfTimePeriods, candles.toString()));
         Map<String, CandlestickData> candleMap = strip(candles);
         LinkedMap<String, CandlestickData> orderedCandles = this.orderByNatural(candleMap);
         Map<String, Double> smas = new LinkedMap<>();
@@ -74,7 +73,7 @@ public class SMACalculator {
             LinkedMap<String, CandlestickData> perSmaCandles = orderedCandles
                     .keySet()
                     .stream()
-                    .skip(lastIndex - lenOfPeriods + 1)
+                    .skip(lastIndex - numOfTimePeriods + 1)
                     .peek(log::trace)
                     .collect(Collectors.toMap(k -> k,
                             candleMap::get,

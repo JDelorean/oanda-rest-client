@@ -9,6 +9,7 @@ import org.springframework.integration.channel.interceptor.WireTap;
 import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.channel.MessageChannels;
 import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.router.HeaderValueRouter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
@@ -22,7 +23,7 @@ public class ChannelConfig {
 
     @ServiceActivator(inputChannel = "loggerChannel")
     MessageHandler loggerHandler() {
-        LoggingHandler loggingHandler = new LoggingHandler(LoggingHandler.Level.INFO);
+        LoggingHandler loggingHandler = new LoggingHandler(LoggingHandler.Level.TRACE);
         return loggingHandler;
     }
 
@@ -31,6 +32,24 @@ public class ChannelConfig {
         return MessageChannels.publishSubscribe("pricingEventChannel")
                 .interceptor(new WireTap(loggerChannel()))
                 .get();
+    }
+
+    @Bean
+    MessageChannel dataRequestChannel() {
+        return MessageChannels.direct().get();
+    }
+
+    @Bean
+    MessageChannel smaRequestChannel() {
+        return MessageChannels.direct().get();
+    }
+
+    @ServiceActivator(inputChannel = "dataRequestChannel")
+    @Bean
+    HeaderValueRouter dataRequestRouter() {
+        HeaderValueRouter router = new HeaderValueRouter("dataSource");
+        router.setChannelMapping("sma", "smaRequestChannel");
+        return router;
     }
 
     @Bean

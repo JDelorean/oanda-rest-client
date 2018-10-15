@@ -58,13 +58,13 @@ public class InstrumentController {
         return JsonSMAWrapper.payloadOf(oandaInstrumentService.getSma(instrument, priceType, granularity, count));
     }
 
-    @GetMapping(value = "/sma", params = {"numOfSMAs", "lenOfPeriods"})
+    @GetMapping(value = "/sma", params = {"numOfSMAs", "numOfTimePeriods"})
     @ResponseBody
     public JsonSMAListWrapper getSmaListWithPeriods(@PathVariable(name = "instrument") final String instrument,
                                                     @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                                     @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                     @RequestParam(value = "numOfSMAs") final Integer numOfSMAs,
-                                                    @RequestParam(value = "lenOfPeriods") final Integer lenOfPeriods) {
-        return JsonSMAListWrapper.payloadOf(oandaInstrumentService.getSmaList(instrument, priceType, granularity, numOfSMAs, lenOfPeriods));
+                                                    @RequestParam(value = "numOfTimePeriods") final Integer numOfTimePeriods) {
+        return JsonSMAListWrapper.payloadOf(oandaInstrumentService.getSmaList(instrument, priceType, granularity, numOfSMAs, numOfTimePeriods));
     }
 }
