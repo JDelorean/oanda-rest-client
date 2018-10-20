@@ -4,8 +4,7 @@
     <groupId>pl.jdev</groupId>
     <artifactId>opes</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>oanda-rest-client</name>
-    <url></url>
+    <name>opes</name>
     <packaging>war</packaging>
     <parent>
         <groupId>org.springframework.boot</groupId>
