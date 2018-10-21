@@ -7,23 +7,21 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
 import pl.jdev.opes.domain.AbstractEntity;
+import pl.jdev.opes.service.HttpService;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 @Component
 @DependsOn("DAO")
-public abstract class AbstractOandaService<T extends AbstractEntity> {
-    protected MultiValueMap<String, String> headers;
-    protected RestTemplate restTemplate;
+public abstract class AbstractOandaService<T extends AbstractEntity> extends HttpService {
     protected Urls urls;
 
     @Autowired
     public AbstractOandaService(MultiValueMap<String, String> headers,
                                 RestTemplate restTemplate,
                                 Urls urls) {
-        this.headers = headers;
-        this.restTemplate = restTemplate;
+        super(headers, restTemplate);
         this.urls = urls;
     }
 

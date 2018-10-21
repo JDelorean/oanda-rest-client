@@ -12,8 +12,10 @@ import pl.jdev.opes.config.Urls;
 import pl.jdev.opes.domain.instrument.Candlestick;
 import pl.jdev.opes.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes.domain.instrument.CandlestickPriceType;
+import pl.jdev.opes.integration.message.SMARequest;
 import pl.jdev.opes.repo.dal.InstrumentDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonCandlestickListWrapper;
+import pl.jdev.opes.service.IntegrationClient;
 import pl.jdev.opes.service.calculator.SMACalculator;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
 
@@ -32,6 +34,8 @@ public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
     private InstrumentDAL repository;
     @Autowired
     ApplicationContext ctx;
+    @Autowired
+    IntegrationClient integrationClient;
 
     @Autowired
     public OandaInstrumentService(MultiValueMap<String, String> headers,
@@ -83,6 +87,7 @@ public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
                                           int numOfTimePeriods) {
         int count = numOfSMAs + numOfTimePeriods + 1;
         Collection<Candlestick> candles = this.getCandlestickList(instrument, priceType, granularity, count);
+        integrationClient.requestData(new SMARequest());
         return ctx.getBean("smaCalculator", SMACalculator.class).calculate(candles, numOfSMAs, numOfTimePeriods);
     }
 

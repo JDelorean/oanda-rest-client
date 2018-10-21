@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 enum PriceStatus {
     @JsonProperty("tradeable")
     TRADEABLE,
-    @JsonProperty("non_tradeable")
+    @JsonProperty("non-tradeable")
     NON_TRADABLE,
     @JsonProperty("invalid")
     INVALID;
