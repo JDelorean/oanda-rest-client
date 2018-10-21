@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/accounts/{accountId}/orders")
+@RequestMapping("/accounts/{accountId}/orders")
 @Log4j2
 public class OrderController {
     @Autowired

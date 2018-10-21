@@ -13,7 +13,7 @@ import pl.jdev.opes.service.oanda_service.account.OandaAccountService;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/accounts")
+@RequestMapping("/accounts")
 @Log4j2
 public class AccountController extends AbstractEntityController<Account> {
 

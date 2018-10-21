@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import static org.springframework.util.CollectionUtils.arrayToList;
 
 @RestController
-@RequestMapping("/api/accounts/{accountId}/pricing")
+@RequestMapping("/accounts/{accountId}/pricing")
 @Log4j2
 public class PricingController extends AbstractEntityController<Price> {
     @Autowired

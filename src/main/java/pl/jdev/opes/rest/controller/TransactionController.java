@@ -14,7 +14,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @RestController
-@RequestMapping("/api/accounts/{accountId}/transactions")
+@RequestMapping("/accounts/{accountId}/transactions")
 @Log4j2
 public class TransactionController {
     @Autowired

@@ -11,7 +11,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/accounts/{accountId}/trades")
+@RequestMapping("/accounts/{accountId}/trades")
 public class TradeController {
     @Autowired
     OandaTradeService oandaTradeService;

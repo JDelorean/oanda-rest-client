@@ -11,7 +11,7 @@ import pl.jdev.opes.rest.json.wrapper.JsonSMAWrapper;
 import pl.jdev.opes.service.oanda_service.instrument.OandaInstrumentService;
 
 @RestController
-@RequestMapping("/api/instruments/{instrument}/")
+@RequestMapping("/instruments/{instrument}/")
 @Log4j2
 public class InstrumentController {
     @Autowired
