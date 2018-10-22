@@ -32,14 +32,27 @@ public class RestConfig {
         return new ModelMapper();
     }
 
-    @Bean
+    @Bean("oanda")
     @DependsOn({"baseUrl", "requestFactory"})
+    @Autowired
+    RestTemplate oandaRestTemplate(RestTemplateBuilder restTemplateBuilder,
+                                   List<ClientHttpRequestInterceptor> restInterceptors,
+                                   MappingJackson2HttpMessageConverter messageConverter) {
+        RestTemplate rt = restTemplateBuilder
+                .rootUri((String) ctx.getBean("baseUrl"))
+                .additionalInterceptors(restInterceptors)
+                .messageConverters(messageConverter)
+                .build();
+        rt.setRequestFactory(requestFactory());
+        return rt;
+    }
+
+    @DependsOn({"requestFactory"})
     @Autowired
     RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
                               List<ClientHttpRequestInterceptor> restInterceptors,
                               MappingJackson2HttpMessageConverter messageConverter) {
         RestTemplate rt = restTemplateBuilder
-                .rootUri((String) ctx.getBean("baseUrl"))
                 .additionalInterceptors(restInterceptors)
                 .messageConverters(messageConverter)
                 .build();

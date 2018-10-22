@@ -1,6 +1,7 @@
 package pl.jdev.opes.service.oanda_service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -19,7 +20,7 @@ public abstract class AbstractOandaService<T extends AbstractEntity> extends Htt
 
     @Autowired
     public AbstractOandaService(MultiValueMap<String, String> headers,
-                                RestTemplate restTemplate,
+                                @Qualifier("oanda") RestTemplate restTemplate,
                                 Urls urls) {
         super(headers, restTemplate);
         this.urls = urls;

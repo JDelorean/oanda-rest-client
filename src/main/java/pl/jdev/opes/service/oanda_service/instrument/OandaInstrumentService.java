@@ -87,7 +87,7 @@ public class OandaInstrumentService extends AbstractOandaService<Candlestick> {
                                           int numOfTimePeriods) {
         int count = numOfSMAs + numOfTimePeriods + 1;
         Collection<Candlestick> candles = this.getCandlestickList(instrument, priceType, granularity, count);
-        integrationClient.requestData(new SMARequest());
+        integrationClient.requestData(new SMARequest(candles));
         return ctx.getBean("smaCalculator", SMACalculator.class).calculate(candles, numOfSMAs, numOfTimePeriods);
     }
 
