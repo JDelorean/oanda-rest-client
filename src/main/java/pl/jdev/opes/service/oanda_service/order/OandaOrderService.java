@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
-import pl.jdev.opes.domain.order.Order;
-import pl.jdev.opes.domain.order.OrderRequest;
 import pl.jdev.opes.repo.dal.OrderDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonOrderListWrapper;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
+import pl.jdev.opes_commons.domain.order.Order;
+import pl.jdev.opes_commons.domain.order.OrderRequest;
 
 import java.util.List;
 import java.util.Map;

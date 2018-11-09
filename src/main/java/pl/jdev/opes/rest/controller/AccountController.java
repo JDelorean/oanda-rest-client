@@ -4,11 +4,11 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.domain.account.Account;
 import pl.jdev.opes.rest.exception.AccountNotFoundException;
 import pl.jdev.opes.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonAccountWrapper;
 import pl.jdev.opes.service.oanda_service.account.OandaAccountService;
+import pl.jdev.opes_commons.domain.account.Account;
 
 import javax.validation.Valid;
 

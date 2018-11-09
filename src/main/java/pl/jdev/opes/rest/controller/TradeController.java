@@ -2,10 +2,10 @@ package pl.jdev.opes.rest.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.domain.ClientExtensions;
 import pl.jdev.opes.rest.json.wrapper.JsonTradeListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonTradeWrapper;
 import pl.jdev.opes.service.oanda_service.trade.OandaTradeService;
+import pl.jdev.opes_commons.domain.ClientExtensions;
 
 import javax.validation.Valid;
 import java.util.Map;

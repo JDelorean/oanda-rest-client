@@ -3,7 +3,7 @@ package pl.jdev.opes.rest.json.wrapper;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import pl.jdev.opes.domain.pricing.Price;
+import pl.jdev.opes_commons.domain.pricing.Price;
 
 import java.util.Collection;
 

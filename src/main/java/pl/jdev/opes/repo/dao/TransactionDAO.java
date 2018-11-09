@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import pl.jdev.opes.domain.transaction.Transaction;
+import pl.jdev.opes_commons.domain.transaction.Transaction;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

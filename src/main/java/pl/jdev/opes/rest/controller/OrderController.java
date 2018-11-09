@@ -3,8 +3,8 @@ package pl.jdev.opes.rest.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.domain.order.OrderRequest;
 import pl.jdev.opes.service.oanda_service.order.OandaOrderService;
+import pl.jdev.opes_commons.domain.order.OrderRequest;
 
 import javax.validation.Valid;
 import java.util.Map;

@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
-import pl.jdev.opes.domain.account.Account;
 import pl.jdev.opes.repo.dal.AccountDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonAccountWrapper;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
+import pl.jdev.opes_commons.domain.account.Account;
 
 import java.util.Collection;
 

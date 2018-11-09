@@ -1,6 +1,6 @@
 package pl.jdev.opes.rest.validation;
 
-import pl.jdev.opes.domain.order.TimeInForce;
+import pl.jdev.opes_commons.domain.order.TimeInForce;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

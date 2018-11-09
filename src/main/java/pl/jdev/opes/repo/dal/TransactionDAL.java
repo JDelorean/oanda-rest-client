@@ -2,7 +2,7 @@ package pl.jdev.opes.repo.dal;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import pl.jdev.opes.domain.transaction.Transaction;
+import pl.jdev.opes_commons.domain.transaction.Transaction;
 
 import java.util.Collection;
 import java.util.List;

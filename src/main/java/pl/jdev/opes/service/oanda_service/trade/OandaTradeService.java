@@ -1,6 +1,5 @@
 package pl.jdev.opes.service.oanda_service.trade;
 
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -8,12 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
-import pl.jdev.opes.domain.ClientExtensions;
-import pl.jdev.opes.domain.trade.Trade;
+import pl.jdev.opes.repo.dal.TradeDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonTradeListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonTradeWrapper;
-import pl.jdev.opes.repo.dal.TradeDAL;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
+import pl.jdev.opes_commons.domain.ClientExtensions;
+import pl.jdev.opes_commons.domain.trade.Trade;
 
 import java.util.List;
 import java.util.stream.Stream;

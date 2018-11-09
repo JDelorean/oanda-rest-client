@@ -3,9 +3,9 @@ package pl.jdev.opes.rest.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.domain.pricing.Price;
 import pl.jdev.opes.rest.json.wrapper.JsonPricingListWrapper;
 import pl.jdev.opes.service.oanda_service.pricing.OandaPricingService;
+import pl.jdev.opes_commons.domain.pricing.Price;
 
 import javax.validation.Valid;
 

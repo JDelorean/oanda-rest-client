@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
-import pl.jdev.opes.domain.account.Account;
+import pl.jdev.opes_commons.domain.account.Account;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

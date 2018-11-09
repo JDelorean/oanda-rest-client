@@ -11,11 +11,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
-import pl.jdev.opes.domain.pricing.Price;
-import pl.jdev.opes.integration.gateway.PricingEventGateway;
 import pl.jdev.opes.repo.dal.PricingDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonPricingListWrapper;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
+import pl.jdev.opes_commons.domain.pricing.Price;
 
 import java.util.Collection;
 
@@ -79,6 +78,6 @@ public class OandaPricingService extends AbstractOandaService<Price> {
         log.info(format("Received prices %s", prices));
         repository.upsertMulti(prices);
         Message<Collection<Price>> priceMsg = withPayload(prices).build();
-        ctx.getBean("pricingEventGateway", PricingEventGateway.class).send(priceMsg);
+//        ctx.getBean("pricingEventGateway", PricingEventGateway.class).send(priceMsg);
     }
 }

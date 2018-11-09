@@ -1,8 +1,8 @@
 package pl.jdev.opes.repo.dal;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import pl.jdev.opes.domain.AbstractEntity;
 import pl.jdev.opes.repo.dao.DAO;
+import pl.jdev.opes_commons.domain.AbstractEntity;
 
 import java.util.Collection;
 

@@ -3,11 +3,11 @@ package pl.jdev.opes.rest.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.domain.transaction.TransactionType;
 import pl.jdev.opes.rest.json.wrapper.JsonTransactionListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonTransactionWrapper;
 import pl.jdev.opes.rest.validation.SupportedTransactionType;
 import pl.jdev.opes.service.oanda_service.transaction.OandaTransactionService;
+import pl.jdev.opes_commons.domain.transaction.TransactionType;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;

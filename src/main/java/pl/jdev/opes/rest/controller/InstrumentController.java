@@ -3,12 +3,12 @@ package pl.jdev.opes.rest.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.domain.instrument.CandlestickGranularity;
-import pl.jdev.opes.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes.rest.json.wrapper.JsonCandlestickListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonSMAListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonSMAWrapper;
 import pl.jdev.opes.service.oanda_service.instrument.OandaInstrumentService;
+import pl.jdev.opes_commons.domain.instrument.CandlestickGranularity;
+import pl.jdev.opes_commons.domain.instrument.CandlestickPriceType;
 
 @RestController
 @RequestMapping("/instruments/{instrument}/")

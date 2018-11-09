@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
-import pl.jdev.opes.domain.AbstractEntity;
 import pl.jdev.opes.service.HttpService;
+import pl.jdev.opes_commons.domain.AbstractEntity;
 
 import java.util.List;
 import java.util.stream.Stream;

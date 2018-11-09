@@ -7,13 +7,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import pl.jdev.opes.integration.message.DataRequest;
+import pl.jdev.opes_commons.rest.message.DataRequest;
 
 import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 
 import static java.util.Objects.requireNonNull;
-import static org.springframework.http.HttpEntity.EMPTY;
-import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Component
 public class IntegrationClient extends HttpService {
@@ -26,6 +25,7 @@ public class IntegrationClient extends HttpService {
     }
 
     public ResponseEntity requestData(DataRequest dataRequest) {
+        headers.add("Data-Type", "sma");
         return requireNonNull(this.restTemplate
                 .exchange(UriComponentsBuilder.newInstance()
                                 .scheme(ReferenceUriSchemesSupported.HTTP.toString())
@@ -33,8 +33,8 @@ public class IntegrationClient extends HttpService {
                                 .path("/integration/data")
                                 .build()
                                 .toString(),
-                        GET,
-                        new HttpEntity<>(EMPTY, this.headers),
+                        POST,
+                        new HttpEntity<>(dataRequest, this.headers),
                         ResponseEntity.class)
                 .getBody());
     }

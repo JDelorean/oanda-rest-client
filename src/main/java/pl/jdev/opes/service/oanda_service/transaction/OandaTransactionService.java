@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import pl.jdev.opes.config.Urls;
-import pl.jdev.opes.domain.transaction.Transaction;
-import pl.jdev.opes.domain.transaction.TransactionType;
 import pl.jdev.opes.repo.dal.TransactionDAL;
 import pl.jdev.opes.rest.json.wrapper.JsonTransactionListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonTransactionRerouteWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonTransactionWrapper;
 import pl.jdev.opes.service.oanda_service.AbstractOandaService;
+import pl.jdev.opes_commons.domain.transaction.Transaction;
+import pl.jdev.opes_commons.domain.transaction.TransactionType;
 
 import java.util.Collection;
 

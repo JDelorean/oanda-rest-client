@@ -9,8 +9,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
-import pl.jdev.opes.domain.pricing.Price;
-import pl.jdev.opes.domain.transaction.Transaction;
+import pl.jdev.opes_commons.domain.pricing.Price;
+import pl.jdev.opes_commons.domain.transaction.Transaction;
 
 import static java.lang.Integer.valueOf;
 

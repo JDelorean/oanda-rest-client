@@ -1,6 +1,6 @@
 package pl.jdev.opes.rest.validation;
 
-import pl.jdev.opes.domain.transaction.TransactionType;
+import pl.jdev.opes_commons.domain.transaction.TransactionType;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
