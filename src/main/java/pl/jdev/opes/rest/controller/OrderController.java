@@ -1,44 +1,57 @@
 package pl.jdev.opes.rest.controller;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.service.oanda_service.order.OandaOrderService;
-import pl.jdev.opes_commons.domain.order.OrderRequest;
+import pl.jdev.opes.rest.json.wrapper.JsonOrderListWrapper;
+import pl.jdev.opes.rest.json.wrapper.JsonOrderWrapper;
+import pl.jdev.opes_commons.domain.order.Order;
+import pl.jdev.opes_commons.rest.HttpHeaders;
+import pl.jdev.opes_commons.rest.message.CreateOrderRequest;
+import pl.jdev.opes_commons.rest.message.EntityDetailsRequest;
 
 import javax.validation.Valid;
-import java.util.Map;
+import java.util.Collection;
+import java.util.UUID;
+
+import static pl.jdev.opes_commons.rest.HttpHeaders.DATA_TYPE;
+import static pl.jdev.opes_commons.rest.HttpHeaders.EVENT_TYPE;
 
 @RestController
-@RequestMapping("/accounts/{accountId}/orders")
+@RequestMapping("/orders")
 @Log4j2
-public class OrderController {
-    @Autowired
-    OandaOrderService oandaOrderService;
+public class OrderController extends AbstractEntityController<Order> {
 
     @PostMapping
-    @ResponseBody
-    public void createOrder(@Valid @PathVariable(name = "accountId") final String accountId,
-                            @Valid @RequestBody final OrderRequest orderRequest) {
-        oandaOrderService.postOrder(accountId, orderRequest);
+    public void createOrder(@Valid @RequestBody final CreateOrderRequest createOrderRequest) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(EVENT_TYPE, "createOrder");
+        integrationClient.perform(createOrderRequest, headers);
     }
 
     @GetMapping
     @ResponseBody
-    public Map<String, Object> getAllOrders(@Valid @PathVariable(name = "accountId") final String accountId) {
-        return Map.of("orders", oandaOrderService.getAllOrders(accountId));
+    public JsonOrderListWrapper getAllOrders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(DATA_TYPE, "order");
+        return JsonOrderListWrapper.payloadOf(
+                (Collection<Order>) integrationClient.requestData(
+                        new EntityDetailsRequest(),
+                        headers
+                ).getBody()
+        );
     }
 
-    @GetMapping(value = "/pending")
+    @GetMapping("/{orderId}")
     @ResponseBody
-    public Map<String, Object> getAllPendingOrders(@Valid @PathVariable(name = "accountId") final String accountId) {
-        return Map.of("pendingOrders", oandaOrderService.getPendingOrders(accountId));
-    }
-
-    @GetMapping(value = "/{orderSpecifier}")
-    @ResponseBody
-    public Map<String, Object> getOrder(@Valid @PathVariable(name = "accountId") final String accountId,
-                                        @Valid @PathVariable(name = "orderSpecifier") final String orderSpecifier) {
-        return Map.of("order", oandaOrderService.getOrder(accountId, orderSpecifier));
+    public JsonOrderWrapper getOrder(@PathVariable(name = "orderId") final UUID orderId) {
+        //TODO: grab extId from db
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(DATA_TYPE, "order");
+        return JsonOrderWrapper.payloadOf(
+                (Order) integrationClient.requestData(
+                        new EntityDetailsRequest(orderId, orderId.toString()),
+                        headers
+                ).getBody()
+        );
     }
 }

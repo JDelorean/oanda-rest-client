@@ -2,28 +2,29 @@ package pl.jdev.opes.rest.controller;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.exception.AccountNotFoundException;
 import pl.jdev.opes.rest.json.wrapper.JsonAccountListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonAccountWrapper;
-import pl.jdev.opes.service.oanda_service.account.OandaAccountService;
 import pl.jdev.opes_commons.domain.account.Account;
+import pl.jdev.opes_commons.rest.message.GenericDataRequest;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.util.Collection;
 
 @RestController
 @RequestMapping("/accounts")
 @Log4j2
 public class AccountController extends AbstractEntityController<Account> {
 
-    @Autowired
-    OandaAccountService oandaAccountService;
-
     @GetMapping
     @ResponseBody
     public JsonAccountListWrapper getAllAccounts() {
-        return JsonAccountListWrapper.payloadOf(oandaAccountService.getAllAccounts());
+        return JsonAccountListWrapper.payloadOf(
+                (Collection<Account>) integrationClient.requestData(
+                        new GenericDataRequest(),
+                        null)
+                        .getBody());
     }
 
     //TODO: remove sneakyhrows
@@ -31,8 +32,11 @@ public class AccountController extends AbstractEntityController<Account> {
     @ResponseBody
     @SneakyThrows
     public JsonAccountWrapper getAccount(@Valid @PathVariable final String accountId) {
-        Account account = this.oandaAccountService.getAccount(accountId);
-        if (account == null) throw new AccountNotFoundException();
+        Account account = (Account) integrationClient.requestData(
+                new GenericDataRequest(),
+                null
+        ).getBody();
+        if (account == null) throw new IOException(String.format("No Account found with ID %s!", accountId));
         return JsonAccountWrapper.payloadOf(account);
     }
 

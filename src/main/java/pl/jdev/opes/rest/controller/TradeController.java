@@ -1,49 +1,71 @@
 package pl.jdev.opes.rest.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.rest.json.wrapper.JsonTradeListWrapper;
 import pl.jdev.opes.rest.json.wrapper.JsonTradeWrapper;
-import pl.jdev.opes.service.oanda_service.trade.OandaTradeService;
-import pl.jdev.opes_commons.domain.ClientExtensions;
+import pl.jdev.opes_commons.domain.trade.Trade;
+import pl.jdev.opes_commons.rest.HttpHeaders;
+import pl.jdev.opes_commons.rest.message.CloseTradeRequest;
+import pl.jdev.opes_commons.rest.message.EntityDetailsRequest;
 
 import javax.validation.Valid;
-import java.util.Map;
+import java.util.Collection;
+import java.util.UUID;
+
+import static pl.jdev.opes_commons.rest.HttpHeaders.ACTION_TYPE;
+import static pl.jdev.opes_commons.rest.HttpHeaders.DATA_TYPE;
 
 @RestController
-@RequestMapping("/accounts/{accountId}/trades")
-public class TradeController {
-    @Autowired
-    OandaTradeService oandaTradeService;
+@RequestMapping("/trades")
+public class TradeController extends AbstractEntityController<Trade> {
 
     @GetMapping
     @ResponseBody
-    public JsonTradeListWrapper getAllTrades(@Valid @PathVariable(name = "accountId") final String accountId) {
-        return JsonTradeListWrapper.payloadOf(oandaTradeService.getAllTrades(accountId));
+    public JsonTradeListWrapper getAllTrades() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(DATA_TYPE, "trade");
+        return JsonTradeListWrapper.payloadOf(
+                (Collection<Trade>) integrationClient.requestData(
+                        new EntityDetailsRequest(),
+                        headers
+                ).getBody()
+        );
     }
 
     @GetMapping("/open")
     @ResponseBody
-    public JsonTradeListWrapper getAllOpenTrades(@Valid @PathVariable(name = "accountId") final String accountId) {
-        return JsonTradeListWrapper.payloadOf(oandaTradeService.getOpenTrades(accountId));
+    public JsonTradeListWrapper getAllOpenTrades() {
+        //TODO: need to figure out how to pass extra characteristics of the call
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(DATA_TYPE, "trade");
+        return JsonTradeListWrapper.payloadOf(
+                (Collection<Trade>) integrationClient.requestData(
+                        new EntityDetailsRequest(),
+                        headers
+                ).getBody()
+        );
     }
 
-    @GetMapping("/{tradeSpecifier}")
-    public JsonTradeWrapper getTrade(@Valid @PathVariable(name = "accountId") final String accountId,
-                                     @Valid @PathVariable(name = "tradeSpecifier") final String tradeSpecifier) {
-        return JsonTradeWrapper.payloadOf(oandaTradeService.getTrade(accountId, tradeSpecifier));
+    @GetMapping("/{tradeId}")
+    public JsonTradeWrapper getTrade(@Valid @PathVariable(name = "tradeId") final UUID tradeId) {
+        //TODO: grab extId from db
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(DATA_TYPE, "trade");
+        return JsonTradeWrapper.payloadOf(
+                (Trade) integrationClient.requestData(
+                        new EntityDetailsRequest(tradeId, tradeId.toString()),
+                        headers
+                ).getBody()
+        );
     }
 
-    @PutMapping("/{tradeSpecifier}/close")
-    public Map<String, Object> closeTrade(@Valid @PathVariable(name = "accountId") final String accountId,
-                                          @Valid @PathVariable(name = "tradeSpecifier") final String tradeSpecifier) {
-        return Map.of("trade", oandaTradeService.closeTrade(accountId, tradeSpecifier));
-    }
-
-    @PutMapping("/{tradeSpecifier}/clientExtensions")
-    public Map<String, Object> updateClientExtensions(@Valid @PathVariable(name = "accountId") final String accountId,
-                                                      @Valid @PathVariable(name = "tradeSpecifier") final String tradeSpecifier,
-                                                      @Valid @RequestBody final ClientExtensions clientExtensions) {
-        return Map.of("trade", oandaTradeService.updateTradeClientExtensions(accountId, tradeSpecifier, clientExtensions));
+    @PutMapping("/{tradeId}/close")
+    public void closeTrade(@Valid @PathVariable(name = "tradeId") final UUID tradeId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(ACTION_TYPE, "closeTrade");
+        integrationClient.perform(
+                new CloseTradeRequest(),
+                headers
+        );
     }
 }
