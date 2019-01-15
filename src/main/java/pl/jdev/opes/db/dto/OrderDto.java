@@ -21,8 +21,8 @@ import java.util.UUID;
         "UPDATE order " +
                 "SET deletedAt = CURRENT_TIMESTAMP " +
                 "WHERE id = ?")
-@Loader(namedQuery = "findTagById")
-@NamedQuery(name = "findTagById", query =
+@Loader(namedQuery = "findOrderById")
+@NamedQuery(name = "findOrderById", query =
         "SELECT o " +
                 "FROM Order o " +
                 "WHERE o.id = ?1 " +

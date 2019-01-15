@@ -25,6 +25,7 @@ import javax.persistence.*;
 @Where(clause = "deletedAt IS NULL")
 public class TagDto extends AuditDto {
     @Id
+    @GeneratedValue
     private int id;
     @Column
     private String tag;

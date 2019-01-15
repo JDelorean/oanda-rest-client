@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.hibernate.annotations.Loader;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import pl.jdev.opes_commons.domain.ClientExtensions;
 import pl.jdev.opes_commons.domain.trade.Trade;
 
 import javax.persistence.*;
@@ -22,8 +21,8 @@ import java.util.UUID;
         "UPDATE trade " +
                 "SET deletedAt = CURRENT_TIMESTAMP " +
                 "WHERE id = ?")
-@Loader(namedQuery = "findTagById")
-@NamedQuery(name = "findTagById", query =
+@Loader(namedQuery = "findTradeById")
+@NamedQuery(name = "findTradeById", query =
         "SELECT t " +
                 "FROM Trade t " +
                 "WHERE t.id = ?1 " +
@@ -33,21 +32,34 @@ public class TradeDto extends AuditDto {
     @Id
     @GeneratedValue
     private UUID id;
+    @Column
     private String extId;
+    @Column
     private String instrument;
+    @Column
     private Double price;
+    @Column
     private Date openTime;
+    @Column
     private Trade.TradeState state;
+    @Column
     private Double initialUnits;
+    @Column
     private Double initialMarginRequired;
+    @Column
     private Double currentUnits;
+    @Column
     private Double realizedPL;
+    @Column
     private Double unrealizedPL;
+    @Column
     private Double averageClosePrice;
-    private List<String> closingTransactionIDs;
+    //    @Column
+//    private List<String> closingTransactionIDs;
+    @Column
     private Double financing;
+    @Column
     private Date closeTime;
-    private ClientExtensions clientExtensions;
     @ManyToMany
     @JoinTable(name = "trade_comment",
             joinColumns = @JoinColumn(name = "trade_id"),
