@@ -1,12 +1,11 @@
 package pl.jdev.opes.rest.controller;
 
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.json.wrapper.JsonTradeListWrapper;
-import pl.jdev.opes.rest.json.wrapper.JsonTradeWrapper;
 import pl.jdev.opes_commons.domain.trade.Trade;
 import pl.jdev.opes_commons.rest.HttpHeaders;
-import pl.jdev.opes_commons.rest.message.CloseTradeRequest;
-import pl.jdev.opes_commons.rest.message.EntityDetailsRequest;
+import pl.jdev.opes_commons.rest.message.request.EntityDetailsRequest;
+import pl.jdev.opes_commons.rest.message.response.JsonTradeListWrapper;
+import pl.jdev.opes_commons.rest.message.response.JsonTradeWrapper;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -27,7 +26,8 @@ public class TradeController extends AbstractEntityController<Trade> {
         return JsonTradeListWrapper.payloadOf(
                 (Collection<Trade>) integrationClient.requestData(
                         new EntityDetailsRequest(),
-                        headers
+                        headers,
+                        JsonTradeListWrapper.class
                 ).getBody()
         );
     }
@@ -41,7 +41,8 @@ public class TradeController extends AbstractEntityController<Trade> {
         return JsonTradeListWrapper.payloadOf(
                 (Collection<Trade>) integrationClient.requestData(
                         new EntityDetailsRequest(),
-                        headers
+                        headers,
+                        JsonTradeListWrapper.class
                 ).getBody()
         );
     }
@@ -54,7 +55,8 @@ public class TradeController extends AbstractEntityController<Trade> {
         return JsonTradeWrapper.payloadOf(
                 (Trade) integrationClient.requestData(
                         new EntityDetailsRequest(tradeId, tradeId.toString()),
-                        headers
+                        headers,
+                        JsonTradeWrapper.class
                 ).getBody()
         );
     }
@@ -63,9 +65,9 @@ public class TradeController extends AbstractEntityController<Trade> {
     public void closeTrade(@Valid @PathVariable(name = "tradeId") final UUID tradeId) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(ACTION_TYPE, "closeTrade");
-        integrationClient.perform(
-                new CloseTradeRequest(),
-                headers
-        );
+//        integrationClient.perform(
+//                new CloseTradeRequest(),
+//                headers
+//        );
     }
 }

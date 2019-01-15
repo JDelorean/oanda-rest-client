@@ -2,19 +2,21 @@ package pl.jdev.opes.rest.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.json.wrapper.*;
 import pl.jdev.opes_commons.domain.instrument.Candlestick;
 import pl.jdev.opes_commons.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes_commons.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes_commons.domain.instrument.Instrument;
 import pl.jdev.opes_commons.rest.HttpHeaders;
-import pl.jdev.opes_commons.rest.message.DataRequest;
-import pl.jdev.opes_commons.rest.message.MARequest;
-import pl.jdev.opes_commons.rest.message.PricingRequest;
+import pl.jdev.opes_commons.rest.message.request.CandlesRequest;
+import pl.jdev.opes_commons.rest.message.request.DataRequest;
+import pl.jdev.opes_commons.rest.message.request.MARequest;
+import pl.jdev.opes_commons.rest.message.response.*;
 
 import java.util.Collection;
 import java.util.Map;
 
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static pl.jdev.opes_commons.rest.HttpHeaders.DATA_TYPE;
 
 @RestController
@@ -28,15 +30,11 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                                @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                                                @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                                @RequestParam(value = "count") final Integer count) {
-        DataRequest pricingRequest = new PricingRequest(instrument, priceType, granularity, count);
+        DataRequest candlesRequest = new CandlesRequest(instrument, priceType, granularity, count);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "pricing");
-        return JsonCandlestickListWrapper.payloadOf(
-                (Collection<Candlestick>) integrationClient.requestData(
-                        pricingRequest,
-                        headers
-                ).getBody()
-        );
+        headers.add(DATA_TYPE, "candle");
+        headers.add(CONTENT_TYPE, APPLICATION_JSON.toString());
+        return (JsonCandlestickListWrapper) integrationClient.requestData(candlesRequest, headers, JsonCandlestickListWrapper.class).getBody();
     }
 
     @GetMapping(value = "/candles", params = {"from", "to"})
@@ -46,13 +44,14 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                                 @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                                 @RequestParam(value = "from") final String from,
                                                                 @RequestParam(value = "to") final String to) {
-        DataRequest pricingRequest = new PricingRequest(instrument, priceType, granularity, from, to);
+        DataRequest candlesRequest = new CandlesRequest(instrument, priceType, granularity, from, to);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "pricing");
+        headers.add(DATA_TYPE, "candle");
         return JsonCandlestickListWrapper.payloadOf(
                 (Collection<Candlestick>) integrationClient.requestData(
-                        pricingRequest,
-                        headers
+                        candlesRequest,
+                        headers,
+                        JsonCandlestickListWrapper.class
                 ).getBody()
         );
     }
@@ -70,7 +69,8 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
         return JsonSMAWrapper.payloadOf(
                 (Map<String, Double>) integrationClient.requestData(
                         maRequest,
-                        headers
+                        headers,
+                        Map.class
                 ).getBody());
     }
 
@@ -88,7 +88,8 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
         headers.add(DATA_TYPE, "sma");
         return JsonSMAListWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
                 maRequest,
-                headers
+                headers,
+                Map.class
         ).getBody());
     }
 
@@ -104,7 +105,8 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
         headers.add(DATA_TYPE, "ema");
         return JsonEMAWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
                 maRequest,
-                headers
+                headers,
+                Map.class
         ).getBody());
     }
 
@@ -122,7 +124,8 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
         headers.add(DATA_TYPE, "ema");
         return JsonEMAListWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
                 maRequest,
-                headers
+                headers,
+                Map.class
         ).getBody());
     }
 }

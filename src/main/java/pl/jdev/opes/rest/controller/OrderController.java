@@ -2,12 +2,12 @@ package pl.jdev.opes.rest.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.json.wrapper.JsonOrderListWrapper;
-import pl.jdev.opes.rest.json.wrapper.JsonOrderWrapper;
 import pl.jdev.opes_commons.domain.order.Order;
 import pl.jdev.opes_commons.rest.HttpHeaders;
-import pl.jdev.opes_commons.rest.message.CreateOrderRequest;
-import pl.jdev.opes_commons.rest.message.EntityDetailsRequest;
+import pl.jdev.opes_commons.rest.message.CreateOrderAction;
+import pl.jdev.opes_commons.rest.message.request.EntityDetailsRequest;
+import pl.jdev.opes_commons.rest.message.response.JsonOrderListWrapper;
+import pl.jdev.opes_commons.rest.message.response.JsonOrderWrapper;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -22,10 +22,10 @@ import static pl.jdev.opes_commons.rest.HttpHeaders.EVENT_TYPE;
 public class OrderController extends AbstractEntityController<Order> {
 
     @PostMapping
-    public void createOrder(@Valid @RequestBody final CreateOrderRequest createOrderRequest) {
+    public void createOrder(@Valid @RequestBody final CreateOrderAction createOrderAction) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(EVENT_TYPE, "createOrder");
-        integrationClient.perform(createOrderRequest, headers);
+        integrationClient.perform(createOrderAction, headers);
     }
 
     @GetMapping
@@ -36,7 +36,8 @@ public class OrderController extends AbstractEntityController<Order> {
         return JsonOrderListWrapper.payloadOf(
                 (Collection<Order>) integrationClient.requestData(
                         new EntityDetailsRequest(),
-                        headers
+                        headers,
+                        JsonOrderListWrapper.class
                 ).getBody()
         );
     }
@@ -50,7 +51,8 @@ public class OrderController extends AbstractEntityController<Order> {
         return JsonOrderWrapper.payloadOf(
                 (Order) integrationClient.requestData(
                         new EntityDetailsRequest(orderId, orderId.toString()),
-                        headers
+                        headers,
+                        JsonOrderWrapper.class
                 ).getBody()
         );
     }

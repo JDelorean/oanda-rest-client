@@ -7,4 +7,5 @@ import pl.jdev.opes_commons.rest.IntegrationClient;
 public abstract class AbstractEntityController<E extends AbstractEntity> {
     @Autowired
     IntegrationClient integrationClient;
+
 }

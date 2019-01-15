@@ -2,8 +2,8 @@ package pl.jdev.opes.rest.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.json.wrapper.JsonPricingListWrapper;
 import pl.jdev.opes_commons.domain.pricing.Price;
+import pl.jdev.opes_commons.rest.message.response.JsonPricingListWrapper;
 
 @RestController
 @RequestMapping("/pricing")
