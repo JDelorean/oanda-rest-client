@@ -1,59 +1,72 @@
 package pl.jdev.opes.rest.controller;
 
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import pl.jdev.opes.rest.exception.NotFoundException;
+import pl.jdev.opes.rest.model.AccountSyncRequestModel;
+import pl.jdev.opes.service.AccountService;
 import pl.jdev.opes_commons.domain.account.Account;
-import pl.jdev.opes_commons.rest.message.request.GenericDataRequest;
-import pl.jdev.opes_commons.rest.message.response.JsonAccountListWrapper;
-import pl.jdev.opes_commons.rest.message.response.JsonAccountWrapper;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/accounts")
 @Log4j2
 public class AccountController extends AbstractEntityController<Account> {
+    @Autowired
+    AccountService accountService;
 
     @GetMapping
     @ResponseBody
-    public JsonAccountListWrapper getAllAccounts() {
-        return JsonAccountListWrapper.payloadOf(
-                (Collection<Account>) integrationClient.requestData(
-                        new GenericDataRequest(),
-                        null,
-                        JsonAccountListWrapper.class)
-                        .getBody());
+    public Set<Account> getAllAccounts() {
+        return accountService.getAllAccounts();
     }
 
-    //TODO: remove sneakyhrows
+    @GetMapping("/synced")
+    @ResponseBody
+    public Set<Account> getSyncedAccounts() {
+        return accountService.getSyncedAccounts();
+    }
+
     @GetMapping(value = "/{accountId}")
     @ResponseBody
-    @SneakyThrows
-    public JsonAccountWrapper getAccount(@Valid @PathVariable final String accountId) {
-        Account account = (Account) integrationClient.requestData(
-                new GenericDataRequest(),
-                null,
-                JsonAccountWrapper.class
-        ).getBody();
-        if (account == null) throw new IOException(String.format("No Account found with ID %s!", accountId));
-        return JsonAccountWrapper.payloadOf(account);
+    public Account getAccount(@Valid @PathVariable final UUID accountId) throws NotFoundException {
+        return accountService.getAccount(accountId);
     }
 
-    @PutMapping(value = "/{accountId}")
+    @PostMapping(value = "/sync")
     @ResponseBody
-    public JsonAccountWrapper syncAccount(@Valid @PathVariable final String accountId) {
-//        return JsonAccountWrapper.payloadOf();
-        return null;
+    public Account syncAccount(@Valid @RequestBody AccountSyncRequestModel syncRequest) throws NotFoundException {
+        return accountService.syncExtAccount(syncRequest.getExtId(), syncRequest.getBroker());
     }
 
+
+    @PostMapping(value = "/{accountId}/unsync")
+    @ResponseBody
+    public void unsyncAccount(@Valid @PathVariable final UUID accountId) throws NotFoundException {
+        accountService.unsyncAccount(accountId);
+    }
 
     @DeleteMapping(value = "/{accountId}")
-    @ResponseBody
-    public JsonAccountWrapper unsyncAccount(@Valid @PathVariable final String accountId) {
-//        return JsonAccountWrapper.payloadOf(null);
-        return null;
+    public void deleteAccount(@Valid @PathVariable final UUID accountId) throws NotFoundException {
+        accountService.deleteAccount(accountId);
+    }
+
+    @PostMapping("/{accountId}/tag")
+    public void tagAccount(@PathVariable(name = "accountId") final UUID accountId,
+                           @RequestParam final List<String> tags)
+            throws NotFoundException {
+        tags.forEach(tag -> accountService.tagEntity(accountId, tag));
+    }
+
+    @PostMapping("/{accountId}/untag")
+    public void untagAccount(@PathVariable(name = "accountId") final UUID accountId,
+                             @RequestParam final List<String> tags)
+            throws NotFoundException {
+        tags.forEach(tag -> accountService.removeEntityTag(accountId, tag));
     }
 }

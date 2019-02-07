@@ -9,6 +9,7 @@ import pl.jdev.opes_commons.rest.message.response.JsonTradeWrapper;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 import static pl.jdev.opes_commons.rest.HttpHeaders.ACTION_TYPE;
@@ -26,8 +27,7 @@ public class TradeController extends AbstractEntityController<Trade> {
         return JsonTradeListWrapper.payloadOf(
                 (Collection<Trade>) integrationClient.requestData(
                         new EntityDetailsRequest(),
-                        headers,
-                        JsonTradeListWrapper.class
+                        List.class
                 ).getBody()
         );
     }
@@ -41,8 +41,7 @@ public class TradeController extends AbstractEntityController<Trade> {
         return JsonTradeListWrapper.payloadOf(
                 (Collection<Trade>) integrationClient.requestData(
                         new EntityDetailsRequest(),
-                        headers,
-                        JsonTradeListWrapper.class
+                        List.class
                 ).getBody()
         );
     }
@@ -54,9 +53,8 @@ public class TradeController extends AbstractEntityController<Trade> {
         headers.add(DATA_TYPE, "trade");
         return JsonTradeWrapper.payloadOf(
                 (Trade) integrationClient.requestData(
-                        new EntityDetailsRequest(tradeId, tradeId.toString()),
-                        headers,
-                        JsonTradeWrapper.class
+                        new EntityDetailsRequest(tradeId),
+                        List.class
                 ).getBody()
         );
     }

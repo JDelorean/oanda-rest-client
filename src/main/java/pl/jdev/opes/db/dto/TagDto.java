@@ -1,32 +1,35 @@
 package pl.jdev.opes.db.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.Loader;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
-@Getter
-@Setter
 @Entity(name = "Tag")
-@Table(name = "tag")
+@Table(name = "tags")
 @SQLDelete(sql =
         "UPDATE tag " +
                 "SET deletedAt = CURRENT_TIMESTAMP " +
                 "WHERE id = ?")
-@Loader(namedQuery = "findTagById")
-@NamedQuery(name = "findTagById", query =
-        "SELECT t " +
-                "FROM Tag t " +
-                "WHERE t.id = ?1 " +
-                "AND t.deletedAt IS NULL")
+//@Loader(namedQuery = "findTagById")
+//@NamedQuery(name = "findTagById", query =
+//        "SELECT t " +
+//                "FROM Tag t " +
+//                "WHERE t.id = ?1 " +
+//                "AND t.deletedAt IS NULL")
 @Where(clause = "deletedAt IS NULL")
-public class TagDto extends AuditDto {
+@RequiredArgsConstructor
+@EqualsAndHashCode
+public class TagDto extends DeletableAuditDto {
+    private static final long serialVersionUID = 6181783680357743559L;
     @Id
     @GeneratedValue
-    private int id;
-    @Column
+    @Getter
+    private Long id;
+    @Column(unique = true)
+    @NonNull
+    @Getter
+    @Setter
     private String tag;
 }

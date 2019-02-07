@@ -1,26 +1,40 @@
 package pl.jdev.opes.db.dto.mapper;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.WebApplicationContext;
 import pl.jdev.opes.db.dto.AccountDto;
 import pl.jdev.opes_commons.domain.account.Account;
 
-public class AccountMapper extends EntityDtoMapper<Account, AccountDto> {
+@Component
+public class AccountMapper extends AbstractMapper<Account, AccountDto> {
+    @Autowired
+    private WebApplicationContext context;
+
     @Override
-    public AccountDto convertToDto(Account entity) {
-        modelMapper.createTypeMap(Account.class, AccountDto.class)
-                .addMappings(mapper -> {
-                    mapper.map(Account::getAccountId, AccountDto::setExtId);
-                    mapper.map(Account::getCreatedTime, AccountDto::setExtCreatedTime);
-                });
-        return modelMapper.map(entity, AccountDto.class);
+    public AccountDto convertToDto(Account account) {
+        ModelMapper mapper = context.getBean(ModelMapper.class);
+//        Provider<Account> accountProvider = new AbstractProvider<Account>() {
+//            @Override
+//            protected Account get() {
+//                return accountService.getAccount(order.getAccountId());
+//            }
+//        };
+//        mapper.createTypeMap(Account.class, AccountDto.class)
+//                .addMappings(typeMap -> {
+//                    typeMap.with(accountProvider).map(Order::getAccountId, OrderDto::setAccount);
+//                });
+        return mapper.map(account, AccountDto.class);
     }
 
     @Override
-    public Account convertToEntity(AccountDto accountDto) {
-        modelMapper.createTypeMap(AccountDto.class, Account.class)
-                .addMappings(mapper -> {
-                    mapper.map(AccountDto::getExtId, Account::setAccountId);
-                    mapper.map(AccountDto::getExtCreatedTime, Account::setCreatedTime);
-                });
-        return modelMapper.map(accountDto, Account.class);
+    public Account convertToEntity(AccountDto dto) {
+        ModelMapper mapper = context.getBean(ModelMapper.class);
+//        mapper.createTypeMap(OrderDto.class, Order.class)
+//                .addMappings(typeMap -> {
+//                    typeMap.map(src -> src.getAccount().getId(), Order::setAccountId);
+//                });
+        return mapper.map(dto, Account.class);
     }
 }

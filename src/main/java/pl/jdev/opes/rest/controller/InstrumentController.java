@@ -2,21 +2,12 @@ package pl.jdev.opes.rest.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes_commons.domain.instrument.Candlestick;
 import pl.jdev.opes_commons.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes_commons.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes_commons.domain.instrument.Instrument;
 import pl.jdev.opes_commons.rest.HttpHeaders;
-import pl.jdev.opes_commons.rest.message.request.CandlesRequest;
-import pl.jdev.opes_commons.rest.message.request.DataRequest;
-import pl.jdev.opes_commons.rest.message.request.MARequest;
 import pl.jdev.opes_commons.rest.message.response.*;
 
-import java.util.Collection;
-import java.util.Map;
-
-import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static pl.jdev.opes_commons.rest.HttpHeaders.DATA_TYPE;
 
 @RestController
@@ -30,11 +21,12 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                                @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                                                @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                                @RequestParam(value = "count") final Integer count) {
-        DataRequest candlesRequest = new CandlesRequest(instrument, priceType, granularity, count);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "candle");
-        headers.add(CONTENT_TYPE, APPLICATION_JSON.toString());
-        return (JsonCandlestickListWrapper) integrationClient.requestData(candlesRequest, headers, JsonCandlestickListWrapper.class).getBody();
+//        DataRequest candlesRequest = new CandlesRequest(instrument, priceType, granularity, count);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(DATA_TYPE, "candle");
+//        headers.add(CONTENT_TYPE, APPLICATION_JSON.toString());
+//        return (JsonCandlestickListWrapper) integrationClient.requestData(candlesRequest, headers, JsonCandlestickListWrapper.class).getBody();
+        return null;
     }
 
     @GetMapping(value = "/candles", params = {"from", "to"})
@@ -44,16 +36,17 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                                 @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                                 @RequestParam(value = "from") final String from,
                                                                 @RequestParam(value = "to") final String to) {
-        DataRequest candlesRequest = new CandlesRequest(instrument, priceType, granularity, from, to);
+//        DataRequest candlesRequest = new CandlesRequest(instrument, priceType, granularity, from, to);
         HttpHeaders headers = new HttpHeaders();
         headers.add(DATA_TYPE, "candle");
-        return JsonCandlestickListWrapper.payloadOf(
-                (Collection<Candlestick>) integrationClient.requestData(
-                        candlesRequest,
-                        headers,
-                        JsonCandlestickListWrapper.class
-                ).getBody()
-        );
+//        return JsonCandlestickListWrapper.payloadOf(
+//                (Collection<Candlestick>) integrationClient.requestData(
+//                        candlesRequest,
+//                        headers,
+//                        JsonCandlestickListWrapper.class
+//                ).getBody()
+//        );
+        return null;
     }
 
     @GetMapping(value = "/sma", params = "amtOfPeriods")
@@ -62,16 +55,17 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                        @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                        @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                        @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
-        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
-        DataRequest maRequest = new MARequest(candles, 1, candles.size());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "sma");
-        return JsonSMAWrapper.payloadOf(
-                (Map<String, Double>) integrationClient.requestData(
-                        maRequest,
-                        headers,
-                        Map.class
-                ).getBody());
+//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
+//        DataRequest maRequest = new MARequest(candles, 1, candles.size());
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(DATA_TYPE, "sma");
+//        return JsonSMAWrapper.payloadOf(
+//                (Map<String, Double>) integrationClient.requestData(
+//                        maRequest,
+//                        headers,
+//                        Map.class
+//                ).getBody());
+        return null;
     }
 
     @GetMapping(value = "/sma", params = {"amtOfIndics", "amtOfPeriods"})
@@ -81,16 +75,17 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                @RequestParam(value = "amtOfIndics") final Integer amtOfIndics,
                                                @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
-        int count = amtOfIndics + amtOfPeriods + 1;
-        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, count).getCandles();
-        DataRequest maRequest = new MARequest(candles, amtOfIndics, amtOfPeriods);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "sma");
-        return JsonSMAListWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
-                maRequest,
-                headers,
-                Map.class
-        ).getBody());
+//        int count = amtOfIndics + amtOfPeriods + 1;
+//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, count).getCandles();
+//        DataRequest maRequest = new MARequest(candles, amtOfIndics, amtOfPeriods);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(DATA_TYPE, "sma");
+//        return JsonSMAListWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
+//                maRequest,
+//                headers,
+//                Map.class
+//        ).getBody());
+        return null;
     }
 
     @GetMapping(value = "/ema", params = "amtOfPeriods")
@@ -99,15 +94,16 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                        @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                        @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                        @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
-        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
-        DataRequest maRequest = new MARequest(candles, 1, candles.size());
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "ema");
-        return JsonEMAWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
-                maRequest,
-                headers,
-                Map.class
-        ).getBody());
+//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
+//        DataRequest maRequest = new MARequest(candles, 1, candles.size());
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(DATA_TYPE, "ema");
+//        return JsonEMAWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
+//                maRequest,
+//                headers,
+//                Map.class
+//        ).getBody());
+        return null;
     }
 
     @GetMapping(value = "/ema", params = {"amtOfIndics", "amtOfPeriods"})
@@ -117,15 +113,16 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                                @RequestParam(value = "amtOfIndics") final Integer amtOfIndics,
                                                @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
-        int count = amtOfIndics + amtOfPeriods + 1;
-        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, count).getCandles();
-        DataRequest maRequest = new MARequest(candles, amtOfIndics, amtOfPeriods);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(DATA_TYPE, "ema");
-        return JsonEMAListWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
-                maRequest,
-                headers,
-                Map.class
-        ).getBody());
+//        int count = amtOfIndics + amtOfPeriods + 1;
+//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, count).getCandles();
+//        DataRequest maRequest = new MARequest(candles, amtOfIndics, amtOfPeriods);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(DATA_TYPE, "ema");
+//        return JsonEMAListWrapper.payloadOf((Map<String, Double>) integrationClient.requestData(
+//                maRequest,
+//                headers,
+//                Map.class
+//        ).getBody());
+        return null;
     }
 }
