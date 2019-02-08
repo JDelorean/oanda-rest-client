@@ -66,10 +66,6 @@ public class AccountDto extends DeletableAuditDto implements Taggable {
     private Double balance;
     @Column
     private boolean isSynced;
-    //    @OneToOne(fetch = FetchType.EAGER,
-//            cascade = CascadeType.ALL,
-//            mappedBy = "parent")
-//    private AccountDetailsDto accountDetails;
     @OneToMany(mappedBy = "account",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

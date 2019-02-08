@@ -34,9 +34,6 @@ public class OrderDto extends DeletableAuditDto implements Taggable {
     private OrderState state;
     @ManyToOne(fetch = FetchType.LAZY)
     private AccountDto account;
-    //    @OneToOne(mappedBy = "parent",
-//            fetch = FetchType.EAGER)
-//    private OrderDetailsDto orderDetails;
     @ManyToMany
     @JoinTable(name = "order_comment",
             joinColumns = @JoinColumn(name = "order_id"),
