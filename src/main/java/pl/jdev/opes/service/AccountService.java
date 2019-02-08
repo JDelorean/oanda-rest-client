@@ -6,7 +6,6 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.jdev.opes.db.dto.AccountDto;
-import pl.jdev.opes.db.dto.mapper.AccountDetailsMapper;
 import pl.jdev.opes.db.dto.mapper.AccountMapper;
 import pl.jdev.opes.db.repo.AccountRepository;
 import pl.jdev.opes.rest.exception.NotFoundException;
@@ -32,8 +31,6 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
     private TagService tagService;
     @Autowired
     private AccountMapper mapper;
-    @Autowired
-    private AccountDetailsMapper detailsMapper;
 
     public Set<Account> getAllAccounts() {
         List<AccountDto> accounts = accountRepository.findAll();
@@ -98,10 +95,6 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
     }
 
     private Optional<Account> getAccountDetailsFromExternal(Account account) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setDataType("account");
-//        headers.setSource(broker.toString());
-//        headers.setContentType(MediaType.APPLICATION_JSON);
         Message msg = MessageBuilder.withPayload(account)
                 .setHeader(HttpHeaders.DATA_TYPE, "account")
                 .setHeader(HttpHeaders.SOURCE, account.getBroker())
