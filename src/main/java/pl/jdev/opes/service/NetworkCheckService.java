@@ -27,7 +27,7 @@ public class NetworkCheckService {
     }
 
     @SneakyThrows
-    @Scheduled(fixedRateString = "${opes.service.network_status.interval}")
+//    @Scheduled(fixedRateString = "${opes.service.network_status.interval}")
     public void checkNetwork() {
         log.info("Checking network status...");
         lastRun = Date.from(Instant.now());

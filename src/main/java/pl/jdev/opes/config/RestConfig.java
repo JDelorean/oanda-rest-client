@@ -32,7 +32,7 @@ public class RestConfig {
                               MappingJackson2HttpMessageConverter messageConverter) {
         RestTemplate rt = restTemplateBuilder
                 .additionalInterceptors(restInterceptors)
-                .messageConverters(messageConverter)
+                .additionalMessageConverters(messageConverter)
                 .build();
         rt.setRequestFactory(requestFactory());
         return rt;

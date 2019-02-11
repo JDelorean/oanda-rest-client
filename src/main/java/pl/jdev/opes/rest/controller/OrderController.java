@@ -1,16 +1,19 @@
 package pl.jdev.opes.rest.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.rest.exception.BadRequestException;
 import pl.jdev.opes.rest.exception.NotFoundException;
 import pl.jdev.opes.rest.exception.UnprocessableEntityException;
+import pl.jdev.opes.service.AccountService;
 import pl.jdev.opes.service.OrderService;
 import pl.jdev.opes_commons.domain.order.Order;
-import pl.jdev.opes_commons.domain.order.OrderRequest;
+import pl.jdev.opes_commons.rest.json.OrderViews;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -20,6 +23,8 @@ import java.util.UUID;
 @Log4j2
 public class OrderController extends AbstractEntityController<Order> {
 
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private OrderService orderService;
 
@@ -38,9 +43,11 @@ public class OrderController extends AbstractEntityController<Order> {
 
     @PostMapping
     @ResponseBody
-    public Order createOrder(@Valid @RequestBody final OrderRequest orderRequest) throws BadRequestException, UnprocessableEntityException {
-//        return orderService.createOrder(orderRequest);
-        return null;
+    public Order createOrder(@JsonView(OrderViews.CoreCreate.class) @Valid @RequestBody final Order order) throws BadRequestException, UnprocessableEntityException, IOException {
+        UUID accountId = order.getAccountId();
+        if (!accountService.exists(accountId))
+            throw new NotFoundException(String.format("No such account %s!", accountId));
+        return orderService.createOrder(order);
     }
 
     @PostMapping("/{orderId}/cancel")

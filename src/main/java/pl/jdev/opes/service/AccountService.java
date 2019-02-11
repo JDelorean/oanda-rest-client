@@ -32,6 +32,7 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
     @Autowired
     private AccountMapper mapper;
 
+
     public Set<Account> getAllAccounts() {
         List<AccountDto> accounts = accountRepository.findAll();
         return accounts.stream()
@@ -54,6 +55,10 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
     public Account getAccount(String extId) throws NotFoundException {
         AccountDto dto = accountRepository.findByExtId(extId).orElseThrow(NotFoundException::new);
         return mapper.convertToEntity(dto);
+    }
+
+    public boolean exists(UUID accountId) {
+        return accountRepository.existsById(accountId);
     }
 
     public Account addAccount(Account account) {

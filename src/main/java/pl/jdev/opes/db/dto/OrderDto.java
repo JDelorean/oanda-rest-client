@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import pl.jdev.opes.db.dto.metadata.Taggable;
 import pl.jdev.opes_commons.domain.order.OrderState;
+import pl.jdev.opes_commons.domain.order.OrderType;
 
 import javax.persistence.*;
 import java.util.*;
@@ -31,9 +32,15 @@ public class OrderDto extends DeletableAuditDto implements Taggable {
     @Column(unique = true)
     private String extId;
     @Column
+    @Enumerated(EnumType.STRING)
     private OrderState state;
     @ManyToOne(fetch = FetchType.LAZY)
     private AccountDto account;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private OrderType type;
+    @Column
+    private Double units;
     @ManyToMany
     @JoinTable(name = "order_comment",
             joinColumns = @JoinColumn(name = "order_id"),
