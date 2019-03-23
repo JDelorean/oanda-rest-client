@@ -42,7 +42,8 @@ public class DataLoader implements ApplicationRunner {
                             entry.get(0),
                             entry.get(1),
                             InstrumentType.valueOf(entry.get(2)),
-                            Boolean.valueOf(entry.get(3))))
+                            Boolean.FALSE,
+                            Boolean.FALSE))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             System.out.println(String.format("Unable to read instrument data:\n%s", e));

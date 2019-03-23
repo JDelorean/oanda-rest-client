@@ -3,13 +3,16 @@ package pl.jdev.opes.rest.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.rest.exception.BadRequestException;
 import pl.jdev.opes.rest.exception.NotFoundException;
 import pl.jdev.opes.rest.exception.UnprocessableEntityException;
 import pl.jdev.opes.service.AccountService;
+import pl.jdev.opes.service.InstrumentService;
 import pl.jdev.opes.service.OrderService;
 import pl.jdev.opes_commons.domain.order.Order;
+import pl.jdev.opes_commons.domain.order.OrderState;
 import pl.jdev.opes_commons.rest.json.OrderViews;
 
 import javax.validation.Valid;
@@ -27,12 +30,13 @@ public class OrderController extends AbstractEntityController<Order> {
     private AccountService accountService;
     @Autowired
     private OrderService orderService;
-
+    @Autowired
+    private InstrumentService instrumentService;
 
     @GetMapping
     @ResponseBody
-    public Set<Order> getAllOrders() {
-        return orderService.getAllOrders();
+    public Set<Order> getAllOrders(@RequestParam OrderState state) {
+        return orderService.getAllOrders(state);
     }
 
     @GetMapping("/{orderId}")
@@ -42,18 +46,15 @@ public class OrderController extends AbstractEntityController<Order> {
     }
 
     @PostMapping
-    @ResponseBody
+    @ResponseStatus(HttpStatus.CREATED)
     public Order createOrder(@JsonView(OrderViews.CoreCreate.class) @Valid @RequestBody final Order order) throws BadRequestException, UnprocessableEntityException, IOException {
-        UUID accountId = order.getAccountId();
-        if (!accountService.exists(accountId))
-            throw new NotFoundException(String.format("No such account %s!", accountId));
         return orderService.createOrder(order);
     }
 
-    @PostMapping("/{orderId}/cancel")
-    @ResponseBody
-    public Order cancelOrder(@Valid @PathVariable(name = "orderId") final UUID orderId) throws NotFoundException {
-        return orderService.cancelOrder(orderId);
+    @PutMapping("/{orderId}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    public void cancelOrder(@Valid @PathVariable(name = "orderId") final UUID orderId) throws NotFoundException {
+        orderService.cancelOrder(orderId);
     }
 
 

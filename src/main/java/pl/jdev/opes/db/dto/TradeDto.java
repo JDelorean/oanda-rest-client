@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import pl.jdev.opes.db.dto.metadata.Taggable;
-import pl.jdev.opes_commons.domain.trade.Trade;
+import pl.jdev.opes_commons.domain.trade.TradeState;
 
 import javax.persistence.*;
 import java.util.*;
@@ -30,14 +30,20 @@ public class TradeDto extends DeletableAuditDto implements Taggable {
     private UUID id;
     @Column(unique = true)
     private String extId;
-    @Column
-    private String instrument;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private AccountDto account;
     @Column
     private Double price;
     @Column
     private Date openTime;
     @Column
-    private Trade.TradeState state;
+    private Date closeTime;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private TradeState state;
+    @ManyToOne
+    @JoinColumn
+    private InstrumentDto instrument;
     @Column
     private Double initialUnits;
     @Column
@@ -54,16 +60,12 @@ public class TradeDto extends DeletableAuditDto implements Taggable {
 //    private List<String> closingTransactionIDs;
     @Column
     private Double financing;
-    @Column
-    private Date closeTime;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AccountDto account;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "trade_comment",
             joinColumns = @JoinColumn(name = "trade_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"))
     private List<CommentDto> comments = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "trade_tag",
             joinColumns = @JoinColumn(name = "trade_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))

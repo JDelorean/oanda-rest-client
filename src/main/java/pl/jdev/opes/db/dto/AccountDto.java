@@ -54,8 +54,9 @@ public class AccountDto extends DeletableAuditDto implements Taggable {
     private static final long serialVersionUID = -6238218905107699748L;
     @Id
     @GeneratedValue
+    @Column(nullable = false, updatable = false)
     private UUID id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false, updatable = false)
     private String extId;
     @Column
     @Enumerated(EnumType.STRING)

@@ -1,12 +1,14 @@
 package pl.jdev.opes.rest.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jdev.opes.rest.exception.NotFoundException;
-import pl.jdev.opes.rest.model.AccountSyncRequestModel;
 import pl.jdev.opes.service.AccountService;
 import pl.jdev.opes_commons.domain.account.Account;
+import pl.jdev.opes_commons.rest.json.AccountViews;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -40,7 +42,7 @@ public class AccountController extends AbstractEntityController<Account> {
 
     @PostMapping(value = "/sync")
     @ResponseBody
-    public Account syncAccount(@Valid @RequestBody AccountSyncRequestModel syncRequest) throws NotFoundException {
+    public Account syncAccount(@JsonView(AccountViews.Sync.class) @Valid @RequestBody Account syncRequest) throws NotFoundException {
         return accountService.syncExtAccount(syncRequest.getExtId(), syncRequest.getBroker());
     }
 
@@ -52,6 +54,7 @@ public class AccountController extends AbstractEntityController<Account> {
     }
 
     @DeleteMapping(value = "/{accountId}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteAccount(@Valid @PathVariable final UUID accountId) throws NotFoundException {
         accountService.deleteAccount(accountId);
     }

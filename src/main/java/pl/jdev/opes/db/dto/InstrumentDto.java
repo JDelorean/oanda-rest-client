@@ -1,6 +1,7 @@
 package pl.jdev.opes.db.dto;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @Entity(name = "Instrument")
 @Table(name = "instruments")
+@NoArgsConstructor
 @RequiredArgsConstructor
 public class InstrumentDto extends AuditDto implements Taggable {
     private static final long serialVersionUID = 323433931446474834L;
@@ -32,4 +34,8 @@ public class InstrumentDto extends AuditDto implements Taggable {
     @Column
     @ColumnDefault("false")
     private Boolean isTradable;
+    @NonNull
+    @Column
+    @ColumnDefault("false")
+    private Boolean isTracked;
 }

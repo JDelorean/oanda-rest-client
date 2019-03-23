@@ -34,19 +34,22 @@ public class OrderDto extends DeletableAuditDto implements Taggable {
     @Column
     @Enumerated(EnumType.STRING)
     private OrderState state;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private AccountDto account;
     @Column
     @Enumerated(EnumType.STRING)
     private OrderType type;
     @Column
     private Double units;
-    @ManyToMany
+    @ManyToOne
+    @JoinColumn
+    private InstrumentDto instrument;
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "order_comment",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "comment_id"))
     private List<CommentDto> comments = new ArrayList<>();
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "order_tag",
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))

@@ -2,7 +2,6 @@ package pl.jdev.opes.db.dto;
 
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -18,7 +17,7 @@ import javax.persistence.*;
 //                "FROM Tag t " +
 //                "WHERE t.id = ?1 " +
 //                "AND t.deletedAt IS NULL")
-@Where(clause = "deletedAt IS NULL")
+//@Where(clause = "deletedAt IS NULL")
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class TagDto extends DeletableAuditDto {

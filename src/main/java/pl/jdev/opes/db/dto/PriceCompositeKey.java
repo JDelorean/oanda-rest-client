@@ -1,6 +1,7 @@
 package pl.jdev.opes.db.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -13,7 +14,7 @@ import java.util.Date;
 @Embeddable
 public class PriceCompositeKey implements Serializable {
     private static final long serialVersionUID = 1821263262703071223L;
-    @Column(length = 4)
+    @Column
     private String instrument;
     @Temporal(TemporalType.TIMESTAMP)
     private Date priceAt;

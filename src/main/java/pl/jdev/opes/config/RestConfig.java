@@ -31,6 +31,8 @@ public class RestConfig {
                               List<ClientHttpRequestInterceptor> restInterceptors,
                               MappingJackson2HttpMessageConverter messageConverter) {
         RestTemplate rt = restTemplateBuilder
+                .setConnectTimeout(10000)
+                .setReadTimeout(10000)
                 .additionalInterceptors(restInterceptors)
                 .additionalMessageConverters(messageConverter)
                 .build();
