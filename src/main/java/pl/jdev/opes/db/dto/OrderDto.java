@@ -2,8 +2,10 @@ package pl.jdev.opes.db.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SQLDelete;
 import pl.jdev.opes.db.dto.metadata.Taggable;
+import pl.jdev.opes_commons.db.DeletableAuditDto;
 import pl.jdev.opes_commons.domain.order.OrderState;
 import pl.jdev.opes_commons.domain.order.OrderType;
 
@@ -24,6 +26,7 @@ import java.util.*;
 //                "WHERE o.id = ?1 " +
 //                "AND o.deletedAt IS NULL")
 //@Where(clause = "deletedAt IS NULL")
+@ToString
 public class OrderDto extends DeletableAuditDto implements Taggable {
     private static final long serialVersionUID = 3004071548855174997L;
     @Id

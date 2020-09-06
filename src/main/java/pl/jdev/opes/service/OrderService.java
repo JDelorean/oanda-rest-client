@@ -12,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.jdev.opes.db.dto.OrderDto;
 import pl.jdev.opes.db.dto.mapper.OrderMapper;
 import pl.jdev.opes.db.repo.OrderRepository;
-import pl.jdev.opes.rest.exception.NotFoundException;
-import pl.jdev.opes.rest.exception.RequestFailedException;
+import pl.jdev.opes_commons.rest.exception.NotFoundException;
+import pl.jdev.opes_commons.rest.exception.RequestFailedException;
 import pl.jdev.opes_commons.domain.account.Account;
 import pl.jdev.opes_commons.domain.instrument.Instrument;
 import pl.jdev.opes_commons.domain.order.Order;
 import pl.jdev.opes_commons.domain.order.OrderState;
 import pl.jdev.opes_commons.rest.HttpHeaders;
-import pl.jdev.opes_commons.rest.IntegrationClient;
+import pl.jdev.opes_commons.rest.client.IntegrationClient;
 import pl.jdev.opes_commons.rest.json.CustomJsonBuilder;
 import pl.jdev.opes_commons.rest.json.OrderViews;
 
@@ -38,7 +38,7 @@ public class OrderService extends TaggableEntityService<OrderDto, UUID> {
     @Autowired
     private OrderRepository orderRepository;
     @Autowired
-    private IntegrationClient intC;
+    private IntegrationClient integrationClient;
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -76,7 +76,7 @@ public class OrderService extends TaggableEntityService<OrderDto, UUID> {
                 .setHeader(REQUEST_TYPE, CREATE_ORDER)
                 .setHeader(HttpHeaders.SOURCE, account.getBroker())
                 .build();
-        ResponseEntity response = intC.request(msg);
+        ResponseEntity response = integrationClient.request(msg);
         if (!response.getStatusCode().is2xxSuccessful()) {
             throw new RequestFailedException("Unable to execute request!");
         }
@@ -101,7 +101,7 @@ public class OrderService extends TaggableEntityService<OrderDto, UUID> {
 //        AccountDto account = order.getAccount();
 //        OrderCancelRequest orderCancelRequest = new OrderCancelRequest(orderMapper.convertToEntity(order));
 //        orderCancelRequest.getHeaders().put("broker", account.getBrokerName());
-//        ResponseEntity response = intC.perform(orderCancelRequest);
+//        ResponseEntity response = integrationClient.perform(orderCancelRequest);
 //        if (!response.getStatusCode().is2xxSuccessful()) {
 //            throw new RequestFailedException("Unable to execute request!");
 //        }
@@ -125,7 +125,7 @@ public class OrderService extends TaggableEntityService<OrderDto, UUID> {
                 .withPayload(payload)
                 .setHeader(REQUEST_TYPE, ORDER_DETAILS)
                 .build();
-        Arrays.stream((Order[]) intC
+        Arrays.stream((Order[]) integrationClient
                 .request(msg, Order[].class)
                 .getBody())
                 .peek(order -> order.setAccountId(account.getId()))
@@ -146,7 +146,7 @@ public class OrderService extends TaggableEntityService<OrderDto, UUID> {
                 .setHeader(REQUEST_TYPE, ORDER_DETAILS)
 //TODO:         .setHeader(HttpHeaders.SOURCE, order.)
                 .build();
-        order = (Order) intC.request(msg, Order.class)
+        order = (Order) integrationClient.request(msg, Order.class)
                 .getBody();
         return Optional.ofNullable(order);
     }
@@ -177,6 +177,6 @@ public class OrderService extends TaggableEntityService<OrderDto, UUID> {
                         .setHeader(HttpHeaders.EVENT_TYPE, ORDER_UPDATED)
                         .build()
                 )
-                .forEach(intC::post);
+                .forEach(integrationClient::post);
     }
 }

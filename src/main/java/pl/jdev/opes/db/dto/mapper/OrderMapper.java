@@ -10,6 +10,7 @@ import pl.jdev.opes.db.dto.InstrumentDto;
 import pl.jdev.opes.db.dto.OrderDto;
 import pl.jdev.opes.db.repo.AccountRepository;
 import pl.jdev.opes.db.repo.InstrumentRepository;
+import pl.jdev.opes_commons.db.AbstractMapper;
 import pl.jdev.opes_commons.domain.order.Order;
 
 import java.util.UUID;

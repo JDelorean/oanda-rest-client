@@ -3,7 +3,7 @@ package pl.jdev.opes.rest.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.exception.NotFoundException;
+import pl.jdev.opes_commons.rest.exception.NotFoundException;
 import pl.jdev.opes.service.TradeService;
 import pl.jdev.opes_commons.domain.trade.Trade;
 import pl.jdev.opes_commons.domain.trade.TradeState;

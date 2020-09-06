@@ -4,21 +4,21 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.jdev.opes.rest.exception.NotFoundException;
+import pl.jdev.opes_commons.rest.exception.NotFoundException;
+import pl.jdev.opes.rest.validation.IsoFormat;
 import pl.jdev.opes.service.InstrumentService;
 import pl.jdev.opes_commons.domain.instrument.Candlestick;
 import pl.jdev.opes_commons.domain.instrument.CandlestickGranularity;
 import pl.jdev.opes_commons.domain.instrument.CandlestickPriceType;
 import pl.jdev.opes_commons.domain.instrument.Instrument;
-import pl.jdev.opes_commons.rest.HttpHeaders;
 import pl.jdev.opes_commons.rest.message.response.JsonEMAListWrapper;
 import pl.jdev.opes_commons.rest.message.response.JsonEMAWrapper;
 import pl.jdev.opes_commons.rest.message.response.JsonSMAListWrapper;
 import pl.jdev.opes_commons.rest.message.response.JsonSMAWrapper;
 
+import javax.validation.constraints.Min;
+import java.text.ParseException;
 import java.util.List;
-
-import static pl.jdev.opes_commons.rest.HttpHeaders.REQUEST_TYPE;
 
 @RestController
 @RequestMapping("/instruments/{instrument}")
@@ -28,32 +28,29 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
     @Autowired
     private InstrumentService instrumentService;
 
-    @GetMapping(value = "/candles", params = "count")
+    @GetMapping
     @ResponseBody
-    public List<Candlestick> getCandlesticksWithCount(@PathVariable(name = "instrument") final String instrument,
-                                                      @RequestParam(value = "priceType") final CandlestickPriceType priceType,
-                                                      @RequestParam(value = "granularity") final CandlestickGranularity granularity,
-                                                      @RequestParam(value = "count") final Integer count) {
-        return instrumentService.getInstrumentCandles(instrument, priceType, granularity, count, false);
+    public Instrument getInstrument(@PathVariable(name = "instrument") String instrument) throws NotFoundException {
+        return instrumentService.getInstrument(instrument);
     }
 
-    @GetMapping(value = "/candles", params = {"from", "to"})
+    @GetMapping(value = "/candles", params = "count")
     @ResponseBody
-    public List<Candlestick> getCandlesticksWithPeriod(@PathVariable(name = "instrument") final String instrument,
-                                                       @RequestParam(value = "priceType") final CandlestickPriceType priceType,
-                                                       @RequestParam(value = "granularity") final CandlestickGranularity granularity,
-                                                       @RequestParam(value = "from") final String from,
-                                                       @RequestParam(value = "to") final String to) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(REQUEST_TYPE, "candle");
-//        return JsonCandlestickListWrapper.payloadOf(
-//                (Collection<Candlestick>) integrationClient.requestData(
-//                        candlesRequest,
-//                        headers,
-//                        JsonCandlestickListWrapper.class
-//                ).getBody()
-//        );
-        return null;
+    public List<Candlestick> getCandlesticksByCount(@PathVariable(name = "instrument") final String instrument,
+                                                    @RequestParam(value = "priceType") final CandlestickPriceType priceType,
+                                                    @RequestParam(value = "granularity") final CandlestickGranularity granularity,
+                                                    @Min(1) @RequestParam(value = "count") final Integer count) {
+        return instrumentService.getInstrumentCandles(instrument, priceType, granularity, count);
+    }
+
+    @GetMapping(value = "/candles", params = "from")
+    @ResponseBody
+    public List<Candlestick> getCandlesticksByPeriod(@PathVariable(name = "instrument") final String instrument,
+                                                     @RequestParam(value = "priceType") final CandlestickPriceType priceType,
+                                                     @RequestParam(value = "granularity") final CandlestickGranularity granularity,
+                                                     @IsoFormat @RequestParam(value = "from") final String from,
+                                                     @IsoFormat @RequestParam(value = "to", required = false) final String to) throws ParseException {
+        return instrumentService.getInstrumentCandles(instrument, priceType, granularity, from, to);
     }
 
     @PostMapping(value = "/track")
@@ -74,7 +71,7 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                        @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                        @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                        @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
-//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
+//        Collection<Candlestick> candles = getCandlesticksByCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
 //        DataRequest maRequest = new MARequest(candles, 1, candles.size());
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add(DATA_TYPE, "sma");
@@ -95,7 +92,7 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                @RequestParam(value = "amtOfIndics") final Integer amtOfIndics,
                                                @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
 //        int count = amtOfIndics + amtOfPeriods + 1;
-//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, count).getCandles();
+//        Collection<Candlestick> candles = getCandlesticksByCount(instrument, priceType, granularity, count).getCandles();
 //        DataRequest maRequest = new MARequest(candles, amtOfIndics, amtOfPeriods);
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add(DATA_TYPE, "sma");
@@ -113,7 +110,7 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                        @RequestParam(value = "priceType") final CandlestickPriceType priceType,
                                        @RequestParam(value = "granularity") final CandlestickGranularity granularity,
                                        @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
-//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
+//        Collection<Candlestick> candles = getCandlesticksByCount(instrument, priceType, granularity, amtOfPeriods).getCandles();
 //        DataRequest maRequest = new MARequest(candles, 1, candles.size());
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add(DATA_TYPE, "ema");
@@ -133,7 +130,7 @@ public class InstrumentController extends AbstractEntityController<Instrument> {
                                                @RequestParam(value = "amtOfIndics") final Integer amtOfIndics,
                                                @RequestParam(value = "amtOfPeriods") final Integer amtOfPeriods) {
 //        int count = amtOfIndics + amtOfPeriods + 1;
-//        Collection<Candlestick> candles = getCandlesticksWithCount(instrument, priceType, granularity, count).getCandles();
+//        Collection<Candlestick> candles = getCandlesticksByCount(instrument, priceType, granularity, count).getCandles();
 //        DataRequest maRequest = new MARequest(candles, amtOfIndics, amtOfPeriods);
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.add(DATA_TYPE, "ema");

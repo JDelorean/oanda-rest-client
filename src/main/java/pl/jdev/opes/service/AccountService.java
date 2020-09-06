@@ -9,18 +9,19 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.jdev.opes.db.dto.AccountDto;
 import pl.jdev.opes.db.dto.mapper.AccountMapper;
 import pl.jdev.opes.db.repo.AccountRepository;
-import pl.jdev.opes.rest.exception.NotFoundException;
+import pl.jdev.opes_commons.rest.client.nuntius.NuntiusClient;
+import pl.jdev.opes_commons.rest.exception.NotFoundException;
 import pl.jdev.opes_commons.domain.account.Account;
 import pl.jdev.opes_commons.domain.broker.BrokerName;
-import pl.jdev.opes_commons.rest.IntegrationClient;
+import pl.jdev.opes_commons.rest.client.IntegrationClient;
 
 import javax.persistence.EntityExistsException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static pl.jdev.opes.helper.EventMessageFactory.accountUnsyncedMsg;
 import static pl.jdev.opes_commons.rest.HttpHeaders.*;
 import static pl.jdev.opes_commons.rest.message.event.EventType.ACCOUNT_UPDATED;
-import static pl.jdev.opes_commons.rest.message.request.RequestType.ACCOUNT_DETAILS;
 
 @Service
 public class AccountService extends TaggableEntityService<AccountDto, UUID> {
@@ -28,6 +29,8 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
     private AccountRepository accountRepository;
     @Autowired
     private IntegrationClient integrationClient;
+    @Autowired
+    private NuntiusClient nuntiusClient;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -71,15 +74,14 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
         return mapper.convertToEntity(accountRepository.save(accountDto));
     }
 
-    private Account updateAccount(Account update) throws NotFoundException {
+    Account updateAccount(Account update) throws NotFoundException {
         AccountDto dto = accountRepository.findByExtId(update.getExtId()).orElseThrow(NotFoundException::new);
         update.setId(dto.getId());
         return mapper.convertToEntity(accountRepository.save(mapper.convertToDto(update)));
     }
 
     public void deleteAccount(UUID id) throws NotFoundException {
-        Optional<Boolean> exists = Optional.of(accountRepository.existsById(id));
-        exists.orElseThrow(NotFoundException::new);
+        Optional.of(accountRepository.existsById(id)).orElseThrow(NotFoundException::new);
         accountRepository.deleteById(id);
     }
 
@@ -107,28 +109,20 @@ public class AccountService extends TaggableEntityService<AccountDto, UUID> {
     }
 
     @Transactional
-    public void unsyncAccount(UUID id) throws NotFoundException {
+    public Account unsyncAccount(UUID id) throws NotFoundException {
         Account account = getAccount(id);
         accountRepository.unsetIsSyncedFlag(id);
-        Message msg = MessageBuilder.withPayload(account)
-                .setHeader(REQUEST_TYPE, ACCOUNT_DETAILS)
-                .setHeader(SOURCE, account.getBroker())
-                .build();
-        account = (Account) integrationClient.request(
-                msg,
-                Account.class)
-                .getBody();
+        Message msg = accountUnsyncedMsg(account);
+        integrationClient.post(msg);
+        return account;
     }
 
-    private Optional<Account> getAccountDetailsFromExternal(Account account) {
+    Optional<Account> getAccountDetailsFromExternal(Account account) {
         Message msg = MessageBuilder.withPayload(account)
-                .setHeader(REQUEST_TYPE, ACCOUNT_DETAILS)
-                .setHeader(SOURCE, account.getBroker())
+//                .setHeader(REQUEST_TYPE, ACCOUNT_DETAILS)
+//                .setHeader(SOURCE, account.getBroker())
                 .build();
-        account = (Account) integrationClient.request(
-                msg,
-                Account.class)
-                .getBody();
+        account = (Account) nuntiusClient.getAccount(msg).getBody();
         return Optional.ofNullable(account);
     }
 

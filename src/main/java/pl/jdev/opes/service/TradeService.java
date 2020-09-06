@@ -11,12 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.jdev.opes.db.dto.TradeDto;
 import pl.jdev.opes.db.dto.mapper.TradeMapper;
 import pl.jdev.opes.db.repo.TradeRepository;
-import pl.jdev.opes.rest.exception.NotFoundException;
+import pl.jdev.opes_commons.rest.exception.NotFoundException;
 import pl.jdev.opes_commons.domain.account.Account;
 import pl.jdev.opes_commons.domain.trade.Trade;
 import pl.jdev.opes_commons.domain.trade.TradeState;
 import pl.jdev.opes_commons.rest.HttpHeaders;
-import pl.jdev.opes_commons.rest.IntegrationClient;
+import pl.jdev.opes_commons.rest.client.IntegrationClient;
 import pl.jdev.opes_commons.rest.json.CustomJsonBuilder;
 
 import java.io.IOException;

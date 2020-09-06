@@ -2,6 +2,7 @@ package pl.jdev.opes.db.dto;
 
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
+import pl.jdev.opes_commons.db.DeletableAuditDto;
 
 import javax.persistence.*;
 

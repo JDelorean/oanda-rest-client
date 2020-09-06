@@ -1,11 +1,9 @@
 package pl.jdev.opes.db.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import pl.jdev.opes.db.dto.metadata.Taggable;
+import pl.jdev.opes_commons.db.AuditDto;
 import pl.jdev.opes_commons.domain.instrument.InstrumentType;
 
 import javax.persistence.*;
@@ -15,6 +13,7 @@ import javax.persistence.*;
 @Table(name = "instruments")
 @NoArgsConstructor
 @RequiredArgsConstructor
+@ToString
 public class InstrumentDto extends AuditDto implements Taggable {
     private static final long serialVersionUID = 323433931446474834L;
     @Id

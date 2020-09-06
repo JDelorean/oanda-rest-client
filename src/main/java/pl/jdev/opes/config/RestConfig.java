@@ -12,9 +12,13 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
-import pl.jdev.opes_commons.rest.IntegrationClient;
+import pl.jdev.opes_commons.rest.client.AbacusClient;
+import pl.jdev.opes_commons.rest.client.IntegrationClient;
+import pl.jdev.opes_commons.rest.client.nuntius.NuntiusClient;
 import pl.jdev.opes_commons.rest.interceptor.RestLoggingInterceptor;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 
@@ -30,14 +34,14 @@ public class RestConfig {
     RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder,
                               List<ClientHttpRequestInterceptor> restInterceptors,
                               MappingJackson2HttpMessageConverter messageConverter) {
-        RestTemplate rt = restTemplateBuilder
-                .setConnectTimeout(10000)
-                .setReadTimeout(10000)
+        RestTemplate restTemplate = restTemplateBuilder
+                .setConnectTimeout(Duration.of(10000, ChronoUnit.MILLIS))
+                .setReadTimeout(Duration.of(10000, ChronoUnit.MILLIS))
                 .additionalInterceptors(restInterceptors)
                 .additionalMessageConverters(messageConverter)
                 .build();
-        rt.setRequestFactory(requestFactory());
-        return rt;
+        restTemplate.setRequestFactory(requestFactory());
+        return restTemplate;
     }
 
     @Bean
@@ -60,7 +64,28 @@ public class RestConfig {
     @Autowired
     IntegrationClient integrationClient(RestTemplate restTemplate,
                                         @Value("${opes.integration.host}") String integrationHostUrl,
+                                        @Value("${opes.integration.port}") String integrationPort,
                                         @Value("${opes.integration.version}") String integrationVersion) {
-        return new IntegrationClient(restTemplate, integrationHostUrl + integrationVersion);
+        return new IntegrationClient(restTemplate, String.format("%s:%s/%s", integrationHostUrl, integrationPort, integrationVersion));
+    }
+
+    @Bean
+    @DependsOn({"restTemplate"})
+    @Autowired
+    AbacusClient abacusClient(RestTemplate restTemplate,
+                              @Value("${opes.abacus.host}") String abacusHostUrl,
+                              @Value("${opes.abacus.port}") String abacusPort,
+                              @Value("${opes.abacus.version}") String abacusVersion) {
+        return new AbacusClient(restTemplate, String.format("%s:%s/%s", abacusHostUrl, abacusPort, abacusVersion));
+    }
+
+    @Bean
+    @DependsOn({"restTemplate"})
+    @Autowired
+    NuntiusClient nuntiusClient(RestTemplate restTemplate,
+                                @Value("${opes.nuntius.host}") String nuntiusHostUrl,
+                                @Value("${opes.nuntius.port}") String nuntiusPort,
+                                @Value("${opes.nuntius.version}") String nuntiusVersion) {
+        return new NuntiusClient(restTemplate, String.format("%s:%s/%s", nuntiusHostUrl, nuntiusPort, nuntiusVersion));
     }
 }

@@ -1,7 +1,7 @@
 package pl.jdev.opes.db.dto.metadata;
 
 import com.google.common.reflect.TypeToken;
-import pl.jdev.opes.db.dto.AuditDto;
+import pl.jdev.opes_commons.db.AuditDto;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;

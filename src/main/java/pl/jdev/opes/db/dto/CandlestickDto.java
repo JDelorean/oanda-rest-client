@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import pl.jdev.opes_commons.db.AuditDto;
 import pl.jdev.opes_commons.domain.instrument.CandlestickPriceType;
 
 import javax.persistence.*;
@@ -19,7 +20,8 @@ public class CandlestickDto extends AuditDto {
     @EmbeddedId
     private CandlestickCompositeKey id;
     @Column
-    private String source;
+    @Enumerated(EnumType.STRING)
+    private CandlestickSource source;
     @Column
     @Enumerated(EnumType.STRING)
     private CandlestickPriceType type;

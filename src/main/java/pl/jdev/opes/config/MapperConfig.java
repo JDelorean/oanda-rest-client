@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Scope;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 @Configuration
-public class PsqlConfig {
+public class MapperConfig {
     @Bean
     @Scope(SCOPE_PROTOTYPE)
     public ModelMapper modelMapper() {

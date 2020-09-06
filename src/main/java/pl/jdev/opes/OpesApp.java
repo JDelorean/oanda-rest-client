@@ -11,6 +11,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @SpringBootApplication
 @EnableAutoConfiguration
 @EnableCaching
@@ -19,8 +22,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories
 @EnableJpaAuditing
 @EnableTransactionManagement
-public class OpesCore extends SpringBootServletInitializer {
+public class OpesApp extends SpringBootServletInitializer {
+    @PostConstruct
+    public void init() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
+
     public static void main(String[] args) {
-        SpringApplication.run(OpesCore.class, args);
+        SpringApplication.run(OpesApp.class, args);
     }
 }

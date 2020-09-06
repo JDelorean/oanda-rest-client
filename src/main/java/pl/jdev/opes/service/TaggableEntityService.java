@@ -3,7 +3,7 @@ package pl.jdev.opes.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import pl.jdev.opes.db.dto.metadata.Taggable;
-import pl.jdev.opes.rest.exception.NotFoundException;
+import pl.jdev.opes_commons.rest.exception.NotFoundException;
 
 abstract class TaggableEntityService<E extends Taggable, I extends Object> {
     @Autowired

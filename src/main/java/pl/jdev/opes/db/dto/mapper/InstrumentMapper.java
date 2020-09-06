@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import pl.jdev.opes.db.dto.InstrumentDto;
+import pl.jdev.opes_commons.db.AbstractMapper;
 import pl.jdev.opes_commons.domain.instrument.Instrument;
 
 @Component

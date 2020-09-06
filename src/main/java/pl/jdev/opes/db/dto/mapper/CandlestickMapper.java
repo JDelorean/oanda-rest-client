@@ -9,6 +9,7 @@ import org.springframework.web.context.WebApplicationContext;
 import pl.jdev.opes.db.dto.CandlestickCompositeKey;
 import pl.jdev.opes.db.dto.CandlestickDto;
 import pl.jdev.opes.db.repo.InstrumentRepository;
+import pl.jdev.opes_commons.db.AbstractMapper;
 import pl.jdev.opes_commons.domain.instrument.Candlestick;
 import pl.jdev.opes_commons.domain.instrument.CandlestickData;
 import pl.jdev.opes_commons.domain.instrument.CandlestickPriceType;
@@ -30,36 +31,35 @@ public class CandlestickMapper extends AbstractMapper<Candlestick, CandlestickDt
         Condition isMidType = mappingCtx -> ((CandlestickDto) mappingCtx.getSource()).getType() == CandlestickPriceType.M;
         Condition isAskType = mappingCtx -> ((CandlestickDto) mappingCtx.getSource()).getType() == CandlestickPriceType.A;
         Condition isBidType = mappingCtx -> ((CandlestickDto) mappingCtx.getSource()).getType() == CandlestickPriceType.B;
-//        Converter<CandlestickDto, CandlestickData> toCandlestickData = mappingCtx -> {
-//            CandlestickDto dto = mappingCtx.getSource();
-//            return new CandlestickData(dto.getOpen(),
-//                    dto.getHigh(),
-//                    dto.getLow(),
-//                    dto.getClose());
-//        };
+        Converter<CandlestickDto, CandlestickData> toCandleData = obj -> new CandlestickData(
+                obj.getSource().getOpen(),
+                obj.getSource().getHigh(),
+                obj.getSource().getLow(),
+                obj.getSource().getClose());
         mapper.createTypeMap(CandlestickDto.class, Candlestick.class)
                 .addMappings(typeMap -> {
-                    typeMap.map(src -> src.getId().getInstrument(), Candlestick::setInstrument);
+                    typeMap.map(src -> src.getId().getInstrument().getName(), Candlestick::setInstrument);
                     typeMap.map(src -> src.getId().getGranularity(), Candlestick::setGranularity);
                     typeMap.map(src -> src.getId().getTime(), Candlestick::setTime);
-                    typeMap.when(isMidType).map(src -> new CandlestickData(
-                                    src.getOpen(),
-                                    src.getHigh(),
-                                    src.getLow(),
-                                    src.getClose()),
-                            Candlestick::setMid);
-                    typeMap.when(isAskType).map(src -> new CandlestickData(
-                                    src.getOpen(),
-                                    src.getHigh(),
-                                    src.getLow(),
-                                    src.getClose()),
-                            Candlestick::setAsk);
-                    typeMap.when(isBidType).map(src -> new CandlestickData(
-                                    src.getOpen(),
-                                    src.getHigh(),
-                                    src.getLow(),
-                                    src.getClose()),
-                            Candlestick::setBid);
+                    typeMap.using(toCandleData).map(src -> src, Candlestick::setMid);
+//                    typeMap.when(isMidType).map(src -> new CandlestickData(
+//                                    src.getOpen(),
+//                                    src.getHigh(),
+//                                    src.getLow(),
+//                                    src.getClose()),
+//                            Candlestick::setMid);
+//                    typeMap.when(isAskType).map(src -> new CandlestickData(
+//                                    src.getOpen(),
+//                                    src.getHigh(),
+//                                    src.getLow(),
+//                                    src.getClose()),
+//                            Candlestick::setAsk);
+//                    typeMap.when(isBidType).map(src -> new CandlestickData(
+//                                    src.getOpen(),
+//                                    src.getHigh(),
+//                                    src.getLow(),
+//                                    src.getClose()),
+//                            Candlestick::setBid);
                 });
         return mapper.map(candlestickDto, Candlestick.class);
     }
@@ -69,10 +69,14 @@ public class CandlestickMapper extends AbstractMapper<Candlestick, CandlestickDt
         ModelMapper mapper = context.getBean(ModelMapper.class);
         mapper.getConfiguration().setAmbiguityIgnored(true);
         Condition<Double, Double> isNotNull = mappingCtx -> mappingCtx.getSource() != null;
-        Converter<Candlestick, CandlestickCompositeKey> toCompositeKey = object -> new CandlestickCompositeKey(
-                instrumentRepository.findByName(entity.getInstrument()).get(),
-                object.getSource().getGranularity(),
-                Date.from(Instant.parse(object.getSource().getTime())));
+        Converter<Candlestick, CandlestickCompositeKey> toCompositeKey = object -> {
+            Candlestick candle = object.getSource();
+            return new CandlestickCompositeKey(
+                    instrumentRepository.findByName(candle.getInstrument()).get(),
+                    candle.getGranularity(),
+                    Date.from(Instant.parse(candle.getTime()))
+            );
+        };
         mapper.createTypeMap(Candlestick.class, CandlestickDto.class)
                 .addMappings(typeMap -> {
                     typeMap.using(toCompositeKey).map(src -> src, CandlestickDto::setId);

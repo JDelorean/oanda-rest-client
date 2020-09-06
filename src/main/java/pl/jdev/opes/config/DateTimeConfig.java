@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 @Configuration
 @Log4j2
@@ -17,6 +18,8 @@ public class DateTimeConfig {
     @Bean
     SimpleDateFormat dateFormat() {
         log.info(String.format("Initializing date time format from pattern '%s'", dateFormat));
-        return new SimpleDateFormat(dateFormat);
+        SimpleDateFormat df = new SimpleDateFormat(dateFormat);
+//        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return df;
     }
 }

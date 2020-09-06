@@ -2,6 +2,7 @@ package pl.jdev.opes.db.dto.mapper;
 
 import org.springframework.stereotype.Component;
 import pl.jdev.opes.db.dto.TagDto;
+import pl.jdev.opes_commons.db.AbstractMapper;
 
 @Component
 public class TagMapper extends AbstractMapper<String, TagDto> {

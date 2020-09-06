@@ -3,6 +3,7 @@ package pl.jdev.opes.db.dto;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Loader;
+import pl.jdev.opes_commons.db.AuditDto;
 
 import javax.persistence.*;
 

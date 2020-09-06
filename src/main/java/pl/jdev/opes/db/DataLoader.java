@@ -50,8 +50,6 @@ public class DataLoader implements ApplicationRunner {
         }
         try {
             assert instruments != null : "Instrument list is null!";
-            System.out.println("Adding instruments:");
-            instruments.forEach(System.out::println);
             InstrumentRepository repo = ctx.getBean(InstrumentRepository.class);
             repo.saveAll(instruments);
         } catch (AssertionError e) {

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.SQLDelete;
 import pl.jdev.opes.db.dto.metadata.Taggable;
+import pl.jdev.opes_commons.db.DeletableAuditDto;
 import pl.jdev.opes_commons.domain.trade.TradeState;
 
 import javax.persistence.*;
