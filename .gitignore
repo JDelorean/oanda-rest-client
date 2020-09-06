@@ -11,8 +11,7 @@
 *.ear
 
 # Log files
-/main.log
-/main.log.*
+/logs/*
 
 # Config & property files
 application.properties
